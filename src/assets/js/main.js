@@ -24,7 +24,7 @@
 21. Password Toggle Js
 ****************************************************/
 
-(function ($) {
+function HOMEINIT($) {
 	"use strict";
 
 	var windowOn = $(window);
@@ -35,9 +35,9 @@
 	});
 
 	if ($('.tp-header-height').length > 0) {
-		var headerHeight = document.querySelector(".tp-header-height");      
-		var setHeaderHeight = headerHeight.offsetHeight;	
-		
+		var headerHeight = document.querySelector(".tp-header-height");
+		var setHeaderHeight = headerHeight.offsetHeight;
+
 		$(".tp-header-height").each(function () {
 			$(this).css({
 				'height' : setHeaderHeight + 'px'
@@ -99,7 +99,7 @@
 
 	if ($("#tp-offcanvas-lang-toggle").length > 0) {
 		window.addEventListener('click', function(e){
-		
+
 			if (document.getElementById('tp-offcanvas-lang-toggle').contains(e.target)){
 				$(".tp-lang-list").toggleClass("tp-lang-list-open");
 			}
@@ -111,7 +111,7 @@
 
 	if ($("#tp-offcanvas-currency-toggle").length > 0) {
 		window.addEventListener('click', function(e){
-		
+
 			if (document.getElementById('tp-offcanvas-currency-toggle').contains(e.target)){
 				$(".tp-currency-list").toggleClass("tp-currency-list-open");
 			}
@@ -124,7 +124,7 @@
 	// for header language
 	if ($("#tp-header-lang-toggle").length > 0) {
 		window.addEventListener('click', function(e){
-	
+
 			if (document.getElementById('tp-header-lang-toggle').contains(e.target)){
 				$(".tp-header-lang ul").toggleClass("tp-lang-list-open");
 			}
@@ -137,7 +137,7 @@
 	// for header currency
 	if ($("#tp-header-currency-toggle").length > 0) {
 		window.addEventListener('click', function(e){
-	
+
 			if (document.getElementById('tp-header-currency-toggle').contains(e.target)){
 				$(".tp-header-currency ul").toggleClass("tp-currency-list-open");
 			}
@@ -150,7 +150,7 @@
 	// for header setting
 	if ($("#tp-header-setting-toggle").length > 0) {
 		window.addEventListener('click', function(e){
-	
+
 			if (document.getElementById('tp-header-setting-toggle').contains(e.target)){
 				$(".tp-header-setting ul").toggleClass("tp-setting-list-open");
 			}
@@ -171,24 +171,24 @@
 		let navContent = document.querySelector(".tp-category-menu-content").outerHTML;
 		let mobileNavContainer = document.querySelector(".tp-category-mobile-menu");
 		mobileNavContainer.innerHTML = navContent;
-	
+
 		$('.tp-offcanvas-category-toggle').on('click', function(){
 			$(this).siblings().find('nav').slideToggle();
 		});
-		
-	
+
+
 		let arrow = $(".tp-category-mobile-menu .has-dropdown > a");
-	
+
 		arrow.each(function () {
 			let self = $(this);
 			let arrowBtn = document.createElement("BUTTON");
 			arrowBtn.classList.add("dropdown-toggle-btn");
 			arrowBtn.innerHTML = "<i class='fa-regular fa-angle-right'></i>";
-	
+
 			self.append(function () {
 			  return arrowBtn;
 			});
-	
+
 			self.find("button").on("click", function (e) {
 			  e.preventDefault();
 			  let self = $(this);
@@ -196,10 +196,10 @@
 			  self.parent().toggleClass("expanded");
 			  self.parent().parent().addClass("dropdown-opened").siblings().removeClass("dropdown-opened");
 			  self.parent().parent().children(".tp-submenu").slideToggle();
-			  
-	
+
+
 			});
-	
+
 		  });
 	}
 
@@ -207,20 +207,20 @@
 		let navContent = document.querySelector(".tp-main-menu-content").outerHTML;
 		let mobileNavContainer = document.querySelector(".tp-main-menu-mobile");
 		mobileNavContainer.innerHTML = navContent;
-	
-	
+
+
 		let arrow = $(".tp-main-menu-mobile .has-dropdown > a");
-	
+
 		arrow.each(function () {
 			let self = $(this);
 			let arrowBtn = document.createElement("BUTTON");
 			arrowBtn.classList.add("dropdown-toggle-btn");
 			arrowBtn.innerHTML = "<i class='fa-regular fa-angle-right'></i>";
-	
+
 			self.append(function () {
 			  return arrowBtn;
 			});
-	
+
 			self.find("button").on("click", function (e) {
 			  e.preventDefault();
 			  let self = $(this);
@@ -228,10 +228,10 @@
 			  self.parent().toggleClass("expanded");
 			  self.parent().parent().addClass("dropdown-opened").siblings().removeClass("dropdown-opened");
 			  self.parent().parent().children(".tp-submenu").slideToggle();
-			  
-	
+
+
 			});
-	
+
 		  });
 	}
 
@@ -608,15 +608,15 @@
 
 		function tp_set_check(clr){
 			const arr = Array.from(document.querySelectorAll('[data-color]'));
-	
+
 			var a = localStorage.getItem('tp_color_scheme');
 
 			let test =  arr.map(color =>{
 				let datacolor = color.getAttribute('data-color');
-				
+
 				return datacolor;
 			}).filter(color => color == a);
-			
+
 			var arrLength = test.length;
 
 			if(arrLength == 0){
@@ -631,7 +631,7 @@
 
 			var list = $(`[data-color="${a}"]`);
 
-			list.parent().addClass('active').parent().siblings().find('.tp-color-active').removeClass('active')		
+			list.parent().addClass('active').parent().siblings().find('.tp-color-active').removeClass('active')
 		}
 		tp_check_color();
 
@@ -687,7 +687,7 @@
 	var tp_rtl = localStorage.getItem('tp_dir');
 	let rtl_setting = tp_rtl == 'rtl' ? true : false;
 
-	
+
 	////////////////////////////////////////////////////
 	// 14. Slider Activation Area Start
 	$('.tp-slider-active-4').slick({
@@ -707,7 +707,7 @@
 		</svg></button>`,
 		asNavFor: '.tp-slider-nav-active',
 		appendArrows: $('.tp-slider-arrow-4'),
-		
+
 	});
 
 	$('.tp-slider-nav-active').slick({
@@ -1550,7 +1550,7 @@
 			nextEl: ".tp-testimonial-slider-5-button-next",
 			prevEl: ".tp-testimonial-slider-5-button-prev",
 		},
-		
+
 	});
 
 	var slider = new Swiper('.tp-best-banner-slider-active-5', {
@@ -1643,7 +1643,7 @@
 		thumbs: {
 		  swiper: historyNav,
 		},
-		
+
 	  });
 
 
@@ -1710,7 +1710,7 @@
 			$input.change();
 			return false;
 		});
-	
+
 		$('.tp-cart-plus').on('click', function () {
 			var $input = $(this).parent().find('input');
 			$input.val(parseInt($input.val()) + 1);
@@ -1741,42 +1741,42 @@
 		});
 		$("#amount-offcanvas").val("$" + $("#slider-range-offcanvas").slider("values", 0) +
 			" - $" + $("#slider-range-offcanvas").slider("values", 1));
-	
-		
+
+
 
 		$('.tp-checkout-payment-item label').on('click', function () {
 			$(this).siblings('.tp-checkout-payment-desc').slideToggle(400);
-			
+
 		});
-		
+
 
 		$('.tp-color-variation-btn').on('click', function () {
 			$(this).addClass('active').siblings().removeClass('active');
 		});
-		
+
 
 		$('.tp-size-variation-btn').on('click', function () {
 			$(this).addClass('active').siblings().removeClass('active');
 		});
-	
+
 		////////////////////////////////////////////////////
 		// 17. Show Login Toggle Js
 		$('.tp-checkout-login-form-reveal-btn').on('click', function () {
 			$('#tpReturnCustomerLoginForm').slideToggle(400);
 		});
-	
+
 		////////////////////////////////////////////////////
 		// 18. Show Coupon Toggle Js
 		$('.tp-checkout-coupon-form-reveal-btn').on('click', function () {
 			$('#tpCheckoutCouponForm').slideToggle(400);
 		});
-	
+
 		////////////////////////////////////////////////////
 		// 19. Create An Account Toggle Js
 		$('#cbox').on('click', function () {
 			$('#cbox_info').slideToggle(900);
 		});
-	
+
 		////////////////////////////////////////////////////
 		// 20. Shipping Box Toggle Js
 		$('#ship-box').on('click', function () {
@@ -1795,7 +1795,7 @@
 	}
 	tp_ecommerce();
 
-	
+
 
 	////////////////////////////////////////////////////
 	// 17. Counter Js
@@ -1830,29 +1830,29 @@
 				marker.style.left = e.offsetLeft+"px";
 				marker.style.width = e.offsetWidth+"px";
 			}
-				
-		
+
+
 			item.forEach(link => {
 				link.addEventListener('mouseenter', (e)=>{
 					indicator(e.target);
 				});
-				
+
 			});
 
-			
+
 			var activeNav = $('.menu-style-3 > nav > ul > li.active');
 			var activewidth = $(activeNav).width();
 			var activePadLeft = parseFloat($(activeNav).css('padding-left'));
 			var activePadRight = parseFloat($(activeNav).css('padding-right'));
 			var totalWidth = activewidth + activePadLeft + activePadRight;
-			
+
 			var precedingAnchorWidth = anchorWidthCounter();
-		
-		
+
+
 			$(marker).css('display','block');
-			
+
 			$(marker).css('width', totalWidth);
-		
+
 			function anchorWidthCounter() {
 				var anchorWidths = 0;
 				var a;
@@ -1867,17 +1867,17 @@
 					// Break out of the each function.
 					return false;
 					}
-			
+
 					a = $(elem).find('li');
 					aWidth = a.width();
 					aPadLeft = parseFloat(a.css('padding-left'));
 					aPadRight = parseFloat(a.css('padding-right'));
 					aTotalWidth = aWidth + aPadLeft + aPadRight;
-			
+
 					anchorWidths = anchorWidths + aTotalWidth;
-	
+
 				});
-		
+
 				return anchorWidths;
 			}
 		}
@@ -1899,27 +1899,27 @@
 				marker.style.left = e.offsetLeft+"px";
 				marker.style.width = e.offsetWidth+"px";
 			}
-				
-		
+
+
 			item.forEach(link => {
 				link.addEventListener('click', (e)=>{
 					indicator(e.target);
 				});
 			});
-			
+
 			var activeNav = $('.nav-link.active');
 			var activewidth = $(activeNav).width();
 			var activePadLeft = parseFloat($(activeNav).css('padding-left'));
 			var activePadRight = parseFloat($(activeNav).css('padding-right'));
 			var totalWidth = activewidth + activePadLeft + activePadRight;
-			
+
 			var precedingAnchorWidth = anchorWidthCounter();
-		
-		
+
+
 			$(marker).css('display','block');
-			
+
 			$(marker).css('width', totalWidth);
-		
+
 			function anchorWidthCounter() {
 				var anchorWidths = 0;
 				var a;
@@ -1934,17 +1934,17 @@
 					// Break out of the each function.
 					return false;
 					}
-			
+
 					a = $(elem).find('button');
 					aWidth = a.width();
 					aPadLeft = parseFloat(a.css('padding-left'));
 					aPadRight = parseFloat(a.css('padding-right'));
 					aTotalWidth = aWidth + aPadLeft + aPadRight;
-			
+
 					anchorWidths = anchorWidths + aTotalWidth;
-	
+
 				});
-		
+
 				return anchorWidths;
 			}
 		}
@@ -1979,13 +1979,13 @@
 	// 21. Password Toggle Js
 	if($('#password-show-toggle').length > 0){
 		var btn = document.getElementById('password-show-toggle');
-		
+
 		btn.addEventListener('click', function(e){
-			
+
 			var inputType = document.getElementById('tp_password');
 			var openEye = document.getElementById('open-eye');
 			var closeEye = document.getElementById('close-eye');
-	
+
 			if (inputType.type === "password") {
 				inputType.type = "text";
 				openEye.style.display = 'block';
@@ -2017,4 +2017,5 @@
 		});
 	}
 
-})(jQuery);
+};
+// (jQuery);
