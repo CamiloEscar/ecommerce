@@ -6,10 +6,10 @@
         <div class="row">
            <div class="col-xxl-12">
               <div class="breadcrumb__content p-relative z-index-1">
-                 <h3 class="breadcrumb__title">My account</h3>
+                 <h3 class="breadcrumb__title">Mi cuenta</h3>
                  <div class="breadcrumb__list">
                     <span><a href="#">Home</a></span>
-                    <span>My account</span>
+                    <span>Mi cuenta</span>
                  </div>
               </div>
            </div>
@@ -31,8 +31,8 @@
            <div class="col-xl-6 col-lg-8">
               <div class="tp-login-wrapper">
                  <div class="tp-login-top text-center mb-30">
-                    <h3 class="tp-login-title">Login to Shofy.</h3>
-                    <p>Don’t have an account? <span><a href="register.html">Create a free account</a></span></p>
+                    <h3 class="tp-login-title">Login FunkoShop.</h3>
+                    <p>No tienes una cuenta? <span><a href="register.html">Crea una cuenta gratis!</a></span></p>
                  </div>
                  <div class="tp-login-option">
                     <div class="tp-login-social mb-10 d-flex flex-wrap align-items-center justify-content-center">
@@ -54,20 +54,20 @@
                        </div>
                     </div>
                     <div class="tp-login-mail text-center mb-40">
-                       <p>or Sign in with <a href="#">Email</a></p>
+                       <p>O ingresa con tu <a href="#">Email</a></p>
                     </div>
                     <div class="tp-login-input-wrapper">
                        <div class="tp-login-input-box">
                           <div class="tp-login-input">
-                             <input id="email" type="email" placeholder="shofy@mail.com">
+                             <input id="email" type="email" [(ngModel)]="email" placeholder="funko@email.com">
                           </div>
                           <div class="tp-login-input-title">
-                             <label for="email">Your Email</label>
+                             <label for="email">Tu Email</label>
                           </div>
                        </div>
                        <div class="tp-login-input-box">
                           <div class="tp-login-input">
-                             <input id="tp_password" type="password" placeholder="Min. 6 character">
+                             <input id="tp_password" type="password" [(ngModel)]="password" placeholder="Min. 6 caracteres">
                           </div>
                           <div class="tp-login-input-eye" id="password-show-toggle">
                              <span id="open-eye" class="open-eye">
@@ -88,21 +88,21 @@
                              </span>
                           </div>
                           <div class="tp-login-input-title">
-                             <label for="tp_password">Password</label>
+                             <label for="tp_password">Contraseña</label>
                           </div>
                        </div>
                     </div>
                     <div class="tp-login-suggetions d-sm-flex align-items-center justify-content-between mb-20">
                        <div class="tp-login-remeber">
                           <input id="remeber" type="checkbox">
-                          <label for="remeber">Remember me</label>
+                          <label for="remeber">Recordar</label>
                        </div>
                        <div class="tp-login-forgot">
-                          <a href="forgot.html">Forgot Password?</a>
+                          <a href="forgot.html">Olvidaste tu contraseña?</a>
                        </div>
                     </div>
                     <div class="tp-login-bottom">
-                       <a href="profile.html" class="tp-login-btn w-100">Login</a>
+                       <a href="#" onclick="return false" (click)="login()" class="tp-login-btn w-100">Login</a>
                     </div>
                  </div>
               </div>
