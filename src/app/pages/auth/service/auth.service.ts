@@ -22,8 +22,8 @@ export class AuthService {
       this.token = localStorage.getItem('token') || '';
     }
   }
-  login(email: String, password: string) {
-    let URL = URL_SERVICIOS+'/auth/login';
+  login(email: string, password: string) {
+    let URL = URL_SERVICIOS+'/auth/login_ecommerce';
     return this.http.post(URL, { email: email, password: password }).pipe(
       map((resp: any) => {
         console.log(resp);

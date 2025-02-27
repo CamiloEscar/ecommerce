@@ -59,23 +59,39 @@
                     <div class="tp-login-input-wrapper">
                        <div class="tp-login-input-box">
                           <div class="tp-login-input">
-                             <input id="name" type="text" placeholder="Shahnewaz Sakil">
+                             <input id="name" type="text" [(ngModel)]="name" placeholder="Tu nombre">
                           </div>
                           <div class="tp-login-input-title">
-                             <label for="name">Your Name</label>
+                             <label for="name">Nombre</label>
                           </div>
                        </div>
                        <div class="tp-login-input-box">
                           <div class="tp-login-input">
-                             <input id="email" type="email" placeholder="shofy@mail.com">
+                             <input id="surname" type="text" [(ngModel)]="surname" placeholder="Apellido">
                           </div>
                           <div class="tp-login-input-title">
-                             <label for="email">Your Email</label>
+                             <label for="name">Apellido</label>
                           </div>
                        </div>
                        <div class="tp-login-input-box">
                           <div class="tp-login-input">
-                             <input id="tp_password" type="password" placeholder="Min. 6 character">
+                             <input id="phone" type="phone" [(ngModel)]="phone" placeholder="Telefono">
+                          </div>
+                          <div class="tp-login-input-title">
+                             <label for="name">Telefono</label>
+                          </div>
+                       </div>
+                       <div class="tp-login-input-box">
+                          <div class="tp-login-input">
+                             <input id="email" type="email" [(ngModel)]="email" placeholder="shofy@mail.com">
+                          </div>
+                          <div class="tp-login-input-title">
+                             <label for="email">Tu Email</label>
+                          </div>
+                       </div>
+                       <div class="tp-login-input-box">
+                          <div class="tp-login-input">
+                             <input id="tp_password" type="password" [(ngModel)]="password" placeholder="Min. 6 character">
                           </div>
                           <div class="tp-login-input-eye" id="password-show-toggle">
                              <span id="open-eye" class="open-eye">
@@ -107,7 +123,7 @@
                        </div>
                     </div>
                     <div class="tp-login-bottom">
-                       <a href="#" class="tp-login-btn w-100">Sign Up</a>
+                       <a href="#" onclick="return false" (click)="register()" class="tp-login-btn w-100">Sign Up</a>
                     </div>
                  </div>
               </div>

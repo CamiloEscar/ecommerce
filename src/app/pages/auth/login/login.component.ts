@@ -16,7 +16,7 @@ export class LoginComponent {
   password: string = '';
   constructor(
     private toastr: ToastrService,
-    private AuthService: AuthService,
+    private authService: AuthService,
     private router: Router
   ) {}
   ngOnInit(): void {
@@ -24,7 +24,7 @@ export class LoginComponent {
     //Add 'implements OnInit' to the class.
     // this.showSuccess();
 
-    if (this.AuthService.token && this.AuthService.user) {
+    if (this.authService.token && this.authService.user) {
       setTimeout(() => {
         this.router.navigateByUrl('/');
       }, 500);
@@ -33,22 +33,17 @@ export class LoginComponent {
   }
 
   login() {
-    if (!this.email || !this.password) {
-      this.toastr.error(
-        'Validacion',
-        'Por favor ingresar todos los campos correctamente'
-      );
+    if (!this.email.trim() || !this.password.trim()) {
+      this.toastr.error('Por favor ingrese su correo y contraseña', 'Campos requeridos');
       return;
     }
-    this.AuthService.login(this.email, this.password).subscribe(
+    this.authService.login(this.email, this.password).subscribe(
       (resp: any) => {
-        console.log(resp);
-
-        if (resp.error && resp.error.error == 'Unauthorized') {
+        if (resp?.error?.error === 'Unauthorized') {
           this.toastr.error('Error', 'Usuario o contraseña incorrectos');
           return;
         }
-        if (resp == true) {
+        if (resp?.success) { // <-- Asegúrate de que el backend envíe un flag de éxito
           this.toastr.success('Login exitoso', 'Bienvenido');
           setTimeout(() => {
             this.router.navigateByUrl('/');
@@ -56,10 +51,11 @@ export class LoginComponent {
         }
       },
       (error) => {
-        console.log(error);
+        console.error('Error en el login:', error);
         this.toastr.error('Error', 'Error en el login');
       }
     );
+
   }
   showSuccess() {
     this.toastr.success('Hello world!', 'Toastr fun!');
