@@ -50,6 +50,10 @@ export class AuthService {
     let URL = URL_SERVICIOS+'/auth/register';
     return this.http.post(URL, data);
   }
+  verifiedAuth(data: any) {
+    let URL = URL_SERVICIOS+'/auth/verified_auth';
+    return this.http.post(URL, data);
+  }
 
   logout() {
     localStorage.removeItem('token');

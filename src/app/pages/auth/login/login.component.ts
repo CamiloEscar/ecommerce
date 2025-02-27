@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { AuthService } from '../service/auth.service';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 
 @Component({
@@ -14,10 +14,12 @@ import { FormsModule } from '@angular/forms';
 export class LoginComponent {
   email: string = '';
   password: string = '';
+  code_user: string = '';
   constructor(
     private toastr: ToastrService,
     private authService: AuthService,
-    private router: Router
+    public router: Router,
+    public activatedRoute: ActivatedRoute
   ) {}
   ngOnInit(): void {
     //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
@@ -30,20 +32,46 @@ export class LoginComponent {
       }, 500);
       return;
     }
+    this.activatedRoute.queryParams.subscribe((resp: any) => {
+      this.code_user = resp.code;
+    });
+
+    if(this.code_user){
+      let data = {
+        code_user: this.code_user,
+      }
+      this.authService.verifiedAuth(data).subscribe((resp:any) => {
+        console.log(resp)
+        if(resp.message == 403){
+          this.toastr.error('Error', 'El codigo no pertenece a ningun usuario');
+        }
+        if(resp.message == 200){
+          this.toastr.success('Exito', 'El correo ha sido verificado, ingresa a la tienda');
+          setTimeout(() => {
+            this.router.navigateByUrl('/login');
+          }, 500);
+        }
+      })
+    }
   }
 
   login() {
-    if (!this.email.trim() || !this.password.trim()) {
-      this.toastr.error('Por favor ingrese su correo y contraseña', 'Campos requeridos');
+    if (!this.email || !this.password) {
+      this.toastr.error(
+        'Validacion',
+        'Por favor ingresar todos los campos correctamente'
+      );
       return;
     }
     this.authService.login(this.email, this.password).subscribe(
       (resp: any) => {
-        if (resp?.error?.error === 'Unauthorized') {
+        console.log(resp);
+
+        if (resp.error && resp.error.error == 'Unauthorized') {
           this.toastr.error('Error', 'Usuario o contraseña incorrectos');
           return;
         }
-        if (resp?.success) { // <-- Asegúrate de que el backend envíe un flag de éxito
+        if (resp == true) {
           this.toastr.success('Login exitoso', 'Bienvenido');
           setTimeout(() => {
             this.router.navigateByUrl('/');
@@ -51,11 +79,10 @@ export class LoginComponent {
         }
       },
       (error) => {
-        console.error('Error en el login:', error);
+        console.log(error);
         this.toastr.error('Error', 'Error en el login');
       }
     );
-
   }
   showSuccess() {
     this.toastr.success('Hello world!', 'Toastr fun!');
