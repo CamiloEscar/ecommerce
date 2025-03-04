@@ -54,6 +54,24 @@ export class AuthService {
     let URL = URL_SERVICIOS+'/auth/verified_auth';
     return this.http.post(URL, data);
   }
+  verifiedMail(data: any) {
+    let URL = URL_SERVICIOS+'/auth/verified_email';
+    return this.http.post(URL, data);
+  }
+  verifiedCode(data: any) {
+    let URL = URL_SERVICIOS + '/auth/verified_code';
+
+    const headers = {
+      'Authorization': `Bearer ${this.token}`,  // Agregar el token
+      'Content-Type': 'application/json'
+    };
+
+    return this.http.post(URL, data, { headers });
+  }
+  verifiedNewPassword(data: any) {
+    let URL = URL_SERVICIOS+'/auth/new_password';
+    return this.http.post(URL, data);
+  }
 
   logout() {
     localStorage.removeItem('token');
