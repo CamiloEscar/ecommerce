@@ -1977,26 +1977,26 @@ function HOMEINIT($) {
 
 	////////////////////////////////////////////////////
 	// 21. Password Toggle Js
-	if($('#password-show-toggle').length > 0){
-		var btn = document.getElementById('password-show-toggle');
+	// if($('#password-show-toggle').length > 0){
+	// 	var btn = document.getElementById('password-show-toggle');
 
-		btn.addEventListener('click', function(e){
+	// 	btn.addEventListener('click', function(e){
 
-			var inputType = document.getElementById('tp_password');
-			var openEye = document.getElementById('open-eye');
-			var closeEye = document.getElementById('close-eye');
+	// 		var inputType = document.getElementById('tp_password');
+	// 		var openEye = document.getElementById('open-eye');
+	// 		var closeEye = document.getElementById('close-eye');
 
-			if (inputType.type === "password") {
-				inputType.type = "text";
-				openEye.style.display = 'block';
-				closeEye.style.display = 'none';
-			 } else {
-				inputType.type = "password";
-				openEye.style.display = 'none';
-				closeEye.style.display = 'block';
-			 }
-		});
-	}
+	// 		if (inputType.type === "password") {
+	// 			inputType.type = "text";
+	// 			openEye.style.display = 'block';
+	// 			closeEye.style.display = 'none';
+	// 		 } else {
+	// 			inputType.type = "password";
+	// 			openEye.style.display = 'none';
+	// 			closeEye.style.display = 'block';
+	// 		 }
+	// 	});
+	// }
 
 
 	if ($('.infinite-container').length > 0) {
@@ -2019,3 +2019,28 @@ function HOMEINIT($) {
 
 };
 // (jQuery);
+
+
+function password_show_toggle() {
+  	// 21. Password Toggle Js
+	if($('#password-show-toggle').length > 0){
+		var btn = document.getElementById('password-show-toggle');
+
+		btn.addEventListener('click', function(e){
+
+			var inputType = document.getElementById('tp_password');
+			var openEye = document.getElementById('open-eye');
+			var closeEye = document.getElementById('close-eye');
+
+			if (inputType.type === "password") {
+				inputType.type = "text";
+				openEye.style.display = 'block';
+				closeEye.style.display = 'none';
+			 } else {
+				inputType.type = "password";
+				openEye.style.display = 'none';
+				closeEye.style.display = 'block';
+			 }
+		});
+	}
+}

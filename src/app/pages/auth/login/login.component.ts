@@ -1,13 +1,14 @@
 import { Component } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { AuthService } from '../service/auth.service';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 
+declare function password_show_toggle(): any;
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule, RouterModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css',
 })
@@ -35,6 +36,10 @@ export class LoginComponent {
     this.activatedRoute.queryParams.subscribe((resp: any) => {
       this.code_user = resp.code;
     });
+
+    setTimeout(() => {
+      password_show_toggle();
+    }, 50);
 
     if(this.code_user){
       let data = {
