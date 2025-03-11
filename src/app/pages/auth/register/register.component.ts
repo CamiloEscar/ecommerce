@@ -1,8 +1,10 @@
-import { Component } from '@angular/core';
+import { afterNextRender, Component } from '@angular/core';
 import { AuthService } from '../service/auth.service';
 import { Router, RouterModule } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { FormsModule } from '@angular/forms';
+
+//instalacion de ssr colocar afternextrender para renderizarlo luego, por problemas con $
 
 declare function password_show_toggle():any;
 @Component({
@@ -23,7 +25,14 @@ export class RegisterComponent {
     private authService: AuthService,
     private router: Router,
     private toastr: ToastrService // Assuming toastr is a service for displaying toast messages
-  ) {}
+  ) {
+    afterNextRender(() => {
+
+          setTimeout(() => {
+              password_show_toggle();
+            }, 50);
+          })
+  }
 
   register() {
     if (
@@ -52,6 +61,3 @@ export class RegisterComponent {
     });
   }
 }
-setTimeout(() => {
-  password_show_toggle();
-}, 50);

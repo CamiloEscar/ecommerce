@@ -1,9 +1,11 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { afterNextRender, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { catchError, map, of } from 'rxjs';
 import { URL_SERVICIOS } from '../../../config/config';
 
+
+//instalacion de ssr colocar afternextrender para renderizarlo luego
 @Injectable({
   providedIn: 'root',
 })
@@ -11,7 +13,9 @@ export class AuthService {
   token: string = '';
   user: any;
   constructor(public http: HttpClient, public router: Router) {
-    this.initAuth();
+    afterNextRender(() => {
+      this.initAuth();
+    });
   }
 
   initAuth() {
@@ -23,7 +27,7 @@ export class AuthService {
     }
   }
   login(email: string, password: string) {
-    let URL = URL_SERVICIOS+'/auth/login_ecommerce';
+    let URL = URL_SERVICIOS + '/auth/login_ecommerce';
     return this.http.post(URL, { email: email, password: password }).pipe(
       map((resp: any) => {
         console.log(resp);
@@ -47,29 +51,29 @@ export class AuthService {
   }
 
   register(data: any) {
-    let URL = URL_SERVICIOS+'/auth/register';
+    let URL = URL_SERVICIOS + '/auth/register';
     return this.http.post(URL, data);
   }
   verifiedAuth(data: any) {
-    let URL = URL_SERVICIOS+'/auth/verified_auth';
+    let URL = URL_SERVICIOS + '/auth/verified_auth';
     return this.http.post(URL, data);
   }
   verifiedMail(data: any) {
-    let URL = URL_SERVICIOS+'/auth/verified_email';
+    let URL = URL_SERVICIOS + '/auth/verified_email';
     return this.http.post(URL, data);
   }
   verifiedCode(data: any) {
     let URL = URL_SERVICIOS + '/auth/verified_code';
 
     const headers = {
-      'Authorization': `Bearer ${this.token}`,  // Agregar el token
-      'Content-Type': 'application/json'
+      Authorization: `Bearer ${this.token}`, // Agregar el token
+      'Content-Type': 'application/json',
     };
 
     return this.http.post(URL, data, { headers });
   }
   verifiedNewPassword(data: any) {
-    let URL = URL_SERVICIOS+'/auth/new_password';
+    let URL = URL_SERVICIOS + '/auth/new_password';
     return this.http.post(URL, data);
   }
 

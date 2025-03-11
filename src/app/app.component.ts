@@ -1,8 +1,10 @@
-import { Component } from '@angular/core';
+import { afterNextRender, Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { HeaderComponent } from "./shared/header/header.component";
 import { FooterComponent } from "./shared/footer/footer.component";
+
+//instalacion de ssr colocar afternextrender para renderizarlo luego, por problemas con $
 
 declare var $: any;
 declare function HOMEINIT([]): any;
@@ -16,11 +18,14 @@ declare function HOMEINIT([]): any;
 export class AppComponent {
   title = 'ecommerce';
   constructor() {
-    setTimeout(() => {
-      HOMEINIT($);
-    }, 50);
-    $(window).on('load', function () {
-      $("#loading").fadeOut(500);
+    afterNextRender(() => {
+
+      setTimeout(() => {
+        HOMEINIT($);
+      }, 50);
+      $(window).on('load', function () {
+        $("#loading").fadeOut(500);
+      })
     });
   }
 }

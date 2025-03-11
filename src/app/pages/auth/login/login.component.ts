@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { afterNextRender, Component } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { AuthService } from '../service/auth.service';
 import { Router, ActivatedRoute, RouterModule } from '@angular/router';
@@ -21,7 +21,14 @@ export class LoginComponent {
     private authService: AuthService,
     public router: Router,
     public activatedRoute: ActivatedRoute
-  ) {}
+  ) {
+    afterNextRender(() => {
+
+      setTimeout(() => {
+          password_show_toggle();
+        }, 50);
+      })
+  }
   ngOnInit(): void {
     //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
     //Add 'implements OnInit' to the class.
@@ -37,9 +44,7 @@ export class LoginComponent {
       this.code_user = resp.code;
     });
 
-    setTimeout(() => {
-      password_show_toggle();
-    }, 50);
+
 
     if(this.code_user){
       let data = {
