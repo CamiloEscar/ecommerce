@@ -4,6 +4,9 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 
+
+declare var Swiper:any;
+declare var $:any;
 @Component({
   selector: 'app-home',
   standalone: true,
@@ -19,8 +22,42 @@ export class HomeComponent {
   ) {
     afterNextRender(() => {
       this.homeService.home().subscribe((resp:any) => {
+
+
+			var tp_rtl = localStorage.getItem('tp_dir');
+			let rtl_setting = tp_rtl == 'rtl' ? 'right' : 'left';
+
         console.log(resp);
         this.SLIDERS = resp.sliders_principal;
+        setTimeout(() => {
+          var mainSlider = new Swiper('.tp-slider-active', {
+            	slidesPerView: 1,
+            	spaceBetween: 30,
+            	loop: true,
+            	rtl: rtl_setting,
+            	effect : 'fade',
+            	// Navigation arrows
+            	navigation: {
+            		nextEl: ".tp-slider-button-next",
+            		prevEl: ".tp-slider-button-prev",
+            	},
+            	pagination: {
+            		el: ".tp-slider-dot",
+            		clickable: true,
+            		renderBullet: function (index: any, className: any) {
+            			return '<span class="' + className + '">' + '<button>' + (index + 1) + '</button>' + "</span>";
+            		},
+            	},
+            });
+
+            mainSlider.on('slideChangeTransitionStart', function (realIndex: any) {
+                  if ($('.swiper-slide.swiper-slide-active, .tp-slider-item .is-light').hasClass('is-light')) {
+                      $('.tp-slider-variation').addClass('is-light');
+                  } else {
+                      $('.tp-slider-variation').removeClass('is-light');
+                  }
+              });
+        }, 50);
       })
 
     })
@@ -36,12 +73,15 @@ export class HomeComponent {
   }
 
   getLabelSlider(SLIDER: any){
-    return SLIDER.label; // Devuelve directamente el valor
+    var miDiv: any = document.getElementById('label-' + SLIDER.id);
+    miDiv.innerHTML = SLIDER.label;
+    return '';
 }
 
   getSubtitleSlider(SLIDER:any){
-    return SLIDER.subtitle;
+    var miDiv: any = document.getElementById('subtitle-' + SLIDER.id);
+    miDiv.innerHTML = SLIDER.subtitle;
+    return '';
   }
-
 }
 //
