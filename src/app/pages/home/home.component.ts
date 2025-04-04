@@ -16,20 +16,20 @@ declare var $:any;
 })
 export class HomeComponent {
   SLIDERS: any = [];
+  CATEGORIES_RANDOMS: any = [];
 
   constructor(
     public homeService: HomeService,
   ) {
     afterNextRender(() => {
       this.homeService.home().subscribe((resp:any) => {
-
-
-			var tp_rtl = localStorage.getItem('tp_dir');
-			let rtl_setting = tp_rtl == 'rtl' ? 'right' : 'left';
-
         console.log(resp);
         this.SLIDERS = resp.sliders_principal;
+        this.CATEGORIES_RANDOMS = resp.categories_randoms;
+
         setTimeout(() => {
+          var tp_rtl = localStorage.getItem('tp_dir');
+          let rtl_setting = tp_rtl == 'rtl' ? 'right' : 'left';
           var mainSlider = new Swiper('.tp-slider-active', {
             	slidesPerView: 1,
             	spaceBetween: 30,

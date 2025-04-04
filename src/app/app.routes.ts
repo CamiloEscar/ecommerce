@@ -18,7 +18,7 @@ export const routes: Routes = [
         component: RegisterComponent
     },
     {
-        path: 'cambiar-credenciales',
+        path: 'cambiar-contraseña',
         component: ForgotPasswordComponent
     }
 ];
