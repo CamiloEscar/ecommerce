@@ -19,6 +19,10 @@ export class HomeComponent {
 
   CATEGORIES_RANDOMS: any = [];
 
+  PRODUCTS_COMICS: any = [];
+
+  PRODUCTS_CAROUSEL: any = [];
+
   TRENDING_PRODUCTS_NEW: any = [];
   TRENDING_PRODUCTS_FEATURED: any = [];
   TRENDING_PRODUCTS_TOP_SELLER: any = [];
@@ -34,6 +38,8 @@ export class HomeComponent {
         this.TRENDING_PRODUCTS_TOP_SELLER =
           resp.products_trending_top_sellers.data;
         this.BANNER_SECUNDARIOS = resp.sliders_secundario;
+        this.PRODUCTS_COMICS = resp.products_comics.data;
+        this.PRODUCTS_CAROUSEL = resp.products_carousel.data;
 
         setTimeout(() => {
           var tp_rtl = localStorage.getItem('tp_dir');
@@ -80,6 +86,42 @@ export class HomeComponent {
               }
             }
           );
+
+          var slider = new Swiper('.tp-product-arrival-active', {
+            slidesPerView: 4,
+            spaceBetween: 30,
+            loop: false,
+            rtl: rtl_setting,
+            pagination: {
+              el: ".tp-arrival-slider-dot",
+              clickable: true,
+              renderBullet: function (index:any, className:any) {
+                return '<span class="' + className + '">' + '<button>' + (index + 1) + '</button>' + "</span>";
+              },
+            },
+            // Navigation arrows
+            navigation: {
+              nextEl: ".tp-arrival-slider-button-next",
+              prevEl: ".tp-arrival-slider-button-prev",
+            },
+            breakpoints: {
+              '1200': {
+                slidesPerView: 4,
+              },
+              '992': {
+                slidesPerView: 3,
+              },
+              '768': {
+                slidesPerView: 2,
+              },
+              '576': {
+                slidesPerView: 2,
+              },
+              '0': {
+                slidesPerView: 1,
+              },
+            },
+          });
 
           //quiero renderizar las imagenes data-background de los banners secundarios ya que no uso jquery
           $('[data-background]').each(function (this: HTMLElement) {
