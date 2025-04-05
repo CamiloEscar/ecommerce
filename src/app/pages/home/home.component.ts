@@ -32,6 +32,9 @@ export class HomeComponent {
   LASTS_PRODUCTS_FEATURED: any = [];
   LASTS_PRODUCTS_SELLING: any = [];
 
+  DISCOUNT_FLASH: any;
+  DISCOUNT_FLASH_PRODUCT: any = [];
+
   constructor(public homeService: HomeService) {
     afterNextRender(() => {
       this.homeService.home().subscribe((resp: any) => {
@@ -51,6 +54,9 @@ export class HomeComponent {
         this.LASTS_PRODUCTS_DISCOUNTS = resp.products_last_discounts.data;
         this.LASTS_PRODUCTS_FEATURED = resp.products_last_featured.data;
         this.LASTS_PRODUCTS_SELLING = resp.products_last_selling.data;
+
+        this.DISCOUNT_FLASH = resp.discount_flash;
+        this.DISCOUNT_FLASH_PRODUCT = resp.discount_flash_product;
 
         setTimeout(() => {
           var tp_rtl = localStorage.getItem('tp_dir');
@@ -149,6 +155,40 @@ export class HomeComponent {
             },
           });
 
+          var slider = new Swiper('.tp-product-offer-slider-active', {
+            slidesPerView: 4,
+            spaceBetween: 30,
+            loop: true,
+            rtl: rtl_setting,
+            pagination: {
+              el: ".tp-deals-slider-dot",
+              clickable: true,
+              renderBullet: function (index:any, className:any) {
+                return '<span class="' + className + '">' + '<button>' + (index + 1) + '</button>' + "</span>";
+              },
+            },
+            breakpoints: {
+              '1200': {
+                slidesPerView: 3,
+              },
+              '992': {
+                slidesPerView: 2,
+              },
+              '768': {
+                slidesPerView: 2,
+              },
+              '576': {
+                slidesPerView: 1,
+              },
+              '0': {
+                slidesPerView: 1,
+              },
+            },
+          });
+
+          setTimeout(() => {
+            $("[data-countdown]").countdown();
+          },50)
           //quiero renderizar las imagenes data-background de los banners secundarios ya que no uso jquery
           $('[data-background]').each(function (this: HTMLElement) {
             const background = this.getAttribute('data-background');
@@ -179,6 +219,14 @@ export class HomeComponent {
     var miDiv: any = document.getElementById(ID_BANNER);
     miDiv.innerHTML = BANNER.title;
     return '';
+  }
+
+  getNewTotal(DISCOUNT_FLASH_PRODUCT:any, DISCOUNT_FLASH_P:any) {
+    if (DISCOUNT_FLASH_P.type_discount == 1) { //% de descuento
+      return DISCOUNT_FLASH_PRODUCT.price_ars - (DISCOUNT_FLASH_PRODUCT.price_ars * (DISCOUNT_FLASH_P.discount * 0.01));
+    } else { //monto fijo /-pesos -dolares
+      return DISCOUNT_FLASH_PRODUCT.price_ars - DISCOUNT_FLASH_P.discount;
+    }
   }
 }
 //
