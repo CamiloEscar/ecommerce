@@ -2416,132 +2416,55 @@
       <div class="tp-product-banner-slider fix">
         <div class="tp-product-banner-slider-active swiper-container">
           <div class="swiper-wrapper">
-            <div
-              class="tp-product-banner-inner theme-bg p-relative z-index-1 fix swiper-slide"
-            >
-              <h4 class="tp-product-banner-bg-text">tablet</h4>
-              <div class="row align-items-center">
-                <div class="col-xl-6 col-lg-6">
-                  <div class="tp-product-banner-content p-relative z-index-1">
-                    <span class="tp-product-banner-subtitle"
-                      >Tablet Collection 2023</span
-                    >
-                    <h3 class="tp-product-banner-title">
-                      Samsung Galaxy Tab S6, Wifi Tablet
-                    </h3>
-                    <div class="tp-product-banner-price mb-40">
-                      <span class="old-price">$1240.00</span>
-                      <p class="new-price">$975.00</p>
-                    </div>
-                    <div class="tp-product-banner-btn">
-                      <a href="shop.html" class="tp-btn tp-btn-2">Shop now</a>
+
+            @for(BANNER_PRODUCTO of BANNER_PRODUCTOS; track BANNER_PRODUCTO.id) {
+              <div class="tp-product-banner-inner theme-bg p-relative z-index-1 fix swiper-slide"
+              >
+                <h4 class="tp-product-banner-bg-text">tablet</h4>
+                <div class="row align-items-center">
+                  <div class="col-xl-6 col-lg-6">
+                    <div class="tp-product-banner-content p-relative z-index-1">
+                      <span class="tp-product-banner-subtitle"
+                        >{{BANNER_PRODUCTO.label}}</span
+                      >
+                      <h3 class="tp-product-banner-title">
+                        {{BANNER_PRODUCTO.title}}
+                      </h3>
+                      <div class="tp-product-banner-price mb-40">
+                        <span class="old-price">ARS${{BANNER_PRODUCTO.price_original}}</span>
+                        <p class="new-price">ARS${{BANNER_PRODUCTO.price_campaing}}</p>
+                      </div>
+                      @if(BANNER_PRODUCTO.link){
+
+                        <div class="tp-product-banner-btn">
+                          <a [href]="BANNER_PRODUCTO.link" target="_blank" class="tp-btn tp-btn-2">Comprar ahora!</a>
+                        </div>
+                      }
                     </div>
                   </div>
-                </div>
-                <div class="col-xl-6 col-lg-6">
-                  <div class="tp-product-banner-thumb-wrapper p-relative">
-                    <div class="tp-product-banner-thumb-shape">
-                      <span class="tp-product-banner-thumb-gradient"></span>
-                      <img
-                        class="tp-offer-shape"
-                        src="assets/img/banner/banner-slider-offer.png"
-                        alt=""
-                      />
-                    </div>
+                  <div class="col-xl-6 col-lg-6">
+                    <div class="tp-product-banner-thumb-wrapper p-relative">
+                      <div class="tp-product-banner-thumb-shape">
+                        <span class="tp-product-banner-thumb-gradient"></span>
+                        <img
+                          class="tp-offer-shape"
+                          src="assets/img/banner/banner-slider-offer.png"
+                          alt=""
+                        />
+                      </div>
 
-                    <div
-                      class="tp-product-banner-thumb text-end p-relative z-index-1"
-                    >
-                      <img src="assets/img/banner/banner-slider-1.png" alt="" />
+                      <div
+                        class="tp-product-banner-thumb text-end p-relative z-index-1"
+                      >
+                        <img [src]="BANNER_PRODUCTO.imagen"  alt="" />
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
-            <div
-              class="tp-product-banner-inner theme-bg p-relative z-index-1 fix swiper-slide"
-            >
-              <h4 class="tp-product-banner-bg-text">tablet</h4>
-              <div class="row align-items-center">
-                <div class="col-xl-6 col-lg-6">
-                  <div class="tp-product-banner-content p-relative z-index-1">
-                    <span class="tp-product-banner-subtitle"
-                      >Latest Technology Added</span
-                    >
-                    <h3 class="tp-product-banner-title">
-                      Apple iPad 10.2 9th Gen - 2021
-                    </h3>
-                    <div class="tp-product-banner-price mb-40">
-                      <span class="old-price">$1450.00</span>
-                      <p class="new-price">$1199.00</p>
-                    </div>
-                    <div class="tp-product-banner-btn">
-                      <a href="shop.html" class="tp-btn tp-btn-2">Shop now</a>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-xl-6 col-lg-6">
-                  <div class="tp-product-banner-thumb-wrapper p-relative">
-                    <div class="tp-product-banner-thumb-shape">
-                      <span class="tp-product-banner-thumb-gradient"></span>
-                      <img
-                        class="tp-offer-shape"
-                        src="assets/img/banner/banner-slider-offer.png"
-                        alt=""
-                      />
-                    </div>
 
-                    <div
-                      class="tp-product-banner-thumb text-end p-relative z-index-1"
-                    >
-                      <img src="assets/img/banner/banner-slider-2.png" alt="" />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div
-              class="tp-product-banner-inner theme-bg p-relative z-index-1 fix swiper-slide"
-            >
-              <h4 class="tp-product-banner-bg-text">tablet</h4>
-              <div class="row align-items-center">
-                <div class="col-xl-6 col-lg-6">
-                  <div class="tp-product-banner-content p-relative z-index-1">
-                    <span class="tp-product-banner-subtitle"
-                      >Tablet Collection 2023</span
-                    >
-                    <h3 class="tp-product-banner-title">
-                      Microsoft Surface Pro 8, Wifi Included
-                    </h3>
-                    <div class="tp-product-banner-price mb-40">
-                      <span class="old-price">ARS$1249.00</span>
-                      <p class="new-price">ARS$1300.00</p>
-                    </div>
-                    <div class="tp-product-banner-btn">
-                      <a href="shop.html" class="tp-btn tp-btn-2">Shop now</a>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-xl-6 col-lg-6">
-                  <div class="tp-product-banner-thumb-wrapper p-relative">
-                    <div class="tp-product-banner-thumb-shape">
-                      <span class="tp-product-banner-thumb-gradient"></span>
-                      <img
-                        class="tp-offer-shape"
-                        src="assets/img/banner/banner-slider-offer.png"
-                        alt=""
-                      />
-                    </div>
+            }
 
-                    <div
-                      class="tp-product-banner-thumb text-end p-relative z-index-1"
-                    >
-                      <img src="assets/img/banner/banner-slider-3.png" alt="" />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
           </div>
           <div class="tp-product-banner-slider-dot tp-swiper-dot"></div>
         </div>
@@ -2813,7 +2736,7 @@
           <div class="tp-product-sm-list mb-50">
             <div class="tp-section-title-wrapper mb-40">
               <h3 class="tp-section-title tp-section-title-sm">
-                Discount Products
+                Productos con descuento
                 <svg
                   width="64"
                   height="20"
@@ -2833,98 +2756,42 @@
             </div>
 
             <div class="tp-product-sm-wrapper mr-20">
-              <div class="tp-product-sm-item d-flex align-items-center">
-                <div class="tp-product-thumb mr-25 fix">
-                  <a href="product-details.html">
-                    <img src="assets/img/product/sm/product-sm-1.jpg" alt="" />
-                  </a>
-                </div>
-                <div class="tp-product-sm-content">
-                  <div class="tp-product-category">
-                    <a href="shop.html">HD Camera</a>
-                  </div>
-                  <h3 class="tp-product-title">
-                    <a href="product-details.html">
-                      Oppo A96 5G Mobile Phone
+
+              @for(LAST_PRODUCT_DISCOUNT of LASTS_PRODUCTS_DISCOUNTS; track LAST_PRODUCT_DISCOUNT.id) {
+                <div class="tp-product-sm-item d-flex align-items-center">
+                  <div class="tp-product-thumb mr-25 fix">
+                    <a href="#" onclick="return false;">
+                      <img [src]="LAST_PRODUCT_DISCOUNT.imagen" style="width:140px; height: 140px; object-fit:contain" alt="" />
                     </a>
-                  </h3>
-                  <div class="tp-product-rating d-sm-flex align-items-center">
-                    <div class="tp-product-rating-icon">
-                      <span><i class="fa-solid fa-star"></i></span>
-                      <span><i class="fa-solid fa-star"></i></span>
-                      <span><i class="fa-solid fa-star"></i></span>
-                      <span><i class="fa-solid fa-star"></i></span>
-                      <span><i class="fa-solid fa-star"></i></span>
-                    </div>
-                    <div class="tp-product-rating-text">
-                      <span>(4 Review)</span>
-                    </div>
                   </div>
-                  <div class="tp-product-price-wrapper">
-                    <span class="tp-product-price">$97.00</span>
+                  <div class="tp-product-sm-content">
+                    <div class="tp-product-category">
+                      <a href="#" onclick="return false;">{{LAST_PRODUCT_DISCOUNT.brand.name}}</a>
+                    </div>
+                    <h3 class="tp-product-title">
+                      <a href="#" onclick="return false;">
+                        {{LAST_PRODUCT_DISCOUNT.title}}
+                      </a>
+                    </h3>
+                    <div class="tp-product-rating d-sm-flex align-items-center">
+                      <div class="tp-product-rating-icon">
+                        <span><i class="fa-solid fa-star"></i></span>
+                        <span><i class="fa-solid fa-star"></i></span>
+                        <span><i class="fa-solid fa-star"></i></span>
+                        <span><i class="fa-solid fa-star"></i></span>
+                        <span><i class="fa-solid fa-star"></i></span>
+                      </div>
+                      <div class="tp-product-rating-text">
+                        <span>(4 Review)</span>
+                      </div>
+                    </div>
+                    <div class="tp-product-price-wrapper">
+                      <span class="tp-product-price">ARS${{LAST_PRODUCT_DISCOUNT.price_ars}}</span>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div class="tp-product-sm-item d-flex align-items-center">
-                <div class="tp-product-thumb mr-25 fix">
-                  <a href="product-details.html">
-                    <img src="assets/img/product/sm/product-sm-2.jpg" alt="" />
-                  </a>
-                </div>
-                <div class="tp-product-sm-content">
-                  <div class="tp-product-category">
-                    <a href="shop.html">Iron Man</a>
-                  </div>
-                  <h3 class="tp-product-title">
-                    <a href="product-details.html">Single Stem Vase</a>
-                  </h3>
-                  <div class="tp-product-rating d-sm-flex align-items-center">
-                    <div class="tp-product-rating-icon">
-                      <span><i class="fa-solid fa-star"></i></span>
-                      <span><i class="fa-solid fa-star"></i></span>
-                      <span><i class="fa-solid fa-star"></i></span>
-                      <span><i class="fa-solid fa-star"></i></span>
-                      <span><i class="fa-solid fa-star"></i></span>
-                    </div>
-                    <div class="tp-product-rating-text">
-                      <span>(5 Review)</span>
-                    </div>
-                  </div>
-                  <div class="tp-product-price-wrapper">
-                    <span class="tp-product-price">$97.00</span>
-                  </div>
-                </div>
-              </div>
-              <div class="tp-product-sm-item d-flex align-items-center">
-                <div class="tp-product-thumb mr-25 fix">
-                  <a href="product-details.html">
-                    <img src="assets/img/product/sm/product-sm-3.jpg" alt="" />
-                  </a>
-                </div>
-                <div class="tp-product-sm-content">
-                  <div class="tp-product-category">
-                    <a href="shop.html">Speaker</a>
-                  </div>
-                  <h3 class="tp-product-title">
-                    <a href="product-details.html">Echo Dot smart speaker</a>
-                  </h3>
-                  <div class="tp-product-rating d-sm-flex align-items-center">
-                    <div class="tp-product-rating-icon">
-                      <span><i class="fa-solid fa-star"></i></span>
-                      <span><i class="fa-solid fa-star"></i></span>
-                      <span><i class="fa-solid fa-star"></i></span>
-                      <span><i class="fa-solid fa-star"></i></span>
-                      <span><i class="fa-solid fa-star"></i></span>
-                    </div>
-                    <div class="tp-product-rating-text">
-                      <span>(10 Review)</span>
-                    </div>
-                  </div>
-                  <div class="tp-product-price-wrapper">
-                    <span class="tp-product-price">$142.00</span>
-                  </div>
-                </div>
-              </div>
+              }
+
             </div>
           </div>
         </div>
@@ -2932,7 +2799,7 @@
           <div class="tp-product-sm-list mb-50">
             <div class="tp-section-title-wrapper mb-40">
               <h3 class="tp-section-title tp-section-title-sm">
-                Featured Products
+                Productos destacados
                 <svg
                   width="64"
                   height="20"
@@ -2952,96 +2819,41 @@
             </div>
 
             <div class="tp-product-sm-wrapper mr-20">
-              <div class="tp-product-sm-item d-flex align-items-center">
-                <div class="tp-product-thumb mr-25 fix">
-                  <a href="product-details.html">
-                    <img src="assets/img/product/sm/product-sm-4.jpg" alt="" />
-                  </a>
-                </div>
-                <div class="tp-product-sm-content">
-                  <div class="tp-product-category">
-                    <a href="shop.html">Motherboard</a>
+              @for(LAST_PRODUCT_FEATURED of LASTS_PRODUCTS_FEATURED; track LAST_PRODUCT_FEATURED.id) {
+                <div class="tp-product-sm-item d-flex align-items-center">
+                  <div class="tp-product-thumb mr-25 fix">
+                    <a href="#" onclick="return false;">
+                      <img [src]="LAST_PRODUCT_FEATURED.imagen" style="width:140px; height: 140px; object-fit:contain" alt="" />
+                    </a>
                   </div>
-                  <h3 class="tp-product-title">
-                    <a href="product-details.html">CPU Cooler 6 Heat Pipes</a>
-                  </h3>
-                  <div class="tp-product-rating d-sm-flex align-items-center">
-                    <div class="tp-product-rating-icon">
-                      <span><i class="fa-solid fa-star"></i></span>
-                      <span><i class="fa-solid fa-star"></i></span>
-                      <span><i class="fa-solid fa-star"></i></span>
-                      <span><i class="fa-solid fa-star"></i></span>
-                      <span><i class="fa-solid fa-star"></i></span>
+                  <div class="tp-product-sm-content">
+                    <div class="tp-product-category">
+                      <a href="#" onclick="return false;">{{LAST_PRODUCT_FEATURED.brand.name}}</a>
                     </div>
-                    <div class="tp-product-rating-text">
-                      <span>(4 Review)</span>
+                    <h3 class="tp-product-title">
+                      <a href="#" onclick="return false;">
+                        {{LAST_PRODUCT_FEATURED.title}}
+                      </a>
+                    </h3>
+                    <div class="tp-product-rating d-sm-flex align-items-center">
+                      <div class="tp-product-rating-icon">
+                        <span><i class="fa-solid fa-star"></i></span>
+                        <span><i class="fa-solid fa-star"></i></span>
+                        <span><i class="fa-solid fa-star"></i></span>
+                        <span><i class="fa-solid fa-star"></i></span>
+                        <span><i class="fa-solid fa-star"></i></span>
+                      </div>
+                      <div class="tp-product-rating-text">
+                        <span>(4 Review)</span>
+                      </div>
                     </div>
-                  </div>
-                  <div class="tp-product-price-wrapper">
-                    <span class="tp-product-price">$12.00</span>
-                  </div>
-                </div>
-              </div>
-              <div class="tp-product-sm-item d-flex align-items-center">
-                <div class="tp-product-thumb mr-25 fix">
-                  <a href="product-details.html">
-                    <img src="assets/img/product/sm/product-sm-5.jpg" alt="" />
-                  </a>
-                </div>
-                <div class="tp-product-sm-content">
-                  <div class="tp-product-category">
-                    <a href="shop.html">Digital Camera</a>
-                  </div>
-                  <h3 class="tp-product-title">
-                    <a href="product-details.html">Photography Camera</a>
-                  </h3>
-                  <div class="tp-product-rating d-sm-flex align-items-center">
-                    <div class="tp-product-rating-icon">
-                      <span><i class="fa-solid fa-star"></i></span>
-                      <span><i class="fa-solid fa-star"></i></span>
-                      <span><i class="fa-solid fa-star"></i></span>
-                      <span><i class="fa-solid fa-star"></i></span>
-                      <span><i class="fa-solid fa-star"></i></span>
-                    </div>
-                    <div class="tp-product-rating-text">
-                      <span>(9 Review)</span>
+                    <div class="tp-product-price-wrapper">
+                      <span class="tp-product-price">ARS${{LAST_PRODUCT_FEATURED.price_ars}}</span>
                     </div>
                   </div>
-                  <div class="tp-product-price-wrapper">
-                    <span class="tp-product-price">$84.00</span>
-                  </div>
                 </div>
-              </div>
-              <div class="tp-product-sm-item d-flex align-items-center">
-                <div class="tp-product-thumb mr-25 fix">
-                  <a href="product-details.html">
-                    <img src="assets/img/product/sm/product-sm-6.jpg" alt="" />
-                  </a>
-                </div>
-                <div class="tp-product-sm-content">
-                  <div class="tp-product-category">
-                    <a href="shop.html">Smart Watches</a>
-                  </div>
-                  <h3 class="tp-product-title">
-                    <a href="product-details.html">Real-Time Weather.</a>
-                  </h3>
-                  <div class="tp-product-rating d-sm-flex align-items-center">
-                    <div class="tp-product-rating-icon">
-                      <span><i class="fa-solid fa-star"></i></span>
-                      <span><i class="fa-solid fa-star"></i></span>
-                      <span><i class="fa-solid fa-star"></i></span>
-                      <span><i class="fa-solid fa-star"></i></span>
-                      <span><i class="fa-solid fa-star"></i></span>
-                    </div>
-                    <div class="tp-product-rating-text">
-                      <span>(6 Review)</span>
-                    </div>
-                  </div>
-                  <div class="tp-product-price-wrapper">
-                    <span class="tp-product-price">$120.00</span>
-                  </div>
-                </div>
-              </div>
+              }
+
             </div>
           </div>
         </div>
@@ -3049,7 +2861,7 @@
           <div class="tp-product-sm-list mb-50">
             <div class="tp-section-title-wrapper mb-40">
               <h3 class="tp-section-title tp-section-title-sm">
-                Selling Products
+                Productos mas vendidos!
                 <svg
                   width="64"
                   height="20"
@@ -3069,98 +2881,42 @@
             </div>
 
             <div class="tp-product-sm-wrapper mr-20">
-              <div class="tp-product-sm-item d-flex align-items-center">
-                <div class="tp-product-thumb mr-25 fix">
-                  <a href="product-details.html">
-                    <img src="assets/img/product/sm/product-sm-7.jpg" alt="" />
-                  </a>
-                </div>
-                <div class="tp-product-sm-content">
-                  <div class="tp-product-category">
-                    <a href="shop.html">Usb Flash Disk</a>
+
+              @for(LAST_PRODUCT_SELLING of LASTS_PRODUCTS_SELLING; track LAST_PRODUCT_SELLING.id) {
+                <div class="tp-product-sm-item d-flex align-items-center">
+                  <div class="tp-product-thumb mr-25 fix">
+                    <a href="#" onclick="return false;">
+                      <img [src]="LAST_PRODUCT_SELLING.imagen" style="width:140px; height: 140px; object-fit:contain" alt="" />
+                    </a>
                   </div>
-                  <h3 class="tp-product-title">
-                    <a href="product-details.html"
-                      >Metal Usb 3.0 Pen Drive 2TB</a
-                    >
-                  </h3>
-                  <div class="tp-product-rating d-sm-flex align-items-center">
-                    <div class="tp-product-rating-icon">
-                      <span><i class="fa-solid fa-star"></i></span>
-                      <span><i class="fa-solid fa-star"></i></span>
-                      <span><i class="fa-solid fa-star"></i></span>
-                      <span><i class="fa-solid fa-star"></i></span>
-                      <span><i class="fa-solid fa-star"></i></span>
+                  <div class="tp-product-sm-content">
+                    <div class="tp-product-category">
+                      <a href="#" onclick="return false;">{{LAST_PRODUCT_SELLING.brand.name}}</a>
                     </div>
-                    <div class="tp-product-rating-text">
-                      <span>(4 Review)</span>
+                    <h3 class="tp-product-title">
+                      <a href="#" onclick="return false;">
+                        {{LAST_PRODUCT_SELLING.title}}
+                      </a>
+                    </h3>
+                    <div class="tp-product-rating d-sm-flex align-items-center">
+                      <div class="tp-product-rating-icon">
+                        <span><i class="fa-solid fa-star"></i></span>
+                        <span><i class="fa-solid fa-star"></i></span>
+                        <span><i class="fa-solid fa-star"></i></span>
+                        <span><i class="fa-solid fa-star"></i></span>
+                        <span><i class="fa-solid fa-star"></i></span>
+                      </div>
+                      <div class="tp-product-rating-text">
+                        <span>(4 Review)</span>
+                      </div>
                     </div>
-                  </div>
-                  <div class="tp-product-price-wrapper">
-                    <span class="tp-product-price">$102.00</span>
-                  </div>
-                </div>
-              </div>
-              <div class="tp-product-sm-item d-flex align-items-center">
-                <div class="tp-product-thumb mr-25 fix">
-                  <a href="product-details.html">
-                    <img src="assets/img/product/sm/product-sm-8.jpg" alt="" />
-                  </a>
-                </div>
-                <div class="tp-product-sm-content">
-                  <div class="tp-product-category">
-                    <a href="shop.html">HawkEye</a>
-                  </div>
-                  <h3 class="tp-product-title">
-                    <a href="product-details.html">HawkEye Fishtrax</a>
-                  </h3>
-                  <div class="tp-product-rating d-sm-flex align-items-center">
-                    <div class="tp-product-rating-icon">
-                      <span><i class="fa-solid fa-star"></i></span>
-                      <span><i class="fa-solid fa-star"></i></span>
-                      <span><i class="fa-solid fa-star"></i></span>
-                      <span><i class="fa-solid fa-star"></i></span>
-                      <span><i class="fa-solid fa-star"></i></span>
-                    </div>
-                    <div class="tp-product-rating-text">
-                      <span>(2 Review)</span>
+                    <div class="tp-product-price-wrapper">
+                      <span class="tp-product-price">ARS${{LAST_PRODUCT_SELLING.price_ars}}</span>
                     </div>
                   </div>
-                  <div class="tp-product-price-wrapper">
-                    <span class="tp-product-price">$59.00</span>
-                  </div>
                 </div>
-              </div>
-              <div class="tp-product-sm-item d-flex align-items-center">
-                <div class="tp-product-thumb mr-25 fix">
-                  <a href="product-details.html">
-                    <img src="assets/img/product/sm/product-sm-9.jpg" alt="" />
-                  </a>
-                </div>
-                <div class="tp-product-sm-content">
-                  <div class="tp-product-category">
-                    <a href="shop.html">Tablet</a>
-                  </div>
-                  <h3 class="tp-product-title">
-                    <a href="product-details.html">Galaxy Tab S6 Android</a>
-                  </h3>
-                  <div class="tp-product-rating d-sm-flex align-items-center">
-                    <div class="tp-product-rating-icon">
-                      <span><i class="fa-solid fa-star"></i></span>
-                      <span><i class="fa-solid fa-star"></i></span>
-                      <span><i class="fa-solid fa-star"></i></span>
-                      <span><i class="fa-solid fa-star"></i></span>
-                      <span><i class="fa-solid fa-star"></i></span>
-                    </div>
-                    <div class="tp-product-rating-text">
-                      <span>(12 Review)</span>
-                    </div>
-                  </div>
-                  <div class="tp-product-price-wrapper">
-                    <span class="tp-product-price">$356.00</span>
-                  </div>
-                </div>
-              </div>
+              }
+
             </div>
           </div>
         </div>
@@ -3252,7 +3008,7 @@
 
                     <div class="tp-blog-tag">
                       <span><i class="fa-light fa-tag"></i></span>
-                      <a href="#">Tablet,</a>
+                      <a href="#">Tablet</a>
                       <a href="#">News</a>
                     </div>
 

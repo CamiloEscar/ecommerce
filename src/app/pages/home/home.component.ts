@@ -16,6 +16,7 @@ declare var $: any;
 export class HomeComponent {
   SLIDERS: any = [];
   BANNER_SECUNDARIOS: any = [];
+  BANNER_PRODUCTOS: any = [];
 
   CATEGORIES_RANDOMS: any = [];
 
@@ -26,6 +27,10 @@ export class HomeComponent {
   TRENDING_PRODUCTS_NEW: any = [];
   TRENDING_PRODUCTS_FEATURED: any = [];
   TRENDING_PRODUCTS_TOP_SELLER: any = [];
+
+  LASTS_PRODUCTS_DISCOUNTS: any = [];
+  LASTS_PRODUCTS_FEATURED: any = [];
+  LASTS_PRODUCTS_SELLING: any = [];
 
   constructor(public homeService: HomeService) {
     afterNextRender(() => {
@@ -38,8 +43,14 @@ export class HomeComponent {
         this.TRENDING_PRODUCTS_TOP_SELLER =
           resp.products_trending_top_sellers.data;
         this.BANNER_SECUNDARIOS = resp.sliders_secundario;
+        this.BANNER_PRODUCTOS = resp.sliders_productos;
+
         this.PRODUCTS_COMICS = resp.products_comics.data;
         this.PRODUCTS_CAROUSEL = resp.products_carousel.data;
+
+        this.LASTS_PRODUCTS_DISCOUNTS = resp.products_last_discounts.data;
+        this.LASTS_PRODUCTS_FEATURED = resp.products_last_featured.data;
+        this.LASTS_PRODUCTS_SELLING = resp.products_last_selling.data;
 
         setTimeout(() => {
           var tp_rtl = localStorage.getItem('tp_dir');
@@ -86,6 +97,21 @@ export class HomeComponent {
               }
             }
           );
+
+          var slider = new Swiper('.tp-product-banner-slider-active', {
+            slidesPerView: 1,
+            spaceBetween: 0,
+            loop: true,
+            effect: 'fade',
+            pagination: {
+              el: ".tp-product-banner-slider-dot",
+              clickable: true,
+              renderBullet: function (index:any, className:any) {
+                return '<span class="' + className + '">' + '<button>' + (index + 1) + '</button>' + "</span>";
+              },
+            },
+
+          });
 
           var slider = new Swiper('.tp-product-arrival-active', {
             slidesPerView: 4,
