@@ -17,6 +17,10 @@ declare var $:any;
 export class HomeComponent {
   SLIDERS: any = [];
   CATEGORIES_RANDOMS: any = [];
+  TRENDING_PRODUCTS_NEW: any = [];
+  TRENDING_PRODUCTS_FEATURED: any = [];
+  TRENDING_PRODUCTS_TOP_SELLER: any = [];
+
 
   constructor(
     public homeService: HomeService,
@@ -69,6 +73,9 @@ export class HomeComponent {
     this.homeService.home().subscribe((resp: any) => {
       console.log(resp);
       this.SLIDERS = resp.sliders_principal;
+      this.TRENDING_PRODUCTS_NEW = resp.products_trending_new.data;
+      this.TRENDING_PRODUCTS_FEATURED = resp.products_trending_featured.data;
+      this.TRENDING_PRODUCTS_TOP_SELLER = resp.products_trending_top_sellers.data;
     });
   }
 

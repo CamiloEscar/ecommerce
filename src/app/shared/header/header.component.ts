@@ -18,7 +18,7 @@ export class HeaderComponent {
 
   constructor(public homeService: HomeService) {
     afterNextRender(() => {
-      this.homeService.home().subscribe((resp: any) => {
+      this.homeService.menus().subscribe((resp: any) => {
         console.log(resp);
         this.categories_menus = resp.categories_menus;
       });
