@@ -35,6 +35,9 @@ export class HomeComponent {
   DISCOUNT_FLASH: any;
   DISCOUNT_FLASH_PRODUCT: any = [];
 
+  //para ver el submeno de categorias starwars
+  categories_menus: any = [];
+
   constructor(public homeService: HomeService) {
     afterNextRender(() => {
       this.homeService.home().subscribe((resp: any) => {
@@ -199,6 +202,10 @@ export class HomeComponent {
         }, 50);
       });
     });
+    // this.homeService.menus().subscribe((resp: any) => {
+    //   console.log(resp);
+    //   this.categories_menus = resp.categories_menus;
+    // });
   }
 
   ngOnInit(): void {}
@@ -223,10 +230,17 @@ export class HomeComponent {
 
   getNewTotal(DISCOUNT_FLASH_PRODUCT:any, DISCOUNT_FLASH_P:any) {
     if (DISCOUNT_FLASH_P.type_discount == 1) { //% de descuento
-      return DISCOUNT_FLASH_PRODUCT.price_ars - (DISCOUNT_FLASH_PRODUCT.price_ars * (DISCOUNT_FLASH_P.discount * 0.01));
+      return (DISCOUNT_FLASH_PRODUCT.price_ars - (DISCOUNT_FLASH_PRODUCT.price_ars * (DISCOUNT_FLASH_P.discount * 0.01))).toFixed(2);
     } else { //monto fijo /-pesos -dolares
-      return DISCOUNT_FLASH_PRODUCT.price_ars - DISCOUNT_FLASH_P.discount;
+      return (DISCOUNT_FLASH_PRODUCT.price_ars - DISCOUNT_FLASH_P.discount).toFixed(2);
     }
+  }
+
+  getTotalPriceProduct(DISCOUNT_FLASH_PRODUCT:any) {
+    if(DISCOUNT_FLASH_PRODUCT.discount_g) {
+      return this.getNewTotal(DISCOUNT_FLASH_PRODUCT, DISCOUNT_FLASH_PRODUCT.discount_g);
+    }
+      return DISCOUNT_FLASH_PRODUCT.price_ars;
   }
 }
 //

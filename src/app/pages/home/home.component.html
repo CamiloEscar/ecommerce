@@ -503,21 +503,32 @@
                 tabindex="0"
               >
                 <div class="row">
-                  @for(product of TRENDING_PRODUCTS_NEW;track product.id) {
+                  @for(TRENDING_PRODUCT of TRENDING_PRODUCTS_NEW;track TRENDING_PRODUCT.id) {
                     <div class="col-xl-3 col-lg-3 col-sm-6">
                       <div class="tp-product-item p-relative transition-3 mb-25">
                         <div class="tp-product-thumb p-relative fix m-img">
                           <a href="#" onclick="return false;">
                             <img
-                              [src]="product.imagen" style="width: 304px; height:261px; object-fit:contain"
+                              [src]="TRENDING_PRODUCT.imagen" style="width: 304px; height:261px; object-fit:contain"
                               alt="product-electronic"
                             />
                           </a>
 
                           <!-- product badge -->
-                          <!-- <div class="tp-product-badge">
-                            <span class="product-hot">Hot</span>
-                          </div> -->
+                           @if(TRENDING_PRODUCT.discount_g){
+                             <div class="tp-product-badge">
+                              @if(TRENDING_PRODUCT.discount_g.type_discount == 1){
+
+                                <span class="product-hot">- {{TRENDING_PRODUCT.discount_g.discount}} %</span>
+                              }
+                              @if(TRENDING_PRODUCT.discount_g.type_discount == 2){
+
+                                <span class="product-hot">- {{TRENDING_PRODUCT.discount_g.discount}} Pesos</span>
+                              }
+
+                             </div>
+
+                           }
 
                           <!-- product action -->
                           <div class="tp-product-action">
@@ -646,11 +657,11 @@
                         <!-- product content -->
                         <div class="tp-product-content">
                           <div class="tp-product-category">
-                            <a href="#" onclick="return false;">{{product.brand.name}}</a>
+                            <a href="#" onclick="return false;">{{TRENDING_PRODUCT.brand.name}}</a>
                           </div>
                           <h3 class="tp-product-title">
                             <a href="#" onclick="return false;">
-                              {{product.title}}
+                              {{TRENDING_PRODUCT.title}}
                             </a>
                           </h3>
                           <div
@@ -670,17 +681,15 @@
                             </div>
                           </div>
                           <div class="tp-product-price-wrapper">
-                            <!-- <span class="tp-product-price old-price"
-                              >$320.00</span
-                            > -->
-                            <span class="tp-product-price new-price"
-                              >ARS${{product.price_ars}}</span
+                            @if(TRENDING_PRODUCT.discount_g){
+                              <span class="tp-product-price old-price mx-1">${{TRENDING_PRODUCT.price_ars}}</span>
+                            }
+                            <span class="tp-product-price new-price mx-1"> ${{getTotalPriceProduct(TRENDING_PRODUCT)}}</span
                             >
                           </div>
                         </div>
                       </div>
                     </div>
-
                   }
                 </div>
               </div>
@@ -704,9 +713,20 @@
                         </a>
 
                         <!-- product badge -->
-                        <!-- <div class="tp-product-badge">
-                          <span class="product-hot">Hot</span>
-                        </div> -->
+                        @if(product.discount_g){
+                          <div class="tp-product-badge">
+                           @if(product.discount_g.type_discount == 1){
+
+                             <span class="product-hot">- {{product.discount_g.discount}} %</span>
+                           }
+                           @if(product.discount_g.type_discount == 2){
+
+                             <span class="product-hot">- {{product.discount_g.discount}} Pesos</span>
+                           }
+
+                          </div>
+
+                        }
 
                         <!-- product action -->
                         <div class="tp-product-action">
@@ -859,12 +879,11 @@
                           </div>
                         </div>
                         <div class="tp-product-price-wrapper">
-                          <!-- <span class="tp-product-price old-price"
-                            >$320.00</span
-                          > -->
-                          <span class="tp-product-price new-price"
-                            >ARS${{product.price_ars}}</span
-                          >
+                          @if(product.discount_g){
+                            <span class="tp-product-price old-price mx-1">${{product.price_ars}}</span>
+                          }
+                          <span class="tp-product-price new-price mx-1"> ${{getTotalPriceProduct(product)}}</span
+                            >
                         </div>
                       </div>
                     </div>
@@ -893,9 +912,20 @@
                         </a>
 
                         <!-- product badge -->
-                        <!-- <div class="tp-product-badge">
-                          <span class="product-hot">Hot</span>
-                        </div> -->
+                        @if(product.discount_g){
+                          <div class="tp-product-badge">
+                           @if(product.discount_g.type_discount == 1){
+
+                             <span class="product-hot">- {{product.discount_g.discount}} %</span>
+                           }
+                           @if(product.discount_g.type_discount == 2){
+
+                             <span class="product-hot">- {{product.discount_g.discount}} Pesos</span>
+                           }
+
+                          </div>
+
+                        }
 
                         <!-- product action -->
                         <div class="tp-product-action">
@@ -1048,12 +1078,11 @@
                           </div>
                         </div>
                         <div class="tp-product-price-wrapper">
-                          <!-- <span class="tp-product-price old-price"
-                            >$320.00</span
-                          > -->
-                          <span class="tp-product-price new-price"
-                            >ARS${{product.price_ars}}</span
-                          >
+                          @if(product.discount_g){
+                            <span class="tp-product-price old-price mx-1">${{product.price_ars}}</span>
+                          }
+                          <span class="tp-product-price new-price mx-1"> ${{getTotalPriceProduct(product)}}</span
+                            >
                         </div>
                       </div>
                     </div>
@@ -1449,8 +1478,8 @@
                         </div>
                       </div>
                       <div class="tp-product-price-wrapper">
-                        <span class="tp-product-price old-price">ARS ${{DISCOUNT_FLASH_PRODUCT.price_ars}}</span>
-                        <span class="tp-product-price new-price">{{getNewTotal(DISCOUNT_FLASH_PRODUCT, DISCOUNT_FLASH)}}</span>
+                        <span class="tp-product-price old-price mx-1">ARS ${{DISCOUNT_FLASH_PRODUCT.price_ars}}</span>
+                        <span class="tp-product-price new-price mx-1">{{getNewTotal(DISCOUNT_FLASH_PRODUCT, DISCOUNT_FLASH)}}</span>
                       </div>
 
                       <div
@@ -1492,8 +1521,8 @@
                 <img src="assets/img/product/gadget/gadget-girl.png" alt="" />
               </div>
               <h3 class="tp-product-gadget-categories-title">
-                Electronics <br />
-                Gadgets
+                Star Wars <br />
+                Funkos
               </h3>
 
               <div class="tp-product-gadget-categories-list">
@@ -1504,6 +1533,32 @@
                   <li><a href="shop-category.html">Thermometer</a></li>
                   <li><a href="shop-category.html">Backpack</a></li>
                   <li><a href="shop-category.html">Headphones</a></li>
+                  <!-- cambiar a star wars -->
+                  @for(categorie of categories_menus.categories; track categorie.id){
+                    <li>
+                      <a href="#" onclick="return false;" class="mega-menu-title">{{categorie.name}}</a>
+                      <ul>
+                        <li *ngIf="categorie.imagen">
+                          <a href="#" onclick="return false;">
+                            <img [src]="categorie.imagen" alt="" style="width: 247px; height:149px; object-fit: cover;">
+                          </a>
+                        </li>
+                        @for(subcategorie of categorie.subcategories; track subcategorie.id){
+                          <li>
+                            <a href="#" onclick="return false;">{{subcategorie.name}}</a>
+                            <!-- Mostrar tercera categoría aquí si existe -->
+                            <ul *ngIf="subcategorie.subsubcategories?.length">
+                              @for(subsub of subcategorie.subsubcategories; track subsub.id){
+                                <li>
+                                  <a href="#" onclick="return false;">{{subsub.name}}</a>
+                                </li>
+                              }
+                            </ul>
+                          </li>
+                        }
+                      </ul>
+                    </li>
+                  }
                 </ul>
               </div>
 
@@ -1596,9 +1651,20 @@
                       </a>
 
                       <!-- product badge -->
-                      <!-- <div class="tp-product-badge">
-                        <span class="product-offer">-25%</span>
-                      </div> -->
+                      @if(PRODUCT_COMIC.discount_g){
+                        <div class="tp-product-badge">
+                         @if(PRODUCT_COMIC.discount_g.type_discount == 1){
+
+                           <span class="product-hot">- {{PRODUCT_COMIC.discount_g.discount}} %</span>
+                         }
+                         @if(PRODUCT_COMIC.discount_g.type_discount == 2){
+
+                           <span class="product-hot">- {{PRODUCT_COMIC.discount_g.discount}} Pesos</span>
+                         }
+
+                        </div>
+
+                      }
 
                       <!-- product action -->
                       <div class="tp-product-action">
@@ -1744,7 +1810,11 @@
                         </div>
                       </div>
                       <div class="tp-product-price-wrapper">
-                        <span class="tp-product-price">ARS${{PRODUCT_COMIC.price_ars}}</span>
+                        @if(PRODUCT_COMIC.discount_g){
+                          <span class="tp-product-price old-price mx-1">ARS${{PRODUCT_COMIC.price_ars}}</span>
+                        }
+                        <span class="tp-product-price new-price mx-1"> ${{getTotalPriceProduct(PRODUCT_COMIC)}}</span
+                          >
                       </div>
                     </div>
                   </div>
@@ -1779,8 +1849,8 @@
                         {{BANNER_PRODUCTO.title}}
                       </h3>
                       <div class="tp-product-banner-price mb-40">
-                        <span class="old-price">ARS${{BANNER_PRODUCTO.price_original}}</span>
-                        <p class="new-price">ARS${{BANNER_PRODUCTO.price_campaing}}</p>
+                        <span class="old-price mx-1">ARS${{BANNER_PRODUCTO.price_original}}</span>
+                        <p class="new-price mx-1">ARS${{BANNER_PRODUCTO.price_campaing}}</p>
                       </div>
                       @if(BANNER_PRODUCTO.link){
 
@@ -1911,9 +1981,20 @@
                       </a>
 
                       <!-- product badge -->
-                      <!-- <div class="tp-product-badge">
-                        <span class="product-trending">Trending</span>
-                      </div> -->
+                      @if(PRODUCT_CAROUSEL.discount_g){
+                        <div class="tp-product-badge">
+                         @if(PRODUCT_CAROUSEL.discount_g.type_discount == 1){
+
+                           <span class="product-hot">- {{PRODUCT_CAROUSEL.discount_g.discount}} %</span>
+                         }
+                         @if(PRODUCT_CAROUSEL.discount_g.type_discount == 2){
+
+                           <span class="product-hot">- {{PRODUCT_CAROUSEL.discount_g.discount}} Pesos</span>
+                         }
+
+                        </div>
+
+                      }
 
                       <!-- product action -->
                       <div class="tp-product-action">
@@ -2059,8 +2140,11 @@
                         </div>
                       </div>
                       <div class="tp-product-price-wrapper">
-                        <!-- <span class="tp-product-price old-price">$475.00</span> -->
-                        <span class="tp-product-price new-price">ARS${{PRODUCT_CAROUSEL.price_ars}}</span>
+                        @if(PRODUCT_CAROUSEL.discount_g){
+                          <span class="tp-product-price old-price mx-1">${{PRODUCT_CAROUSEL.price_ars}}</span>
+                        }
+                        <span class="tp-product-price new-price mx-1"> ${{getTotalPriceProduct(PRODUCT_CAROUSEL)}}</span
+                        >
                       </div>
                     </div>
                   </div>
@@ -2134,7 +2218,11 @@
                       </div>
                     </div>
                     <div class="tp-product-price-wrapper">
-                      <span class="tp-product-price">ARS${{LAST_PRODUCT_DISCOUNT.price_ars}}</span>
+                      @if(LAST_PRODUCT_DISCOUNT.discount_g){
+                        <span class="tp-product-price old-price mx-1">${{LAST_PRODUCT_DISCOUNT.price_ars}}</span>
+                      }
+                      <span class="tp-product-price new-price mx-1"> ${{getTotalPriceProduct(LAST_PRODUCT_DISCOUNT)}}</span
+                      >
                     </div>
                   </div>
                 </div>
@@ -2196,7 +2284,11 @@
                       </div>
                     </div>
                     <div class="tp-product-price-wrapper">
-                      <span class="tp-product-price">ARS${{LAST_PRODUCT_FEATURED.price_ars}}</span>
+                      @if(LAST_PRODUCT_FEATURED.discount_g){
+                        <span class="tp-product-price old-price mx-1">${{LAST_PRODUCT_FEATURED.price_ars}}</span>
+                      }
+                      <span class="tp-product-price new-price mx-1"> ${{getTotalPriceProduct(LAST_PRODUCT_FEATURED)}}</span
+                      >
                     </div>
                   </div>
                 </div>
@@ -2259,7 +2351,11 @@
                       </div>
                     </div>
                     <div class="tp-product-price-wrapper">
-                      <span class="tp-product-price">ARS${{LAST_PRODUCT_SELLING.price_ars}}</span>
+                      @if(LAST_PRODUCT_SELLING.discount_g){
+                        <span class="tp-product-price old-price mx-1">${{LAST_PRODUCT_SELLING.price_ars}}</span>
+                      }
+                      <span class="tp-product-price new-price mx-1"> ${{getTotalPriceProduct(LAST_PRODUCT_SELLING)}}</span
+                      >
                     </div>
                   </div>
                 </div>
@@ -2855,8 +2951,8 @@
 
             <!-- price -->
             <div class="tp-product-details-price-wrapper mb-20">
-              <span class="tp-product-details-price old-price">$320.00</span>
-              <span class="tp-product-details-price new-price">$236.00</span>
+              <span class="tp-product-details-price old-price mx-1">$320.00</span>
+              <span class="tp-product-details-price new-price mx-1">$236.00</span>
             </div>
 
             <!-- variations -->
