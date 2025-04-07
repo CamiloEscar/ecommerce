@@ -41,6 +41,8 @@ export class HomeComponent {
   //variable para el modal
   product_selected:any = null;
 
+  variation_selected: any = null;
+
   constructor(public homeService: HomeService) {
     afterNextRender(() => {
       this.homeService.home().subscribe((resp: any) => {
@@ -265,39 +267,70 @@ export class HomeComponent {
 
 
   openDetailProduct(TRENDING_PRODUCT: any) {
-    this.product_selected = TRENDING_PRODUCT;
+    // First reset the variation_selected
+    this.variation_selected = null
+    // Then set the new product
+    this.product_selected = TRENDING_PRODUCT
+
     setTimeout(() => {
-      this.product_selected = TRENDING_PRODUCT;
-      // Cambiar el background color de los elementos con el atributo [data-bg-color]
-      const bgElements = document.querySelectorAll<HTMLElement>('[data-bg-color]');
-      bgElements.forEach((el) => {
-        const color = el.getAttribute('data-bg-color');
-        if (color) {
-          el.style.backgroundColor = color;
-        }
-      });
-
-      // Activar botón de color
-      const colorBtns = document.querySelectorAll<HTMLElement>('.tp-color-variation-btn');
-      colorBtns.forEach((btn) => {
-        btn.onclick = () => {
-          colorBtns.forEach(b => b.classList.remove('active'));
-          btn.classList.add('active');
-        };
-      });
-
-      // Activar botón de tamaño
-      const sizeBtns = document.querySelectorAll<HTMLElement>('.tp-size-variation-btn');
-      sizeBtns.forEach((btn) => {
-        btn.onclick = () => {
-          sizeBtns.forEach(b => b.classList.remove('active'));
-          btn.classList.add('active');
-        };
-      });
-
-    }, 50);
+      // Apply background colors and button behaviors
+      this.applyButtonStyles()
+    }, 100) // Increased timeout to ensure DOM is ready
   }
 
+  selectedVariation(variation: any) {
+    this.variation_selected = null
+    setTimeout(() => {
+      this.variation_selected = variation
 
+      // Add another timeout to ensure the DOM is updated with the new subvariations
+      setTimeout(() => {
+        this.applyButtonStyles()
+      }, 50)
+    }, 50)
+  }
 
+  // Improved method to apply button styles
+  applyButtonStyles() {
+    // Target all spans with data-bg-color attribute
+    const bgElements = document.querySelectorAll<HTMLElement>("span[data-bg-color]")
+    bgElements.forEach((el) => {
+      const color = el.getAttribute("data-bg-color")
+      if (color) {
+        el.style.backgroundColor = color
+      }
+    })
+
+    // Also handle Angular's [attr.data-bg-color] binding
+    // This is needed because Angular might render these differently
+    document.querySelectorAll<HTMLElement>(".tp-color-variation-btn span").forEach((span) => {
+      // Check if this span has a background color set by Angular
+      const computedStyle = window.getComputedStyle(span)
+      if (computedStyle.backgroundColor === "rgba(0, 0, 0, 0)" || computedStyle.backgroundColor === "transparent") {
+        // Try to get the color from the attribute
+        const color = span.getAttribute("data-bg-color")
+        if (color) {
+          span.style.backgroundColor = color
+        }
+      }
+    })
+
+    // Activar botón de color
+    const colorBtns = document.querySelectorAll<HTMLElement>(".tp-color-variation-btn")
+    colorBtns.forEach((btn) => {
+      btn.onclick = () => {
+        colorBtns.forEach((b) => b.classList.remove("active"))
+        btn.classList.add("active")
+      }
+    })
+
+    // Activar botón de tamaño
+    const sizeBtns = document.querySelectorAll<HTMLElement>(".tp-size-variation-btn")
+    sizeBtns.forEach((btn) => {
+      btn.onclick = () => {
+        sizeBtns.forEach((b) => b.classList.remove("active"))
+        btn.classList.add("active")
+      }
+    })
+  }
 }
