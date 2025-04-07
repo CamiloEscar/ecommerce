@@ -38,6 +38,9 @@ export class HomeComponent {
   //para ver el submeno de categorias starwars
   categories_menus: any = [];
 
+  //variable para el modal
+  product_selected:any = null;
+
   constructor(public homeService: HomeService) {
     afterNextRender(() => {
       this.homeService.home().subscribe((resp: any) => {
@@ -189,8 +192,18 @@ export class HomeComponent {
             },
           });
 
+
           setTimeout(() => {
             $("[data-countdown]").countdown();
+
+            // $('.tp-color-variation-btn').on('click',  () => {
+            //   $(this).addClass('active').siblings().removeClass('active');
+            // });
+
+
+            // $('.tp-size-variation-btn').on('click',  () => {
+            //   $(this).addClass('active').siblings().removeClass('active');
+            // });
           },50)
           //quiero renderizar las imagenes data-background de los banners secundarios ya que no uso jquery
           $('[data-background]').each(function (this: HTMLElement) {
@@ -202,10 +215,10 @@ export class HomeComponent {
         }, 50);
       });
     });
-    // this.homeService.menus().subscribe((resp: any) => {
-    //   console.log(resp);
-    //   this.categories_menus = resp.categories_menus;
-    // });
+    this.homeService.menus().subscribe((resp: any) => {
+      console.log(resp);
+      this.categories_menus = resp.categories_menus;
+    });
   }
 
   ngOnInit(): void {}
@@ -242,5 +255,49 @@ export class HomeComponent {
     }
       return DISCOUNT_FLASH_PRODUCT.price_ars;
   }
+
+  getIconMenu(MENU_CAT:any){
+    var miDiv: any = document.getElementById('icon-' + MENU_CAT.id);
+    miDiv.innerHTML = MENU_CAT.icon;
+    return '';
+  }
+
+
+
+  openDetailProduct(TRENDING_PRODUCT: any) {
+    this.product_selected = TRENDING_PRODUCT;
+
+    setTimeout(() => {
+      // Cambiar el background color de los elementos con el atributo [data-bg-color]
+      const bgElements = document.querySelectorAll<HTMLElement>('[data-bg-color]');
+      bgElements.forEach((el) => {
+        const color = el.getAttribute('data-bg-color');
+        if (color) {
+          el.style.backgroundColor = color;
+        }
+      });
+
+      // Activar botón de color
+      const colorBtns = document.querySelectorAll<HTMLElement>('.tp-color-variation-btn');
+      colorBtns.forEach((btn) => {
+        btn.onclick = () => {
+          colorBtns.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+        };
+      });
+
+      // Activar botón de tamaño
+      const sizeBtns = document.querySelectorAll<HTMLElement>('.tp-size-variation-btn');
+      sizeBtns.forEach((btn) => {
+        btn.onclick = () => {
+          sizeBtns.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+        };
+      });
+
+    }, 50);
+  }
+
+
+
 }
-//
