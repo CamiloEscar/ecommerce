@@ -266,8 +266,8 @@ export class HomeComponent {
 
   openDetailProduct(TRENDING_PRODUCT: any) {
     this.product_selected = TRENDING_PRODUCT;
-
     setTimeout(() => {
+      this.product_selected = TRENDING_PRODUCT;
       // Cambiar el background color de los elementos con el atributo [data-bg-color]
       const bgElements = document.querySelectorAll<HTMLElement>('[data-bg-color]');
       bgElements.forEach((el) => {
