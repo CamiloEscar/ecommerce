@@ -5,6 +5,8 @@ import { ToastrService } from 'ngx-toastr';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
+declare var Swiper: any;
+declare var $: any;
 @Component({
   selector: 'app-landing-product',
   standalone: true,
@@ -17,29 +19,64 @@ export class LandingProductComponent {
   PRODUCT_SLUG: any;
   PRODUCT_SELECTED: any;
   variation_selected:any;
+
+  PRODUCT_RELATEDS:any = [];
+
+
+
   constructor(
     public homeService: HomeService,
     public activatedRoute: ActivatedRoute,
     private toastr : ToastrService,
-    private router:Router
-
-  ){
-    this.activatedRoute.params.subscribe((resp:any)=>{
+    private router: Router
+  ) {
+    this.activatedRoute.params.subscribe((resp: any) => {
       this.PRODUCT_SLUG = resp.slug;
-    })
-    afterNextRender(() => {
-      this.homeService.showProducts(this.PRODUCT_SLUG).subscribe((resp:any)=>{
-        console.log(resp)
-        if(resp.message == 403){
+
+      this.homeService.showProducts(this.PRODUCT_SLUG).subscribe((resp: any) => {
+        if (resp.message === 403) {
           this.toastr.error('Error', resp.message_text);
           this.router.navigateByUrl('/');
         } else {
           this.PRODUCT_SELECTED = resp.product;
+          this.PRODUCT_RELATEDS = resp.product_relateds.data;
 
+          // Esperar renderizado del DOM antes de instanciar Swiper
+          setTimeout(() => {
+            const tp_rtl = localStorage.getItem('tp_dir');
+            const rtl_setting = tp_rtl === 'rtl';
+
+            const mainSlider = new Swiper('.tp-slider-active', {
+              slidesPerView: 1,
+              spaceBetween: 30,
+              loop: true,
+              rtl: rtl_setting,
+              effect: 'fade',
+              navigation: {
+                nextEl: '.tp-slider-button-next',
+                prevEl: '.tp-slider-button-prev',
+              },
+              pagination: {
+                el: '.tp-slider-dot',
+                clickable: true,
+                renderBullet: (index: any, className: any) =>
+                  `<span class="${className}"><button>${index + 1}</button></span>`,
+              },
+            });
+
+            mainSlider.on('slideChangeTransitionStart', () => {
+              const isLight = document.querySelector('.swiper-slide.swiper-slide-active.is-light')
+                || document.querySelector('.tp-slider-item.is-light');
+
+              const variation = document.querySelector('.tp-slider-variation');
+              if (variation) {
+                variation.classList.toggle('is-light', !!isLight);
+              }
+            });
+          }, 50);
         }
-
-      })
-    })
+      });
+    });
   }
   getNewTotal(DISCOUNT_FLASH_PRODUCT:any, DISCOUNT_FLASH_P:any) {
     if (DISCOUNT_FLASH_P.type_discount == 1) { //% de descuento
