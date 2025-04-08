@@ -1108,7 +1108,7 @@ function HOMEINIT($) {
 	var slider = new Swiper('.tp-product-related-slider-active', {
 		slidesPerView: 4,
 		spaceBetween: 24,
-		loop: true,
+		loop: false,
 		rtl: rtl_setting,
 		enteredSlides: false,
 		pagination: {

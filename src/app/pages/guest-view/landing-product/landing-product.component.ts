@@ -4,13 +4,14 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ModalProductComponent } from '../component/modal-product/modal-product.component';
 
 declare var Swiper: any;
 declare var $: any;
 @Component({
   selector: 'app-landing-product',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule],
+  imports: [CommonModule, FormsModule, ModalProductComponent],
   templateUrl: './landing-product.component.html',
   styleUrl: './landing-product.component.css'
 })
@@ -21,6 +22,8 @@ export class LandingProductComponent {
   variation_selected:any;
 
   PRODUCT_RELATEDS:any = [];
+
+  product_selected_modal:any;
 
 
 
@@ -147,5 +150,12 @@ export class LandingProductComponent {
         btn.classList.add("active")
       }
     })
+  }
+
+  openDetailModal(PRODUCT:any){
+    this.product_selected_modal = null;
+    setTimeout(() => {
+      this.product_selected_modal = PRODUCT;
+    }, 50);
   }
 }

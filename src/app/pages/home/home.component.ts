@@ -3,13 +3,14 @@ import { HomeService } from './service/home.service';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { ModalProductComponent } from '../guest-view/component/modal-product/modal-product.component';
 
 declare var Swiper: any;
 declare var $: any;
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule],
+  imports: [CommonModule, RouterModule, FormsModule, ModalProductComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css',
 })
@@ -115,7 +116,7 @@ export class HomeComponent {
           var slider = new Swiper('.tp-product-banner-slider-active', {
             slidesPerView: 1,
             spaceBetween: 0,
-            loop: true,
+            loop: false,
             effect: 'fade',
             pagination: {
               el: ".tp-product-banner-slider-dot",
@@ -166,7 +167,7 @@ export class HomeComponent {
           var slider = new Swiper('.tp-product-offer-slider-active', {
             slidesPerView: 4,
             spaceBetween: 30,
-            loop: true,
+            loop: false,
             rtl: rtl_setting,
             pagination: {
               el: ".tp-deals-slider-dot",
