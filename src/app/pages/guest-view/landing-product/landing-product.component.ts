@@ -1,12 +1,14 @@
 import { afterNextRender, Component } from '@angular/core';
 import { HomeService } from '../../home/service/home.service';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-landing-product',
   standalone: true,
-  imports: [],
+  imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './landing-product.component.html',
   styleUrl: './landing-product.component.css'
 })
@@ -14,6 +16,7 @@ export class LandingProductComponent {
 
   PRODUCT_SLUG: any;
   PRODUCT_SELECTED: any;
+  variation_selected:any;
   constructor(
     public homeService: HomeService,
     public activatedRoute: ActivatedRoute,
@@ -36,6 +39,76 @@ export class LandingProductComponent {
         }
 
       })
+    })
+  }
+  getNewTotal(DISCOUNT_FLASH_PRODUCT:any, DISCOUNT_FLASH_P:any) {
+    if (DISCOUNT_FLASH_P.type_discount == 1) { //% de descuento
+      return (DISCOUNT_FLASH_PRODUCT.price_ars - (DISCOUNT_FLASH_PRODUCT.price_ars * (DISCOUNT_FLASH_P.discount * 0.01))).toFixed(2);
+    } else { //monto fijo /-pesos -dolares
+      return (DISCOUNT_FLASH_PRODUCT.price_ars - DISCOUNT_FLASH_P.discount).toFixed(2);
+    }
+  }
+
+  getTotalPriceProduct(DISCOUNT_FLASH_PRODUCT:any) {
+    if(DISCOUNT_FLASH_PRODUCT.discount_g) {
+      return this.getNewTotal(DISCOUNT_FLASH_PRODUCT, DISCOUNT_FLASH_PRODUCT.discount_g);
+    }
+      return DISCOUNT_FLASH_PRODUCT.price_ars;
+  }
+
+  selectedVariation(variation: any) {
+    this.variation_selected = null
+    setTimeout(() => {
+      this.variation_selected = variation
+
+      // Add another timeout to ensure the DOM is updated with the new subvariations
+      setTimeout(() => {
+        this.applyButtonStyles()
+      }, 50)
+    }, 50)
+  }
+
+  // Improved method to apply button styles
+  applyButtonStyles() {
+    // Target all spans with data-bg-color attribute
+    const bgElements = document.querySelectorAll<HTMLElement>("span[data-bg-color]")
+    bgElements.forEach((el) => {
+      const color = el.getAttribute("data-bg-color")
+      if (color) {
+        el.style.backgroundColor = color
+      }
+    })
+
+    // Also handle Angular's [attr.data-bg-color] binding
+    // This is needed because Angular might render these differently
+    document.querySelectorAll<HTMLElement>(".tp-color-variation-btn span").forEach((span) => {
+      // Check if this span has a background color set by Angular
+      const computedStyle = window.getComputedStyle(span)
+      if (computedStyle.backgroundColor === "rgba(0, 0, 0, 0)" || computedStyle.backgroundColor === "transparent") {
+        // Try to get the color from the attribute
+        const color = span.getAttribute("data-bg-color")
+        if (color) {
+          span.style.backgroundColor = color
+        }
+      }
+    })
+
+    // Activar botón de color
+    const colorBtns = document.querySelectorAll<HTMLElement>(".tp-color-variation-btn")
+    colorBtns.forEach((btn) => {
+      btn.onclick = () => {
+        colorBtns.forEach((b) => b.classList.remove("active"))
+        btn.classList.add("active")
+      }
+    })
+
+    // Activar botón de tamaño
+    const sizeBtns = document.querySelectorAll<HTMLElement>(".tp-size-variation-btn")
+    sizeBtns.forEach((btn) => {
+      btn.onclick = () => {
+        sizeBtns.forEach((b) => b.classList.remove("active"))
+        btn.classList.add("active")
+      }
     })
   }
 }
