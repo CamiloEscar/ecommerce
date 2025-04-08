@@ -21,4 +21,8 @@ export class HomeService {
     let URL = URL_SERVICIOS+"/ecommerce/menus";
     return this.http.get(URL);
   }
+  showProducts(slug:string) {
+    let URL = URL_SERVICIOS+"/ecommerce/producto/"+slug;
+    return this.http.get(URL);
+  }
 }
