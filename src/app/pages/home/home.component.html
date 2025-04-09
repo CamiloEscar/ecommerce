@@ -17,9 +17,11 @@
                      <div class="row align-items-center">
                         <div class="col-xl-5 col-lg-6 col-md-6">
                            <div class="tp-slider-content p-relative z-index-1">
-                              <span [id]="'label-'+SLIDER.id">{{ getLabelSlider(SLIDER) }}</span>
+                              <span [id]="'label-'+SLIDER.id"></span>
+                              <!-- {{ getLabelSlider(SLIDER) }} -->
                               <h3 class="tp-slider-title">{{ SLIDER.title }}</h3>
-                              <p [id]="'subtitle-'+SLIDER.id">{{ getSubtitleSlider(SLIDER) }}</p>
+                              <p [id]="'subtitle-'+SLIDER.id"></p>
+                              <!-- {{ getSubtitleSlider(SLIDER) }} -->
 
                               @if(SLIDER.link){
                                  <div class="tp-slider-btn">
@@ -315,7 +317,7 @@
             </div>
             <div class="tp-feature-content">
               <h3 class="tp-feature-title">Descuento para miembros</h3>
-              <p>Pedido superior a ARS$100000</p>
+              <p>Pedido superior a AGREGAR CONDICIONAL ARS USD</p>
             </div>
           </div>
         </div>
@@ -507,7 +509,7 @@
                     <div class="col-xl-3 col-lg-3 col-sm-6">
                       <div class="tp-product-item p-relative transition-3 mb-25">
                         <div class="tp-product-thumb p-relative fix m-img">
-                          <a href="#" onclick="return false;">
+                          <a [routerLink]="['/producto/'+TRENDING_PRODUCT.slug]">
                             <img
                               [src]="TRENDING_PRODUCT.imagen" style="width: 304px; height:261px; object-fit:contain"
                               alt="product-electronic"
@@ -523,7 +525,7 @@
                               }
                               @if(TRENDING_PRODUCT.discount_g.type_discount == 2){
 
-                                <span class="product-hot">- {{TRENDING_PRODUCT.discount_g.discount}} Pesos</span>
+                                <span class="product-hot">- {{TRENDING_PRODUCT.discount_g.discount}} {{currency}}</span>
                               }
 
                              </div>
@@ -658,10 +660,10 @@
                         <!-- product content -->
                         <div class="tp-product-content">
                           <div class="tp-product-category">
-                            <a href="#" onclick="return false;">{{TRENDING_PRODUCT.brand.name}}</a>
+                            <a [routerLink]="['/producto/'+TRENDING_PRODUCT.slug]">{{TRENDING_PRODUCT.brand.name}}</a>
                           </div>
                           <h3 class="tp-product-title">
-                            <a href="#" onclick="return false;">
+                            <a [routerLink]="['/producto/'+TRENDING_PRODUCT.slug]">
                               {{TRENDING_PRODUCT.title}}
                             </a>
                           </h3>
@@ -683,9 +685,9 @@
                           </div>
                           <div class="tp-product-price-wrapper">
                             @if(TRENDING_PRODUCT.discount_g){
-                              <span class="tp-product-price old-price mx-1">${{TRENDING_PRODUCT.price_ars}}</span>
+                              <span class="tp-product-price old-price mx-1">{{getTotalCurrency(TRENDING_PRODUCT)}} {{currency}}</span>
                             }
-                            <span class="tp-product-price new-price mx-1"> ${{getTotalPriceProduct(TRENDING_PRODUCT)}}</span
+                            <span class="tp-product-price new-price mx-1">{{getTotalPriceProduct(TRENDING_PRODUCT)}} {{currency}}</span
                             >
                           </div>
                         </div>
@@ -706,7 +708,7 @@
                   <div class="col-xl-3 col-lg-3 col-sm-6">
                     <div class="tp-product-item p-relative transition-3 mb-25">
                       <div class="tp-product-thumb p-relative fix m-img">
-                        <a href="#" onclick="return false;">
+                        <a [routerLink]="['/producto/'+TRENDING_PRODUCTS_FEATURED.slug]">
                           <img
                             [src]="product.imagen" style="width: 304px; height:261px; object-fit:contain"
                             alt="product-electronic"
@@ -722,7 +724,7 @@
                            }
                            @if(product.discount_g.type_discount == 2){
 
-                             <span class="product-hot">- {{product.discount_g.discount}} Pesos</span>
+                             <span class="product-hot">- {{product.discount_g.discount}} {{currency}}</span>
                            }
 
                           </div>
@@ -857,10 +859,10 @@
                       <!-- product content -->
                       <div class="tp-product-content">
                         <div class="tp-product-category">
-                          <a href="#" onclick="return false;">{{product.brand.name}}</a>
+                          <a [routerLink]="['/producto/'+product.slug]">{{product.brand.name}}</a>
                         </div>
                         <h3 class="tp-product-title">
-                          <a href="#" onclick="return false;">
+                          <a [routerLink]="['/producto/'+product.slug]">
                             {{product.title}}
                           </a>
                         </h3>
@@ -882,9 +884,9 @@
                         </div>
                         <div class="tp-product-price-wrapper">
                           @if(product.discount_g){
-                            <span class="tp-product-price old-price mx-1">${{product.price_ars}}</span>
+                            <span class="tp-product-price old-price mx-1">{{getTotalCurrency(product)}} {{currency}}</span>
                           }
-                          <span class="tp-product-price new-price mx-1"> ${{getTotalPriceProduct(product)}}</span
+                          <span class="tp-product-price new-price mx-1">{{getTotalPriceProduct(product)}} {{currency}}</span
                             >
                         </div>
                       </div>
@@ -906,7 +908,7 @@
                   <div class="col-xl-3 col-lg-3 col-sm-6">
                     <div class="tp-product-item p-relative transition-3 mb-25">
                       <div class="tp-product-thumb p-relative fix m-img">
-                        <a href="#" onclick="return false;">
+                        <a [routerLink]="['/producto/'+TRENDING_PRODUCTS_TOP_SELLER.slug]">
                           <img
                             [src]="product.imagen" style="width: 304px; height:261px; object-fit:contain"
                             alt="product-electronic"
@@ -922,7 +924,7 @@
                            }
                            @if(product.discount_g.type_discount == 2){
 
-                             <span class="product-hot">- {{product.discount_g.discount}} Pesos</span>
+                             <span class="product-hot">- {{product.discount_g.discount}} {{currency}}</span>
                            }
 
                           </div>
@@ -1057,10 +1059,10 @@
                       <!-- product content -->
                       <div class="tp-product-content">
                         <div class="tp-product-category">
-                          <a href="#" onclick="return false;">{{product.brand.name}}</a>
+                          <a [routerLink]="['/producto/'+product.slug]">{{product.brand.name}}</a>
                         </div>
                         <h3 class="tp-product-title">
-                          <a href="#" onclick="return false;">
+                          <a [routerLink]="['/producto/'+product.slug]">
                             {{product.title}}
                           </a>
                         </h3>
@@ -1082,9 +1084,9 @@
                         </div>
                         <div class="tp-product-price-wrapper">
                           @if(product.discount_g){
-                            <span class="tp-product-price old-price mx-1">${{product.price_ars}}</span>
+                            <span class="tp-product-price old-price mx-1">{{getTotalCurrency(product)}} {{currency}}</span>
                           }
-                          <span class="tp-product-price new-price mx-1"> ${{getTotalPriceProduct(product)}}</span
+                          <span class="tp-product-price new-price mx-1">{{getTotalPriceProduct(product)}} {{currency}}</span
                             >
                         </div>
                       </div>
@@ -1119,10 +1121,8 @@
                 <div class="tp-banner-content">
                   <span>{{ BANNER.subtitle}}</span>
                   <h3 class="tp-banner-title">
-                    <a href="#" onclick="return false;" [id]="'title-banner-s-'+BANNER.id"
-                      >{{getTitleBannerSecundario(BANNER, 'title-banner-s-'+BANNER.id)}} <br />
-                      BLU G91 Pro 2022</a
-                    >
+                    <a [routerLink]="['/producto/'+BANNER_SECUNDARIOS.slug]" [id]="'title-banner-s-'+BANNER.id">{{ BANNER.title }}</a>
+                    <!-- {{getTitleBannerSecundario(BANNER, 'title-banner-s-'+BANNER.id)}} -->
                   </h3>
                   @if(BANNER.link){
                     <div class="tp-banner-btn">
@@ -1170,9 +1170,9 @@
                 ></div>
                 <div class="tp-banner-content">
                   <h3 class="tp-banner-title">
-                    <a href="#" onclick="return false;" [id]="'title-banner-sa-'+BANNER.id"
-                      >{{getTitleBannerSecundario(BANNER, 'title-banner-sa-'+BANNER.id)}}</a
-                    >
+                    <a [routerLink]="['/producto/'+BANNER.slug]" [id]="'title-banner-sa-'+BANNER.id">{{ BANNER.title }}
+                      <!-- {{getTitleBannerSecundario(BANNER, 'title-banner-sa-'+BANNER.id)}} -->
+                      </a>
                   </h3>
                   <p>{{ BANNER.subtitle}}</p>
                   @if(BANNER.link){
@@ -1286,7 +1286,7 @@
                   <div class="tp-product-offer-item tp-product-item transition-3 swiper-slide"
                   >
                     <div class="tp-product-thumb p-relative fix m-img">
-                      <a href="#" onclick="return false;">
+                      <a [routerLink]="['/producto/'+DISCOUNT_FLASH_PRODUCT.slug]" [queryParams]="{campaing_discount: DISCOUNT_FLASH.code}">
                         <img
                           [src]="DISCOUNT_FLASH_PRODUCT.imagen"
                           style="width: 386px; height: 386px; object-fit:contain"
@@ -1462,10 +1462,10 @@
                     <!-- product content -->
                     <div class="tp-product-content">
                       <div class="tp-product-category">
-                        <a href="#" onclick="return false;">{{DISCOUNT_FLASH_PRODUCT.brand.name}}</a>
+                        <a [routerLink]="['/producto/'+DISCOUNT_FLASH_PRODUCT.slug]" [queryParams]="{campaing_discount: DISCOUNT_FLASH.code}">{{DISCOUNT_FLASH_PRODUCT.brand.name}}</a>
                       </div>
                       <h3 class="tp-product-title">
-                        <a href="#" onclick="return false;">>
+                        <a [routerLink]="['/producto/'+DISCOUNT_FLASH_PRODUCT.slug]" [queryParams]="{campaing_discount: DISCOUNT_FLASH.code}">>
                           {{DISCOUNT_FLASH_PRODUCT.title}}
                         </a>
                       </h3>
@@ -1482,8 +1482,8 @@
                         </div>
                       </div>
                       <div class="tp-product-price-wrapper">
-                        <span class="tp-product-price old-price mx-1">ARS ${{DISCOUNT_FLASH_PRODUCT.price_ars}}</span>
-                        <span class="tp-product-price new-price mx-1">{{getNewTotal(DISCOUNT_FLASH_PRODUCT, DISCOUNT_FLASH)}}</span>
+                        <span class="tp-product-price old-price mx-1">{{getTotalCurrency(DISCOUNT_FLASH_PRODUCT)}} {{currency}}</span>
+                        <span class="tp-product-price new-price mx-1">{{getNewTotal(DISCOUNT_FLASH_PRODUCT, DISCOUNT_FLASH)}} {{currency}}</span>
                       </div>
 
                       <div
@@ -1564,7 +1564,7 @@
                             </a> -->
                             <ul class="mega-menu tp-submenu">
                               <li *ngFor="let sub of cat.subcategories">
-                                <a href="#" onclick="return false;">{{ sub.name }}</a>
+                                <a [routerLink]="['/producto/'+sub.slug]">{{ sub.name }}</a>
                                 <!-- <img *ngIf="sub.imagen" [src]="sub.imagen" style="width: 247px; height: 149px; object-fit: cover;"> -->
                               </li>
                             </ul>
@@ -1657,7 +1657,7 @@
                 <div class="col-xl-4 col-sm-6">
                   <div class="tp-product-item p-relative transition-3 mb-25" >
                     <div class="tp-product-thumb p-relative fix m-img">
-                      <a href="#" onclick="return false;">
+                      <a [routerLink]="['/producto/'+PRODUCT_COMIC.slug]">
                         <img
                           [src]="PRODUCT_COMIC.imagen"
                           style="width: 248px; height: 240px; object-fit:contain"
@@ -1674,7 +1674,7 @@
                          }
                          @if(PRODUCT_COMIC.discount_g.type_discount == 2){
 
-                           <span class="product-hot">- {{PRODUCT_COMIC.discount_g.discount}} Pesos</span>
+                           <span class="product-hot">- {{PRODUCT_COMIC.discount_g.discount}} {{currency}}</span>
                          }
 
                         </div>
@@ -1804,10 +1804,10 @@
                     <!-- product content -->
                     <div class="tp-product-content">
                       <div class="tp-product-category">
-                        <a href="#" onclick="return false;">{{PRODUCT_COMIC.brand.name}}</a>
+                        <a [routerLink]="['/producto/'+PRODUCT_COMIC.slug]">{{PRODUCT_COMIC.brand.name}}</a>
                       </div>
                       <h3 class="tp-product-title">
-                        <a href="#" onclick="return false;">
+                        <a [routerLink]="['/producto/'+PRODUCT_COMIC.slug]" onclick="return false;">
                           {{PRODUCT_COMIC.title}}
                         </a>
                       </h3>
@@ -1827,9 +1827,9 @@
                       </div>
                       <div class="tp-product-price-wrapper">
                         @if(PRODUCT_COMIC.discount_g){
-                          <span class="tp-product-price old-price mx-1">ARS${{PRODUCT_COMIC.price_ars}}</span>
+                          <span class="tp-product-price old-price mx-1">{{getTotalCurrency(PRODUCT_COMIC)}} {{currency}}</span>
                         }
-                        <span class="tp-product-price new-price mx-1"> ${{getTotalPriceProduct(PRODUCT_COMIC)}}</span
+                        <span class="tp-product-price new-price mx-1">{{getTotalPriceProduct(PRODUCT_COMIC)}} {{currency}}</span
                           >
                       </div>
                     </div>
@@ -1865,8 +1865,8 @@
                         {{BANNER_PRODUCTO.title}}
                       </h3>
                       <div class="tp-product-banner-price mb-40">
-                        <span class="old-price mx-1">ARS${{BANNER_PRODUCTO.price_original}}</span>
-                        <p class="new-price mx-1">ARS${{BANNER_PRODUCTO.price_campaing}}</p>
+                        <span class="old-price mx-1">${{BANNER_PRODUCTO.price_original}}</span>
+                        <p class="new-price mx-1">${{BANNER_PRODUCTO.price_campaing}}</p>
                       </div>
                       @if(BANNER_PRODUCTO.link){
 
@@ -1988,7 +1988,7 @@
                 @for(PRODUCT_CAROUSEL of PRODUCTS_CAROUSEL; track PRODUCT_CAROUSEL.id) {
                   <div class="tp-product-item transition-3 mb-25 swiper-slide">
                     <div class="tp-product-thumb p-relative fix m-img">
-                      <a href="#" onclick="return false;">
+                      <a [routerLink]="['/producto/'+PRODUCT_CAROUSEL.slug]">
                         <img
                           [src]="PRODUCT_CAROUSEL.imagen"
                           style="width: 282px; height: 242px; object-fit:contain"
@@ -2005,7 +2005,7 @@
                          }
                          @if(PRODUCT_CAROUSEL.discount_g.type_discount == 2){
 
-                           <span class="product-hot">- {{PRODUCT_CAROUSEL.discount_g.discount}} Pesos</span>
+                           <span class="product-hot">- {{PRODUCT_CAROUSEL.discount_g.discount}} {{currency}}</span>
                          }
 
                         </div>
@@ -2138,7 +2138,7 @@
                         <a href="shop.html">{{PRODUCT_CAROUSEL.brand.name}}</a>
                       </div>
                       <h3 class="tp-product-title">
-                        <a href="#" onclick="return false;">
+                        <a [routerLink]="['/producto/'+PRODUCT_CAROUSEL.slug]">
                           {{PRODUCT_CAROUSEL.title}}
                         </a>
                       </h3>
@@ -2158,9 +2158,9 @@
                       </div>
                       <div class="tp-product-price-wrapper">
                         @if(PRODUCT_CAROUSEL.discount_g){
-                          <span class="tp-product-price old-price mx-1">${{PRODUCT_CAROUSEL.price_ars}}</span>
+                          <span class="tp-product-price old-price mx-1">{{getTotalCurrency(PRODUCT_CAROUSEL)}} {{currency}}</span>
                         }
-                        <span class="tp-product-price new-price mx-1"> ${{getTotalPriceProduct(PRODUCT_CAROUSEL)}}</span
+                        <span class="tp-product-price new-price mx-1">{{getTotalPriceProduct(PRODUCT_CAROUSEL)}} {{currency}}</span
                         >
                       </div>
                     </div>
@@ -2209,16 +2209,16 @@
               @for(LAST_PRODUCT_DISCOUNT of LASTS_PRODUCTS_DISCOUNTS; track LAST_PRODUCT_DISCOUNT.id) {
                 <div class="tp-product-sm-item d-flex align-items-center">
                   <div class="tp-product-thumb mr-25 fix">
-                    <a href="#" onclick="return false;">
+                    <a [routerLink]="['/producto/'+LAST_PRODUCT_DISCOUNT.slug]">
                       <img [src]="LAST_PRODUCT_DISCOUNT.imagen" style="width:140px; height: 140px; object-fit:contain" alt="" />
                     </a>
                   </div>
                   <div class="tp-product-sm-content">
                     <div class="tp-product-category">
-                      <a href="#" onclick="return false;">{{LAST_PRODUCT_DISCOUNT.brand.name}}</a>
+                      <a [routerLink]="['/producto/'+LAST_PRODUCT_DISCOUNT.slug]">{{LAST_PRODUCT_DISCOUNT.brand.name}}</a>
                     </div>
                     <h3 class="tp-product-title">
-                      <a href="#" onclick="return false;">
+                      <a [routerLink]="['/producto/'+LAST_PRODUCT_DISCOUNT.slug]">
                         {{LAST_PRODUCT_DISCOUNT.title}}
                       </a>
                     </h3>
@@ -2236,9 +2236,9 @@
                     </div>
                     <div class="tp-product-price-wrapper">
                       @if(LAST_PRODUCT_DISCOUNT.discount_g){
-                        <span class="tp-product-price old-price mx-1">${{LAST_PRODUCT_DISCOUNT.price_ars}}</span>
+                        <span class="tp-product-price old-price mx-1">{{getTotalCurrency(LAST_PRODUCT_DISCOUNT)}} {{currency}}</span>
                       }
-                      <span class="tp-product-price new-price mx-1"> ${{getTotalPriceProduct(LAST_PRODUCT_DISCOUNT)}}</span
+                      <span class="tp-product-price new-price mx-1"> ${{getTotalPriceProduct(LAST_PRODUCT_DISCOUNT)}} {{currency}}</span
                       >
                     </div>
                   </div>
@@ -2275,16 +2275,16 @@
               @for(LAST_PRODUCT_FEATURED of LASTS_PRODUCTS_FEATURED; track LAST_PRODUCT_FEATURED.id) {
                 <div class="tp-product-sm-item d-flex align-items-center">
                   <div class="tp-product-thumb mr-25 fix">
-                    <a href="#" onclick="return false;">
+                    <a [routerLink]="['/producto/'+LAST_PRODUCT_FEATURED.slug]">
                       <img [src]="LAST_PRODUCT_FEATURED.imagen" style="width:140px; height: 140px; object-fit:contain" alt="" />
                     </a>
                   </div>
                   <div class="tp-product-sm-content">
                     <div class="tp-product-category">
-                      <a href="#" onclick="return false;">{{LAST_PRODUCT_FEATURED.brand.name}}</a>
+                      <a [routerLink]="['/producto/'+LAST_PRODUCT_FEATURED.slug]">{{LAST_PRODUCT_FEATURED.brand.name}}</a>
                     </div>
                     <h3 class="tp-product-title">
-                      <a href="#" onclick="return false;">
+                      <a [routerLink]="['/producto/'+LAST_PRODUCT_FEATURED.slug]">
                         {{LAST_PRODUCT_FEATURED.title}}
                       </a>
                     </h3>
@@ -2302,9 +2302,9 @@
                     </div>
                     <div class="tp-product-price-wrapper">
                       @if(LAST_PRODUCT_FEATURED.discount_g){
-                        <span class="tp-product-price old-price mx-1">${{LAST_PRODUCT_FEATURED.price_ars}}</span>
+                        <span class="tp-product-price old-price mx-1">{{getTotalCurrency(LAST_PRODUCT_FEATURED)}} {{currency}}</span>
                       }
-                      <span class="tp-product-price new-price mx-1"> ${{getTotalPriceProduct(LAST_PRODUCT_FEATURED)}}</span
+                      <span class="tp-product-price new-price mx-1"> ${{getTotalPriceProduct(LAST_PRODUCT_FEATURED)}} {{currency}}</span
                       >
                     </div>
                   </div>
@@ -2342,16 +2342,16 @@
               @for(LAST_PRODUCT_SELLING of LASTS_PRODUCTS_SELLING; track LAST_PRODUCT_SELLING.id) {
                 <div class="tp-product-sm-item d-flex align-items-center">
                   <div class="tp-product-thumb mr-25 fix">
-                    <a href="#" onclick="return false;">
+                    <a [routerLink]="['/producto/'+LAST_PRODUCT_SELLING.slug]">
                       <img [src]="LAST_PRODUCT_SELLING.imagen" style="width:140px; height: 140px; object-fit:contain" alt="" />
                     </a>
                   </div>
                   <div class="tp-product-sm-content">
                     <div class="tp-product-category">
-                      <a href="#" onclick="return false;">{{LAST_PRODUCT_SELLING.brand.name}}</a>
+                      <a [routerLink]="['/producto/'+LAST_PRODUCT_SELLING.slug]">{{LAST_PRODUCT_SELLING.brand.name}}</a>
                     </div>
                     <h3 class="tp-product-title">
-                      <a href="#" onclick="return false;">
+                      <a [routerLink]="['/producto/'+LAST_PRODUCT_SELLING.slug]">
                         {{LAST_PRODUCT_SELLING.title}}
                       </a>
                     </h3>
@@ -2369,9 +2369,9 @@
                     </div>
                     <div class="tp-product-price-wrapper">
                       @if(LAST_PRODUCT_SELLING.discount_g){
-                        <span class="tp-product-price old-price mx-1">${{LAST_PRODUCT_SELLING.price_ars}}</span>
+                        <span class="tp-product-price old-price mx-1">{{getTotalCurrency(LAST_PRODUCT_SELLING)}} {{currency}}</span>
                       }
-                      <span class="tp-product-price new-price mx-1"> ${{getTotalPriceProduct(LAST_PRODUCT_SELLING)}}</span
+                      <span class="tp-product-price new-price mx-1"> ${{getTotalPriceProduct(LAST_PRODUCT_SELLING)}} {{currency}}</span
                       >
                     </div>
                   </div>

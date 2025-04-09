@@ -1,9 +1,10 @@
-import { afterNextRender, Component } from '@angular/core';
+import { afterNextRender, Component, ChangeDetectorRef, afterRender  } from '@angular/core';
 import { HomeService } from './service/home.service';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ModalProductComponent } from '../guest-view/component/modal-product/modal-product.component';
+import { CookieService } from 'ngx-cookie-service';
 
 declare var Swiper: any;
 declare var $: any;
@@ -44,10 +45,14 @@ export class HomeComponent {
 
   variation_selected: any = null;
 
-  constructor(public homeService: HomeService) {
-    afterNextRender(() => {
+  currency: string = 'ARS';
+
+  constructor(public homeService: HomeService,
+              private cdr: ChangeDetectorRef,
+              private cookieService: CookieService) {
+    // afterNextRender(() => {
       this.homeService.home().subscribe((resp: any) => {
-        console.log(resp);
+        // console.log(resp);
         this.SLIDERS = resp.sliders_principal;
         this.CATEGORIES_RANDOMS = resp.categories_randoms;
         this.TRENDING_PRODUCTS_NEW = resp.products_trending_new.data;
@@ -68,163 +73,188 @@ export class HomeComponent {
         this.DISCOUNT_FLASH_PRODUCT = resp.discount_flash_product;
 
         setTimeout(() => {
-          var tp_rtl = localStorage.getItem('tp_dir');
-          let rtl_setting = tp_rtl == 'rtl' ? 'right' : 'left';
-          var mainSlider = new Swiper('.tp-slider-active', {
-            slidesPerView: 1,
-            spaceBetween: 30,
-            loop: true,
-            rtl: rtl_setting,
-            effect: 'fade',
-            // Navigation arrows
-            navigation: {
-              nextEl: '.tp-slider-button-next',
-              prevEl: '.tp-slider-button-prev',
-            },
-            pagination: {
-              el: '.tp-slider-dot',
-              clickable: true,
-              renderBullet: function (index: any, className: any) {
-                return (
-                  '<span class="' +
-                  className +
-                  '">' +
-                  '<button>' +
-                  (index + 1) +
-                  '</button>' +
-                  '</span>'
-                );
-              },
-            },
-          });
-
-          mainSlider.on(
-            'slideChangeTransitionStart',
-            function (realIndex: any) {
-              if (
-                $(
-                  '.swiper-slide.swiper-slide-active, .tp-slider-item .is-light'
-                ).hasClass('is-light')
-              ) {
-                $('.tp-slider-variation').addClass('is-light');
-              } else {
-                $('.tp-slider-variation').removeClass('is-light');
-              }
-            }
-          );
-
-          var slider = new Swiper('.tp-product-banner-slider-active', {
-            slidesPerView: 1,
-            spaceBetween: 0,
-            loop: false,
-            effect: 'fade',
-            pagination: {
-              el: ".tp-product-banner-slider-dot",
-              clickable: true,
-              renderBullet: function (index:any, className:any) {
-                return '<span class="' + className + '">' + '<button>' + (index + 1) + '</button>' + "</span>";
-              },
-            },
-
-          });
-
-          var slider = new Swiper('.tp-product-arrival-active', {
-            slidesPerView: 4,
-            spaceBetween: 30,
-            loop: false,
-            rtl: rtl_setting,
-            pagination: {
-              el: ".tp-arrival-slider-dot",
-              clickable: true,
-              renderBullet: function (index:any, className:any) {
-                return '<span class="' + className + '">' + '<button>' + (index + 1) + '</button>' + "</span>";
-              },
-            },
-            // Navigation arrows
-            navigation: {
-              nextEl: ".tp-arrival-slider-button-next",
-              prevEl: ".tp-arrival-slider-button-prev",
-            },
-            breakpoints: {
-              '1200': {
-                slidesPerView: 4,
-              },
-              '992': {
-                slidesPerView: 3,
-              },
-              '768': {
-                slidesPerView: 2,
-              },
-              '576': {
-                slidesPerView: 2,
-              },
-              '0': {
-                slidesPerView: 1,
-              },
-            },
-          });
-
-          var slider = new Swiper('.tp-product-offer-slider-active', {
-            slidesPerView: 4,
-            spaceBetween: 30,
-            loop: false,
-            rtl: rtl_setting,
-            pagination: {
-              el: ".tp-deals-slider-dot",
-              clickable: true,
-              renderBullet: function (index:any, className:any) {
-                return '<span class="' + className + '">' + '<button>' + (index + 1) + '</button>' + "</span>";
-              },
-            },
-            breakpoints: {
-              '1200': {
-                slidesPerView: 3,
-              },
-              '992': {
-                slidesPerView: 2,
-              },
-              '768': {
-                slidesPerView: 2,
-              },
-              '576': {
-                slidesPerView: 1,
-              },
-              '0': {
-                slidesPerView: 1,
-              },
-            },
-          });
-
-
-          setTimeout(() => {
-            $("[data-countdown]").countdown();
-
-            // $('.tp-color-variation-btn').on('click',  () => {
-            //   $(this).addClass('active').siblings().removeClass('active');
-            // });
-
-
-            // $('.tp-size-variation-btn').on('click',  () => {
-            //   $(this).addClass('active').siblings().removeClass('active');
-            // });
-          },50)
-          //quiero renderizar las imagenes data-background de los banners secundarios ya que no uso jquery
-          $('[data-background]').each(function (this: HTMLElement) {
-            const background = this.getAttribute('data-background');
-            if (background) {
-              this.style.backgroundImage = `url(${background})`;
-            }
-          });
+          this.cdr.detectChanges();
         }, 50);
+
+
       });
-    });
-    this.homeService.menus().subscribe((resp: any) => {
-      console.log(resp);
-      this.categories_menus = resp.categories_menus;
-    });
+    // });
+
+    afterRender(() => {
+      setTimeout(() => {
+        this.SLIDERS.forEach((SLIDER:any) => {
+          this.getLabelSlider(SLIDER)
+          this.getSubtitleSlider(SLIDER)
+          // this.BANNER_SECUNDARIOS.forEach((BANNER:any, index:number) => {
+          //   if(index == 0) {
+          //     this.getTitleBannerSecundario(BANNER, 'title-banner-s-'+BANNER.id);
+          //   }
+          //   this.getTitleBannerSecundario(BANNER, 'title-banner-sa-'+BANNER.id);
+          // })
+
+            var tp_rtl = localStorage.getItem('tp_dir');
+            let rtl_setting = tp_rtl == 'rtl' ? 'right' : 'left';
+            setTimeout(() => {
+              var mainSlider = new Swiper('.tp-slider-active', {
+                slidesPerView: 1,
+                spaceBetween: 30,
+                loop: false,
+                rtl: rtl_setting,
+                effect: 'fade',
+                // Navigation arrows
+                navigation: {
+                  nextEl: '.tp-slider-button-next',
+                  prevEl: '.tp-slider-button-prev',
+                },
+                pagination: {
+                  el: '.tp-slider-dot',
+                  clickable: true,
+                  renderBullet: function (index: any, className: any) {
+                    return (
+                      '<span class="' +
+                      className +
+                      '">' +
+                      '<button>' +
+                      (index + 1) +
+                      '</button>' +
+                      '</span>'
+                    );
+                  },
+                },
+              });
+
+              mainSlider.on(
+                'slideChangeTransitionStart',
+                function (realIndex: any) {
+                  if (
+                    $(
+                      '.swiper-slide.swiper-slide-active, .tp-slider-item .is-light'
+                    ).hasClass('is-light')
+                  ) {
+                    $('.tp-slider-variation').addClass('is-light');
+                  } else {
+                    $('.tp-slider-variation').removeClass('is-light');
+                  }
+                }
+              );
+
+            }, 100);
+
+            var slider = new Swiper('.tp-product-banner-slider-active', {
+              slidesPerView: 1,
+              spaceBetween: 0,
+              loop: false,
+              effect: 'fade',
+              pagination: {
+                el: ".tp-product-banner-slider-dot",
+                clickable: true,
+                renderBullet: function (index:any, className:any) {
+                  return '<span class="' + className + '">' + '<button>' + (index + 1) + '</button>' + "</span>";
+                },
+              },
+
+            });
+
+            var slider = new Swiper('.tp-product-arrival-active', {
+              slidesPerView: 4,
+              spaceBetween: 30,
+              loop: false,
+              rtl: rtl_setting,
+              pagination: {
+                el: ".tp-arrival-slider-dot",
+                clickable: true,
+                renderBullet: function (index:any, className:any) {
+                  return '<span class="' + className + '">' + '<button>' + (index + 1) + '</button>' + "</span>";
+                },
+              },
+              // Navigation arrows
+              navigation: {
+                nextEl: ".tp-arrival-slider-button-next",
+                prevEl: ".tp-arrival-slider-button-prev",
+              },
+              breakpoints: {
+                '1200': {
+                  slidesPerView: 4,
+                },
+                '992': {
+                  slidesPerView: 3,
+                },
+                '768': {
+                  slidesPerView: 2,
+                },
+                '576': {
+                  slidesPerView: 2,
+                },
+                '0': {
+                  slidesPerView: 1,
+                },
+              },
+            });
+
+            var slider = new Swiper('.tp-product-offer-slider-active', {
+              slidesPerView: 4,
+              spaceBetween: 30,
+              loop: false,
+              rtl: rtl_setting,
+              pagination: {
+                el: ".tp-deals-slider-dot",
+                clickable: true,
+                renderBullet: function (index:any, className:any) {
+                  return '<span class="' + className + '">' + '<button>' + (index + 1) + '</button>' + "</span>";
+                },
+              },
+              breakpoints: {
+                '1200': {
+                  slidesPerView: 3,
+                },
+                '992': {
+                  slidesPerView: 2,
+                },
+                '768': {
+                  slidesPerView: 2,
+                },
+                '576': {
+                  slidesPerView: 1,
+                },
+                '0': {
+                  slidesPerView: 1,
+                },
+              },
+            });
+
+
+            setTimeout(() => {
+              $("[data-countdown]").countdown();
+
+              // $('.tp-color-variation-btn').on('click',  () => {
+              //   $(this).addClass('active').siblings().removeClass('active');
+              // });
+
+
+              // $('.tp-size-variation-btn').on('click',  () => {
+              //   $(this).addClass('active').siblings().removeClass('active');
+              // });
+            },50)
+            //quiero renderizar las imagenes data-background de los banners secundarios ya que no uso jquery
+            $('[data-background]').each(function (this: HTMLElement) {
+              const background = this.getAttribute('data-background');
+              if (background) {
+                this.style.backgroundImage = `url(${background})`;
+              }
+            });
+          }, 50);
+        })
+      this.currency = this.cookieService.get("currency") ? this.cookieService.get("currency") : 'ARS';
+    })
+    // this.homeService.menus().subscribe((resp: any) => {
+    //   console.log(resp);
+    //   this.categories_menus = resp.categories_menus;
+    // });
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+
+  }
 
   getLabelSlider(SLIDER: any) {
     var miDiv: any = document.getElementById('label-' + SLIDER.id);
@@ -245,10 +275,18 @@ export class HomeComponent {
   }
 
   getNewTotal(DISCOUNT_FLASH_PRODUCT:any, DISCOUNT_FLASH_P:any) {
-    if (DISCOUNT_FLASH_P.type_discount == 1) { //% de descuento
-      return (DISCOUNT_FLASH_PRODUCT.price_ars - (DISCOUNT_FLASH_PRODUCT.price_ars * (DISCOUNT_FLASH_P.discount * 0.01))).toFixed(2);
-    } else { //monto fijo /-pesos -dolares
-      return (DISCOUNT_FLASH_PRODUCT.price_ars - DISCOUNT_FLASH_P.discount).toFixed(2);
+    if(this.currency == 'ARS') {
+      if (DISCOUNT_FLASH_P.type_discount == 1) { //% de descuento
+        return (DISCOUNT_FLASH_PRODUCT.price_ars - (DISCOUNT_FLASH_PRODUCT.price_ars * (DISCOUNT_FLASH_P.discount * 0.01))).toFixed(2);
+      } else { //monto fijo /-pesos -dolares
+        return (DISCOUNT_FLASH_PRODUCT.price_ars - DISCOUNT_FLASH_P.discount).toFixed(2);
+      }
+    } else {
+      if (DISCOUNT_FLASH_P.type_discount == 1) { //% de descuento
+        return (DISCOUNT_FLASH_PRODUCT.price_usd - (DISCOUNT_FLASH_PRODUCT.price_usd * (DISCOUNT_FLASH_P.discount * 0.01))).toFixed(2);
+      } else { //monto fijo /-pesos -dolares
+        return (DISCOUNT_FLASH_PRODUCT.price_usd - DISCOUNT_FLASH_P.discount).toFixed(2);
+      }
     }
   }
 
@@ -256,7 +294,19 @@ export class HomeComponent {
     if(DISCOUNT_FLASH_PRODUCT.discount_g) {
       return this.getNewTotal(DISCOUNT_FLASH_PRODUCT, DISCOUNT_FLASH_PRODUCT.discount_g);
     }
+    if(this.currency == 'ARS'){
       return DISCOUNT_FLASH_PRODUCT.price_ars;
+    } else {
+      return DISCOUNT_FLASH_PRODUCT.price_usd;
+    }
+  }
+
+  getTotalCurrency(DISCOUNT_FLASH_PRODUCT:any){
+    if(this.currency == 'ARS'){
+      return DISCOUNT_FLASH_PRODUCT.price_ars;
+    } else {
+      return DISCOUNT_FLASH_PRODUCT.price_usd;
+    }
   }
 
   getIconMenu(MENU_CAT:any){

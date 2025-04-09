@@ -1,10 +1,11 @@
-import { afterNextRender, Component } from '@angular/core';
+import { afterNextRender, afterRender, Component } from '@angular/core';
 import { HomeService } from '../../home/service/home.service';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ModalProductComponent } from '../component/modal-product/modal-product.component';
+import { CookieService } from 'ngx-cookie-service';
 
 declare var Swiper: any;
 declare var $: any;
@@ -25,67 +26,91 @@ export class LandingProductComponent {
 
   product_selected_modal:any;
 
+  currency:string = 'ARS';
 
+  CAMPAING_CODE:any;
+
+  DISCOUNT_CAMPAING:any;
 
   constructor(
     public homeService: HomeService,
     public activatedRoute: ActivatedRoute,
     private toastr : ToastrService,
-    private router: Router
+    private router: Router,
+    public cookieService: CookieService,
   ) {
     this.activatedRoute.params.subscribe((resp: any) => {
       this.PRODUCT_SLUG = resp.slug;
-
-      this.homeService.showProducts(this.PRODUCT_SLUG).subscribe((resp: any) => {
+    });
+    this.activatedRoute.queryParams.subscribe((resp: any) => {
+      this.CAMPAING_CODE = resp.campaing_discount;
+    });
+      this.homeService.showProducts(this.PRODUCT_SLUG, this.CAMPAING_CODE).subscribe((resp: any) => {
         if (resp.message === 403) {
           this.toastr.error('Error', resp.message_text);
           this.router.navigateByUrl('/');
         } else {
           this.PRODUCT_SELECTED = resp.product;
           this.PRODUCT_RELATEDS = resp.product_relateds.data;
+          this.DISCOUNT_CAMPAING = resp.discount_campaing;
+
+          if(this.DISCOUNT_CAMPAING){
+            this.PRODUCT_SELECTED.discount_g = this.DISCOUNT_CAMPAING;
+          }
 
           // Esperar renderizado del DOM antes de instanciar Swiper
-          setTimeout(() => {
-            const tp_rtl = localStorage.getItem('tp_dir');
-            const rtl_setting = tp_rtl === 'rtl';
+          afterRender(() => {
+            setTimeout(() => {
+              const tp_rtl = localStorage.getItem('tp_dir');
+              const rtl_setting = tp_rtl === 'rtl';
 
-            const mainSlider = new Swiper('.tp-slider-active', {
-              slidesPerView: 1,
-              spaceBetween: 30,
-              loop: true,
-              rtl: rtl_setting,
-              effect: 'fade',
-              navigation: {
-                nextEl: '.tp-slider-button-next',
-                prevEl: '.tp-slider-button-prev',
-              },
-              pagination: {
-                el: '.tp-slider-dot',
-                clickable: true,
-                renderBullet: (index: any, className: any) =>
-                  `<span class="${className}"><button>${index + 1}</button></span>`,
-              },
-            });
+              const mainSlider = new Swiper('.tp-slider-active', {
+                slidesPerView: 1,
+                spaceBetween: 30,
+                loop: true,
+                rtl: rtl_setting,
+                effect: 'fade',
+                navigation: {
+                  nextEl: '.tp-slider-button-next',
+                  prevEl: '.tp-slider-button-prev',
+                },
+                pagination: {
+                  el: '.tp-slider-dot',
+                  clickable: true,
+                  renderBullet: (index: any, className: any) =>
+                    `<span class="${className}"><button>${index + 1}</button></span>`,
+                },
+              });
 
-            mainSlider.on('slideChangeTransitionStart', () => {
-              const isLight = document.querySelector('.swiper-slide.swiper-slide-active.is-light')
-                || document.querySelector('.tp-slider-item.is-light');
+              mainSlider.on('slideChangeTransitionStart', () => {
+                const isLight = document.querySelector('.swiper-slide.swiper-slide-active.is-light')
+                  || document.querySelector('.tp-slider-item.is-light');
 
-              const variation = document.querySelector('.tp-slider-variation');
-              if (variation) {
-                variation.classList.toggle('is-light', !!isLight);
-              }
-            });
-          }, 50);
+                const variation = document.querySelector('.tp-slider-variation');
+                if (variation) {
+                  variation.classList.toggle('is-light', !!isLight);
+                }
+              });
+            }, 50);
+            this.currency = this.cookieService.get("currency") ? this.cookieService.get("currency") : 'ARS';
+          })
         }
       });
-    });
+
   }
   getNewTotal(DISCOUNT_FLASH_PRODUCT:any, DISCOUNT_FLASH_P:any) {
-    if (DISCOUNT_FLASH_P.type_discount == 1) { //% de descuento
-      return (DISCOUNT_FLASH_PRODUCT.price_ars - (DISCOUNT_FLASH_PRODUCT.price_ars * (DISCOUNT_FLASH_P.discount * 0.01))).toFixed(2);
-    } else { //monto fijo /-pesos -dolares
-      return (DISCOUNT_FLASH_PRODUCT.price_ars - DISCOUNT_FLASH_P.discount).toFixed(2);
+    if(this.currency == 'ARS') {
+      if (DISCOUNT_FLASH_P.type_discount == 1) { //% de descuento
+        return (DISCOUNT_FLASH_PRODUCT.price_ars - (DISCOUNT_FLASH_PRODUCT.price_ars * (DISCOUNT_FLASH_P.discount * 0.01))).toFixed(2);
+      } else { //monto fijo /-pesos -dolares
+        return (DISCOUNT_FLASH_PRODUCT.price_ars - DISCOUNT_FLASH_P.discount).toFixed(2);
+      }
+    } else {
+      if (DISCOUNT_FLASH_P.type_discount == 1) { //% de descuento
+        return (DISCOUNT_FLASH_PRODUCT.price_usd - (DISCOUNT_FLASH_PRODUCT.price_usd * (DISCOUNT_FLASH_P.discount * 0.01))).toFixed(2);
+      } else { //monto fijo /-pesos -dolares
+        return (DISCOUNT_FLASH_PRODUCT.price_usd - DISCOUNT_FLASH_P.discount).toFixed(2);
+      }
     }
   }
 
@@ -93,7 +118,19 @@ export class LandingProductComponent {
     if(DISCOUNT_FLASH_PRODUCT.discount_g) {
       return this.getNewTotal(DISCOUNT_FLASH_PRODUCT, DISCOUNT_FLASH_PRODUCT.discount_g);
     }
+    if(this.currency == 'ARS') {
       return DISCOUNT_FLASH_PRODUCT.price_ars;
+    } else {
+      return DISCOUNT_FLASH_PRODUCT.price_usd;
+    }
+  }
+
+  getTotalCurrency(DISCOUNT_FLASH_PRODUCT:any){
+    if(this.currency == 'ARS'){
+      return DISCOUNT_FLASH_PRODUCT.price_ars;
+    } else {
+      return DISCOUNT_FLASH_PRODUCT.price_usd;
+    }
   }
 
   selectedVariation(variation: any) {
@@ -156,6 +193,6 @@ export class LandingProductComponent {
     this.product_selected_modal = null;
     setTimeout(() => {
       this.product_selected_modal = PRODUCT;
-    }, 50);
+    }, 100);
   }
 }
