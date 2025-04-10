@@ -1,11 +1,12 @@
 import { afterNextRender, Component, ChangeDetectorRef, afterRender  } from '@angular/core';
 import { HomeService } from './service/home.service';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ModalProductComponent } from '../guest-view/component/modal-product/modal-product.component';
 import { CookieService } from 'ngx-cookie-service';
 import { CartService } from './service/cart.service';
+import { ToastrService } from 'ngx-toastr';
 
 declare var Swiper: any;
 declare var $: any;
@@ -52,6 +53,8 @@ export class HomeComponent {
               private cdr: ChangeDetectorRef,
               private cookieService: CookieService,
               public cartService: CartService,
+              private toastr: ToastrService,
+              private router: Router,
             ) {
     // afterNextRender(() => {
       this.homeService.home().subscribe((resp: any) => {
@@ -259,6 +262,42 @@ export class HomeComponent {
 
     this.cartService.currentDataCart$.subscribe((resp:any) => {
       console.log(resp);
+    })
+  }
+
+  addCart(PRODUCT:any){
+    if(!this.cartService.authService.user){
+
+      this.toastr.error('Error', 'Ingrese a la tienda');
+      this.router.navigateByUrl("/login")
+      return
+    }
+
+    let data = {
+        product_id: PRODUCT.id,
+        type_discount: null,
+        discount: 0,
+        type_campaing: null,
+        code_cupon: null,
+        code_discount: null,
+        product_variation_id: null,
+        quantity: 1,
+        price_unit: PRODUCT.price_ars,
+        subtotal: PRODUCT.price_ars,
+        total: PRODUCT.price_ars,
+        currency: 'ARS',
+    }
+
+    this.cartService.registerCart(data).subscribe((resp:any) => {
+      console.log(resp);
+      if(resp.message_text == 403){
+        this.toastr.error('Error', 'message_text');
+      } else {
+        this.cartService.changeCart(resp.cart);
+        this.toastr.success('Exito', 'El producto se agrego al carrito de compra');
+      }
+    }, err => {
+      console.log(err);
     })
   }
 

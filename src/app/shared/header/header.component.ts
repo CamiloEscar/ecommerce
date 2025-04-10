@@ -18,6 +18,8 @@ export class HeaderComponent {
   categories_menus: any = [];
   currency:string = 'ARS';
 
+  user:any;
+
   constructor(public homeService: HomeService,
               public cookieService: CookieService,
               public cartService: CartService,
@@ -28,17 +30,23 @@ export class HeaderComponent {
         this.categories_menus = resp.categories_menus;
       });
       this.currency = this.cookieService.get("currency") ? this.cookieService.get("currency") : 'ARS';
+      this.user = this.cartService.authService.user;
+
+      if(this.user){
+        this.cartService.listCart().subscribe((resp:any) => {
+          console.log(resp)
+        })
+      }
     });
   }
 
   ngOnInit(): void {
     //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
     //Add 'implements OnInit' to the class.
-    this.cartService.changeCart({
-      id:1,
-      name: 'Prueba realizada con exito'
-    });
 
+    this.cartService.currentDataCart$.subscribe((resp:any)=> {
+      console.log(resp)
+    })
 
   }
   getIconMenu(MENU_CAT:any){
