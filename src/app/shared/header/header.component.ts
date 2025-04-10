@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { CookieService } from 'ngx-cookie-service';
+import { CartService } from '../../pages/home/service/cart.service';
 
 @Component({
   selector: 'app-header',
@@ -19,6 +20,7 @@ export class HeaderComponent {
 
   constructor(public homeService: HomeService,
               public cookieService: CookieService,
+              public cartService: CartService,
   ) {
     afterNextRender(() => {
       this.homeService.menus().subscribe((resp: any) => {
@@ -27,6 +29,16 @@ export class HeaderComponent {
       });
       this.currency = this.cookieService.get("currency") ? this.cookieService.get("currency") : 'ARS';
     });
+  }
+
+  ngOnInit(): void {
+    //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
+    //Add 'implements OnInit' to the class.
+    this.cartService.changeCart({
+      id:1,
+      name: 'Prueba realizada con exito'
+    });
+
 
   }
   getIconMenu(MENU_CAT:any){

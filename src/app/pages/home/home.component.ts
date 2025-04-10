@@ -5,6 +5,7 @@ import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ModalProductComponent } from '../guest-view/component/modal-product/modal-product.component';
 import { CookieService } from 'ngx-cookie-service';
+import { CartService } from './service/cart.service';
 
 declare var Swiper: any;
 declare var $: any;
@@ -49,7 +50,9 @@ export class HomeComponent {
 
   constructor(public homeService: HomeService,
               private cdr: ChangeDetectorRef,
-              private cookieService: CookieService) {
+              private cookieService: CookieService,
+              public cartService: CartService,
+            ) {
     // afterNextRender(() => {
       this.homeService.home().subscribe((resp: any) => {
         // console.log(resp);
@@ -254,6 +257,9 @@ export class HomeComponent {
 
   ngOnInit(): void {
 
+    this.cartService.currentDataCart$.subscribe((resp:any) => {
+      console.log(resp);
+    })
   }
 
   getLabelSlider(SLIDER: any) {
