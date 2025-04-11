@@ -267,7 +267,6 @@ export class HomeComponent {
 
   addCart(PRODUCT:any){
     if(!this.cartService.authService.user){
-
       this.toastr.error('Error', 'Ingrese a la tienda');
       this.router.navigateByUrl("/login")
       return
@@ -296,8 +295,8 @@ export class HomeComponent {
 
     this.cartService.registerCart(data).subscribe((resp:any) => {
       console.log(resp);
-      if(resp.message_text == 403){
-        this.toastr.error('Error', 'message_text');
+      if(resp.message == 403){
+        this.toastr.error('Error', resp.message_text);
       } else {
         this.cartService.changeCart(resp.cart);
         this.toastr.success('Exito', 'El producto se agrego al carrito de compra');

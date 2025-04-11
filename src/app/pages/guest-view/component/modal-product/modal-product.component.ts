@@ -1,6 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, SimpleChanges } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
+import { CartService } from '../../../home/service/cart.service';
+import { afterRender } from '@angular/core';
+import { CookieService } from 'ngx-cookie-service';
 
 @Component({
   selector: 'app-modal-product',
@@ -14,7 +19,20 @@ export class ModalProductComponent {
   @Input() product_selected:any;
 
   variation_selected: any;
+  sub_variation_selected:any;
 
+  currency:string = 'ARS';
+
+  constructor(
+    private toastr: ToastrService,
+    private router: Router,
+    private cartService: CartService,
+    public cookieService: CookieService
+  ){
+    afterRender(() => {
+      this.currency = this.cookieService.get("currency") ? this.cookieService.get("currency") : 'ARS';
+          })
+  }
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['product_selected'] && changes['product_selected'].currentValue) {
       this.resetModal();
@@ -95,5 +113,74 @@ selectedVariation(variation: any) {
         this.applyButtonStyles()
       }, 50)
     }, 50)
+  }
+
+  selectedSubVariation(subvariation:any){
+    this.sub_variation_selected = null
+    setTimeout(() => {
+      this.sub_variation_selected = subvariation
+
+    }, 50)
+  }
+
+  addCart(){
+    if(!this.cartService.authService.user){
+
+      this.toastr.error('Error', 'Ingrese a la tienda');
+      this.router.navigateByUrl("/login")
+      return
+    }
+
+    let product_variation_id = null
+    if(this.product_selected.variations.length > 0){
+      if(!this.variation_selected){
+        this.toastr.error('Error', 'Necesitas seleccionar una variacion');
+        return;
+      }
+
+      if(this.variation_selected && this.variation_selected.subvariations.length > 0 ){
+        if(!this.sub_variation_selected){
+          this.toastr.error('Error', 'Necesitas seleccionar una caracteristica');
+          return;
+        }
+      }
+    }
+
+    if(this.product_selected.variations.length > 0 && this.variation_selected &&
+      this.variation_selected.subvariations.length == 0){
+      product_variation_id = this.variation_selected.id;
+    }
+
+    if(this.product_selected.variations.length > 0 && this.variation_selected &&
+      this.variation_selected.subvariations.length > 0){
+      product_variation_id = this.sub_variation_selected.id;
+    }
+
+    let data = {
+        product_id: this.product_selected.id,
+        type_discount: null,
+        discount: 0,
+        type_campaing: null,
+        code_cupon: null,
+        code_discount: null,
+        product_variation_id: product_variation_id,
+        quantity: 1,
+        price_unit: this.product_selected.price_ars,
+        subtotal: this.product_selected.price_ars,
+        total: this.product_selected.price_ars,
+        currency: this.currency,
+    }
+
+    this.cartService.registerCart(data).subscribe((resp:any) => {
+      console.log(resp);
+      if(resp.message == 403){
+        this.toastr.error('Error', resp.message_text);
+      } else {
+        this.cartService.changeCart(resp.cart);
+        this.toastr.success('Exito', 'El producto se agrego al carrito de compra');
+      }
+    }, err => {
+      console.log(err);
+    })
   }
 }
