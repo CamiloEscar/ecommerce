@@ -122,9 +122,9 @@
       <!-- <span class="tp-product-details-price old-price mx-1">$320.00</span>
       <span class="tp-product-details-price new-price mx-1">$236.00</span> -->
       @if(product_selected.discount_g){
-        <span class="tp-product-details-price old-price mx-1">${{product_selected.price_ars}}</span>
+        <span class="tp-product-details-price old-price mx-1">${{product_selected.price_ars}} {{currency}}</span>
       }
-      <span class="tp-product-details-price new-price mx-1"> ${{getTotalPriceProduct(product_selected)}}</span
+      <span class="tp-product-details-price new-price mx-1"> ${{getTotalPriceProduct(product_selected)}} {{currency}}</span
       >
     </div>
 
@@ -208,7 +208,7 @@
                 />
               </svg>
             </span>
-            <input class="tp-cart-input" type="text" value="1" />
+            <input class="tp-cart-input" id="tp-cart-input-val" type="text" value="1" />
             <span class="tp-cart-plus">
               <svg
                 width="11"

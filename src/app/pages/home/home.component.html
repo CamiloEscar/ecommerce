@@ -709,7 +709,7 @@
                   <div class="col-xl-3 col-lg-3 col-sm-6">
                     <div class="tp-product-item p-relative transition-3 mb-25">
                       <div class="tp-product-thumb p-relative fix m-img">
-                        <a [routerLink]="['/producto/'+TRENDING_PRODUCTS_FEATURED.slug]">
+                        <a [routerLink]="['/producto/'+product.slug]">
                           <img
                             [src]="product.imagen" style="width: 304px; height:261px; object-fit:contain"
                             alt="product-electronic"
@@ -910,7 +910,7 @@
                   <div class="col-xl-3 col-lg-3 col-sm-6">
                     <div class="tp-product-item p-relative transition-3 mb-25">
                       <div class="tp-product-thumb p-relative fix m-img">
-                        <a [routerLink]="['/producto/'+TRENDING_PRODUCTS_TOP_SELLER.slug]">
+                        <a [routerLink]="['/producto/'+product.slug]">
                           <img
                             [src]="product.imagen" style="width: 304px; height:261px; object-fit:contain"
                             alt="product-electronic"
@@ -1124,7 +1124,7 @@
                 <div class="tp-banner-content">
                   <span>{{ BANNER.subtitle}}</span>
                   <h3 class="tp-banner-title">
-                    <a [routerLink]="['/producto/'+BANNER_SECUNDARIOS.slug]" [id]="'title-banner-s-'+BANNER.id">{{ BANNER.title }}</a>
+                    <a [routerLink]="['/producto/'+BANNER.slug]" [id]="'title-banner-s-'+BANNER.id">{{ BANNER.title }}</a>
                     <!-- {{getTitleBannerSecundario(BANNER, 'title-banner-s-'+BANNER.id)}} -->
                   </h3>
                   @if(BANNER.link){
@@ -1346,7 +1346,7 @@
                           <button
                             type="button"
                             class="tp-product-action-btn tp-product-quick-view-btn"
-                            (click)="openDetailProduct(DISCOUNT_FLASH_PRODUCT)"
+                            (click)="openDetailProduct(DISCOUNT_FLASH_PRODUCT, DISCOUNT_FLASH)"
                             data-bs-toggle="modal"
                             data-bs-target="#producQuickViewModal"
                           >
@@ -1411,6 +1411,7 @@
                         <button
                           type="button"
                           class="tp-product-add-cart-btn-large"
+                          (click)="addCart(DISCOUNT_FLASH_PRODUCT)"
                         >
                           <svg
                             width="20"
@@ -1894,7 +1895,7 @@
                       <div
                         class="tp-product-banner-thumb text-end p-relative z-index-1"
                       >
-                        <img [src]="BANNER_PRODUCTO.imagen"  alt="" />
+                        <img [src]="BANNER_PRODUCTO.imagen" style="width: 300px; height: 400px; object-fit:contain" alt="" />
                       </div>
                     </div>
                   </div>

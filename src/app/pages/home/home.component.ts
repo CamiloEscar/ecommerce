@@ -367,71 +367,76 @@ export class HomeComponent {
 
 
 
-  openDetailProduct(TRENDING_PRODUCT: any) {
+  openDetailProduct(TRENDING_PRODUCT: any, DISCOUNT_FLASH:any = null) {
     // First reset the variation_selected
+    this.product_selected = null
     this.variation_selected = null
     // Then set the new product
-    this.product_selected = TRENDING_PRODUCT
-
     setTimeout(() => {
+      setTimeout(() => {
+        if(DISCOUNT_FLASH){
+          this.product_selected.discount_g = DISCOUNT_FLASH;
+        }
+      }, 25);
+      this.product_selected = TRENDING_PRODUCT
       // Apply background colors and button behaviors
-      this.applyButtonStyles()
+      // this.applyButtonStyles()
     }, 100) // Increased timeout to ensure DOM is ready
   }
 
-  selectedVariation(variation: any) {
-    this.variation_selected = null
-    setTimeout(() => {
-      this.variation_selected = variation
+  // selectedVariation(variation: any) {
+  //   this.variation_selected = null
+  //   setTimeout(() => {
+  //     this.variation_selected = variation
 
-      // Add another timeout to ensure the DOM is updated with the new subvariations
-      setTimeout(() => {
-        this.applyButtonStyles()
-      }, 50)
-    }, 50)
-  }
+  //     // Add another timeout to ensure the DOM is updated with the new subvariations
+  //     setTimeout(() => {
+  //       this.applyButtonStyles()
+  //     }, 50)
+  //   }, 50)
+  // }
 
-  // Improved method to apply button styles
-  applyButtonStyles() {
-    // Target all spans with data-bg-color attribute
-    const bgElements = document.querySelectorAll<HTMLElement>("span[data-bg-color]")
-    bgElements.forEach((el) => {
-      const color = el.getAttribute("data-bg-color")
-      if (color) {
-        el.style.backgroundColor = color
-      }
-    })
+  // // Improved method to apply button styles
+  // applyButtonStyles() {
+  //   // Target all spans with data-bg-color attribute
+  //   const bgElements = document.querySelectorAll<HTMLElement>("span[data-bg-color]")
+  //   bgElements.forEach((el) => {
+  //     const color = el.getAttribute("data-bg-color")
+  //     if (color) {
+  //       el.style.backgroundColor = color
+  //     }
+  //   })
 
-    // Also handle Angular's [attr.data-bg-color] binding
-    // This is needed because Angular might render these differently
-    document.querySelectorAll<HTMLElement>(".tp-color-variation-btn span").forEach((span) => {
-      // Check if this span has a background color set by Angular
-      const computedStyle = window.getComputedStyle(span)
-      if (computedStyle.backgroundColor === "rgba(0, 0, 0, 0)" || computedStyle.backgroundColor === "transparent") {
-        // Try to get the color from the attribute
-        const color = span.getAttribute("data-bg-color")
-        if (color) {
-          span.style.backgroundColor = color
-        }
-      }
-    })
+  //   // Also handle Angular's [attr.data-bg-color] binding
+  //   // This is needed because Angular might render these differently
+  //   document.querySelectorAll<HTMLElement>(".tp-color-variation-btn span").forEach((span) => {
+  //     // Check if this span has a background color set by Angular
+  //     const computedStyle = window.getComputedStyle(span)
+  //     if (computedStyle.backgroundColor === "rgba(0, 0, 0, 0)" || computedStyle.backgroundColor === "transparent") {
+  //       // Try to get the color from the attribute
+  //       const color = span.getAttribute("data-bg-color")
+  //       if (color) {
+  //         span.style.backgroundColor = color
+  //       }
+  //     }
+  //   })
 
-    // Activar botón de color
-    const colorBtns = document.querySelectorAll<HTMLElement>(".tp-color-variation-btn")
-    colorBtns.forEach((btn) => {
-      btn.onclick = () => {
-        colorBtns.forEach((b) => b.classList.remove("active"))
-        btn.classList.add("active")
-      }
-    })
+  //   // Activar botón de color
+  //   const colorBtns = document.querySelectorAll<HTMLElement>(".tp-color-variation-btn")
+  //   colorBtns.forEach((btn) => {
+  //     btn.onclick = () => {
+  //       colorBtns.forEach((b) => b.classList.remove("active"))
+  //       btn.classList.add("active")
+  //     }
+  //   })
 
-    // Activar botón de tamaño
-    const sizeBtns = document.querySelectorAll<HTMLElement>(".tp-size-variation-btn")
-    sizeBtns.forEach((btn) => {
-      btn.onclick = () => {
-        sizeBtns.forEach((b) => b.classList.remove("active"))
-        btn.classList.add("active")
-      }
-    })
-  }
+  //   // Activar botón de tamaño
+  //   const sizeBtns = document.querySelectorAll<HTMLElement>(".tp-size-variation-btn")
+  //   sizeBtns.forEach((btn) => {
+  //     btn.onclick = () => {
+  //       sizeBtns.forEach((b) => b.classList.remove("active"))
+  //       btn.classList.add("active")
+  //     }
+  //   })
+  // }
 }

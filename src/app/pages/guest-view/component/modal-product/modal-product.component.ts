@@ -95,6 +95,32 @@ export class ModalProductComponent {
         btn.classList.add("active")
       }
     })
+
+    document.querySelectorAll<HTMLButtonElement>('.tp-cart-minus').forEach(button => {
+      button.addEventListener('click', function (e: Event) {
+        const parent = this.parentElement;
+        const input = parent?.querySelector<HTMLInputElement>('input');
+        if (!input) return;
+
+        let count = parseInt(input.value) - 1;
+        count = count < 1 ? 1 : count;
+        input.value = count.toString();
+        input.dispatchEvent(new Event('change'));
+        e.preventDefault();
+      });
+    });
+
+    document.querySelectorAll<HTMLButtonElement>('.tp-cart-plus').forEach(button => {
+      button.addEventListener('click', function (e: Event) {
+        const parent = this.parentElement;
+        const input = parent?.querySelector<HTMLInputElement>('input');
+        if (!input) return;
+
+        input.value = (parseInt(input.value) + 1).toString();
+        input.dispatchEvent(new Event('change'));
+        e.preventDefault();
+      });
+    });
   }
 
   getTotalPriceProduct(DISCOUNT_FLASH_PRODUCT:any) {
@@ -105,6 +131,7 @@ export class ModalProductComponent {
   }
 selectedVariation(variation: any) {
     this.variation_selected = null
+    this.sub_variation_selected = null
     setTimeout(() => {
       this.variation_selected = variation
 
@@ -156,20 +183,30 @@ selectedVariation(variation: any) {
       product_variation_id = this.sub_variation_selected.id;
     }
 
-    let data = {
-        product_id: this.product_selected.id,
-        type_discount: null,
-        discount: 0,
-        type_campaing: null,
-        code_cupon: null,
-        code_discount: null,
-        product_variation_id: product_variation_id,
-        quantity: 1,
-        price_unit: this.product_selected.price_ars,
-        subtotal: this.product_selected.price_ars,
-        total: this.product_selected.price_ars,
-        currency: this.currency,
+    const input = document.getElementById("tp-cart-input-val") as HTMLInputElement | null;
+    const quantity = input ? parseInt(input.value) || 1 : 1;
+
+    let discount_g = null;
+
+    if(this.product_selected.discount_g){
+      discount_g = this.product_selected.discount_g;
     }
+
+    let data = {
+      product_id: this.product_selected.id,
+      type_discount: discount_g ? discount_g.type_discount : null,
+      discount: discount_g ? discount_g.discount : null,
+      type_campaing: discount_g ? discount_g.type_campaing : null,
+      code_cupon: null,
+      code_discount: discount_g ? discount_g.code : null,
+      product_variation_id: product_variation_id,
+      quantity: quantity,
+      price_unit: this.product_selected.price_ars,
+      subtotal: this.getTotalPriceProduct(this.product_selected),
+      total: this.getTotalPriceProduct(this.product_selected) * quantity,
+      currency: this.currency,
+    };
+
 
     this.cartService.registerCart(data).subscribe((resp:any) => {
       console.log(resp);
