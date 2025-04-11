@@ -19,6 +19,8 @@ export class HeaderComponent {
   currency:string = 'ARS';
 
   user:any;
+  listCarts: any = [];
+  totalCarts:number = 0;
 
   constructor(public homeService: HomeService,
               public cookieService: CookieService,
@@ -35,6 +37,9 @@ export class HeaderComponent {
       if(this.user){
         this.cartService.listCart().subscribe((resp:any) => {
           console.log(resp)
+          resp.carts.data.forEach((cart:any) => {
+            this.cartService.changeCart(cart)
+          });
         })
       }
     });
@@ -46,6 +51,8 @@ export class HeaderComponent {
 
     this.cartService.currentDataCart$.subscribe((resp:any)=> {
       console.log(resp)
+      this.listCarts = resp;
+      this.totalCarts = this.listCarts.reduce((sum:number, item:any) => sum + item.total, 0 )
     })
 
   }

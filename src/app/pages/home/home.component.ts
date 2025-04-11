@@ -273,6 +273,12 @@ export class HomeComponent {
       return
     }
 
+    if(PRODUCT.variations.length > 0){
+      $("#producQuickViewModal").modal("show");
+      this.openDetailProduct(PRODUCT);
+      return;
+    }
+
     let data = {
         product_id: PRODUCT.id,
         type_discount: null,
@@ -285,7 +291,7 @@ export class HomeComponent {
         price_unit: PRODUCT.price_ars,
         subtotal: PRODUCT.price_ars,
         total: PRODUCT.price_ars,
-        currency: 'ARS',
+        currency: this.currency,
     }
 
     this.cartService.registerCart(data).subscribe((resp:any) => {
