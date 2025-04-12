@@ -31,7 +31,7 @@ ngOnInit(): void {
   //Add 'implements OnInit' to the class.
   this.currency = this.cookieService.get("currency") ? this.cookieService.get("currency") : 'ARS';
   this.cartService.currentDataCart$.subscribe((resp:any)=> {
-    console.log(resp)
+    // console.log(resp)
     this.listCarts = resp;
     this.totalCarts = this.listCarts.reduce((sum:number, item:any) => sum + item.total, 0 )  //el controlador esta escuchando todo el tiempo, asi que cuando se elimine el controlador actualiza
   })
@@ -45,5 +45,38 @@ deleteCart(CART:any){
   })
 }
 
+minusQuantity(cart:any){
+  if(cart.quantity == 1){
+    this.toastr.error('Validacion', "El valor no puede ser menor a 1");
+    return;
+  }
+  cart.quantity = cart.quantity - 1
+  cart.total = cart.subtotal * cart.quantity;
+  this.cartService.updateCart(cart.id, cart).subscribe((resp:any) => {
+    console.log(resp)
+    if(resp.message == 403){
+      this.toastr.error('Validacion', resp.message_text);
+    } else {
+      this.cartService.changeCart(resp.cart);
+      this.toastr.info("Exito", "Se actualizo el producto " + resp.cart.product.title)
+    }
+  })
+}
+plusQuantity(cart:any){
+  let quantity_old = cart.quantity;
+  cart.quantity = cart.quantity + 1
+  cart.total = cart.subtotal * cart.quantity;
+  this.cartService.updateCart(cart.id, cart).subscribe((resp:any) => {
+    console.log(resp)
+    if(resp.message == 403){
+      cart.quantity = quantity_old;
+      cart.total = cart.subtotal * cart.quantity;
+      this.toastr.error('Validacion', resp.message_text);
+    } else {
+      this.cartService.changeCart(resp.cart);
+      this.toastr.info("Exito", "Se actualizo el producto " + resp.cart.product.title)
+    }
+  })
+}
 
 }

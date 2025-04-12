@@ -30,7 +30,7 @@ export class HeaderComponent {
   ) {
     afterNextRender(() => {
       this.homeService.menus().subscribe((resp: any) => {
-        console.log(resp);
+        // console.log(resp);
         this.categories_menus = resp.categories_menus;
       });
       this.currency = this.cookieService.get("currency") ? this.cookieService.get("currency") : 'ARS';
@@ -38,7 +38,7 @@ export class HeaderComponent {
 
       if(this.user){
         this.cartService.listCart().subscribe((resp:any) => {
-          console.log(resp)
+          // console.log(resp)
           resp.carts.data.forEach((cart:any) => {
             this.cartService.changeCart(cart)
           });
@@ -52,7 +52,7 @@ export class HeaderComponent {
     //Add 'implements OnInit' to the class.
 
     this.cartService.currentDataCart$.subscribe((resp:any)=> {
-      console.log(resp)
+      // console.log(resp)
       this.listCarts = resp;
       this.totalCarts = this.listCarts.reduce((sum:number, item:any) => sum + item.total, 0 )  //el controlador esta escuchando todo el tiempo, asi que cuando se elimine el controlador actualiza
     })
