@@ -109,17 +109,17 @@ function HOMEINIT($) {
 		});
 	}
 
-	if ($("#tp-offcanvas-currency-toggle").length > 0) {
-		window.addEventListener('click', function(e){
+	// if ($("#tp-offcanvas-currency-toggle").length > 0) {
+	// 	window.addEventListener('click', function(e){
 
-			if (document.getElementById('tp-offcanvas-currency-toggle').contains(e.target)){
-				$(".tp-currency-list").toggleClass("tp-currency-list-open");
-			}
-			else{
-				$(".tp-currency-list").removeClass("tp-currency-list-open");
-			}
-		});
-	}
+	// 		if (document.getElementById('tp-offcanvas-currency-toggle').contains(e.target)){
+	// 			$(".tp-currency-list").toggleClass("tp-currency-list-open");
+	// 		}
+	// 		else{
+	// 			$(".tp-currency-list").removeClass("tp-currency-list-open");
+	// 		}
+	// 	});
+	// }
 
 	// for header language
 	if ($("#tp-header-lang-toggle").length > 0) {
@@ -135,17 +135,17 @@ function HOMEINIT($) {
 	}
 
 	// for header currency
-	if ($("#tp-header-currency-toggle").length > 0) {
-		window.addEventListener('click', function(e){
+	// if ($("#tp-header-currency-toggle").length > 0) {
+	// 	window.addEventListener('click', function(e){
 
-			if (document.getElementById('tp-header-currency-toggle').contains(e.target)){
-				$(".tp-header-currency ul").toggleClass("tp-currency-list-open");
-			}
-			else{
-				$(".tp-header-currency ul").removeClass("tp-currency-list-open");
-			}
-		});
-	}
+	// 		if (document.getElementById('tp-header-currency-toggle').contains(e.target)){
+	// 			$(".tp-header-currency ul").toggleClass("tp-currency-list-open");
+	// 		}
+	// 		else{
+	// 			$(".tp-header-currency ul").removeClass("tp-currency-list-open");
+	// 		}
+	// 	});
+	// }
 
 	// for header setting
 	if ($("#tp-header-setting-toggle").length > 0) {

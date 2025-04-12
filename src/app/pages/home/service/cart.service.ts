@@ -68,4 +68,9 @@ export class CartService {
     let URL = URL_SERVICIOS+"/ecommerce/carts/"+cart_id;
     return this.http.delete(URL, {headers: headers});
   }
+  deleteCartsAll(){
+    let headers = new HttpHeaders({'Authorization': 'Bearer '+this.authService.token});
+    let URL = URL_SERVICIOS+"/ecommerce/carts/delete_all";  // This is now correct with the underscore
+    return this.http.delete(URL, {headers: headers});
+}
 }

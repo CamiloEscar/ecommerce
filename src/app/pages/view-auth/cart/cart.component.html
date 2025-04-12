@@ -6,10 +6,10 @@
         <div class="row">
            <div class="col-xxl-12">
               <div class="breadcrumb__content p-relative z-index-1">
-                 <h3 class="breadcrumb__title">Shopping Cart    (agregar mas adelante precio de envio)</h3>
+                 <h3 class="breadcrumb__title">Shopping Cart</h3>
                  <div class="breadcrumb__list">
                     <span><a href="#">Home</a></span>
-                    <span>Shopping Cart</span>
+                    <span>Shopping Cart    <small>(agregar mas adelante precio de envio o calculo de las dos monedas)</small></span>
                  </div>
               </div>
            </div>
@@ -45,7 +45,7 @@
                             {{cart.product.title}}
                           </a></td>
                            <!-- price -->
-                           <td class="tp-cart-price"><span>{{cart.subtotal}} {{currency}}</span></td>
+                           <td class="tp-cart-price"><span>{{cart.subtotal}} {{cart.currency}}</span></td>
 
                            <!-- quantity -->
                            <td class="tp-cart-quantity">
@@ -65,7 +65,7 @@
                               </div>
                            </td>
 
-                           <td class="tp-cart-price"><span>{{cart.total}} {{currency}}</span></td>
+                           <td class="tp-cart-price"><span>{{cart.total}} {{cart.currency}}</span></td>
                            <!-- action -->
                            <td class="tp-cart-action">
                               <button class="tp-cart-action-btn" (click)="deleteCart(cart)">
@@ -134,7 +134,7 @@
                     <span>${{totalCarts}} {{currency}}</span>
                  </div>
                  <div class="tp-cart-checkout-proceed">
-                    <a href="checkout.html" class="tp-cart-checkout-btn w-100">Proceed to Checkout</a>
+                    <a routerLink="/proceso-de-pago" class="tp-cart-checkout-btn w-100">Proceed to Checkout</a>
                  </div>
               </div>
            </div>
