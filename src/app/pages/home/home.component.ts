@@ -87,7 +87,7 @@ export class HomeComponent {
     // });
 
     afterRender(() => {
-      setTimeout(() => {
+      // setTimeout(() => {
         this.SLIDERS.forEach((SLIDER:any) => {
           this.getLabelSlider(SLIDER)
           this.getSubtitleSlider(SLIDER)
@@ -248,7 +248,7 @@ export class HomeComponent {
                 this.style.backgroundImage = `url(${background})`;
               }
             });
-          }, 50);
+          // }, 50);
         })
       this.currency = this.cookieService.get("currency") ? this.cookieService.get("currency") : 'ARS';
     })
@@ -261,7 +261,7 @@ export class HomeComponent {
   ngOnInit(): void {
 
     this.cartService.currentDataCart$.subscribe((resp:any) => {
-      console.log(resp);
+      // console.log(resp);
     })
   }
 
@@ -346,11 +346,20 @@ export class HomeComponent {
     }
   }
 
-  getTotalPriceProduct(DISCOUNT_FLASH_PRODUCT:any) {
-    if(DISCOUNT_FLASH_PRODUCT.discount_g) {
+  getTotalPriceProduct(DISCOUNT_FLASH_PRODUCT: any)
+  {
+    // primero chequeamos que hay un descuento en el producto
+    if (DISCOUNT_FLASH_PRODUCT.discount_g) {
       return this.getNewTotal(DISCOUNT_FLASH_PRODUCT, DISCOUNT_FLASH_PRODUCT.discount_g);
     }
-    if(this.currency == 'ARS'){
+
+    // luego chequeamos si tiene el descuento flash
+    if (this.DISCOUNT_FLASH && this.DISCOUNT_FLASH_PRODUCT.includes(DISCOUNT_FLASH_PRODUCT)) {
+      return this.getNewTotal(DISCOUNT_FLASH_PRODUCT, this.DISCOUNT_FLASH);
+    }
+
+    // precio comun
+    if (this.currency == "ARS") {
       return DISCOUNT_FLASH_PRODUCT.price_ars;
     } else {
       return DISCOUNT_FLASH_PRODUCT.price_usd;
