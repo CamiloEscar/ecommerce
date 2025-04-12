@@ -318,7 +318,7 @@ export class LandingProductComponent {
       code_discount: discount_g ? discount_g.code : null,
       product_variation_id: product_variation_id,
       quantity: quantity,
-      price_unit: this.PRODUCT_SELECTED.price_ars,
+      price_unit: this.currency == 'ARS' ? this.PRODUCT_SELECTED.price_ars : this.PRODUCT_SELECTED.price_usd,
       subtotal: this.getTotalPriceProduct(this.PRODUCT_SELECTED),
       total: this.getTotalPriceProduct(this.PRODUCT_SELECTED) * quantity,
       currency: this.currency,

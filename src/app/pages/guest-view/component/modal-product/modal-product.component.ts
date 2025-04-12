@@ -47,10 +47,18 @@ export class ModalProductComponent {
   }
 
   getNewTotal(DISCOUNT_FLASH_PRODUCT:any, DISCOUNT_FLASH_P:any) {
+    if(this.currency == 'ARS') {
     if (DISCOUNT_FLASH_P.type_discount == 1) { //% de descuento
       return (DISCOUNT_FLASH_PRODUCT.price_ars - (DISCOUNT_FLASH_PRODUCT.price_ars * (DISCOUNT_FLASH_P.discount * 0.01))).toFixed(2);
     } else { //monto fijo /-pesos -dolares
       return (DISCOUNT_FLASH_PRODUCT.price_ars - DISCOUNT_FLASH_P.discount).toFixed(2);
+    }
+  } else {
+      if (DISCOUNT_FLASH_P.type_discount == 1) { //% de descuento
+        return (DISCOUNT_FLASH_PRODUCT.price_usd - (DISCOUNT_FLASH_PRODUCT.price_usd * (DISCOUNT_FLASH_P.discount * 0.01))).toFixed(2);
+      } else { //monto fijo /-pesos -dolares
+        return (DISCOUNT_FLASH_PRODUCT.price_usd - DISCOUNT_FLASH_P.discount).toFixed(2);
+      }
     }
   }
 
@@ -134,7 +142,11 @@ export class ModalProductComponent {
     if(DISCOUNT_FLASH_PRODUCT.discount_g) {
       return this.getNewTotal(DISCOUNT_FLASH_PRODUCT, DISCOUNT_FLASH_PRODUCT.discount_g);
     }
-      return DISCOUNT_FLASH_PRODUCT.price_ars;
+    if (this.currency == "ARS") {
+      return DISCOUNT_FLASH_PRODUCT.price_ars
+    } else {
+      return DISCOUNT_FLASH_PRODUCT.price_usd
+    }
   }
   selectedVariation(variation: any) {
       this.variation_selected = null
@@ -208,7 +220,7 @@ export class ModalProductComponent {
       code_discount: discount_g ? discount_g.code : null,
       product_variation_id: product_variation_id,
       quantity: quantity,
-      price_unit: this.product_selected.price_ars,
+      price_unit: this.currency == 'ARS' ? this.product_selected.price_ars : this.product_selected.price_usd,
       subtotal: this.getTotalPriceProduct(this.product_selected),
       total: this.getTotalPriceProduct(this.product_selected) * quantity,
       currency: this.currency,

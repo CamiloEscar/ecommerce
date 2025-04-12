@@ -293,7 +293,7 @@ export class HomeComponent {
         code_discount: discount_g ? discount_g.code : null,
         product_variation_id: null,
         quantity: 1,
-        price_unit: PRODUCT.price_ars,
+        price_unit: this.currency == 'ARS' ? PRODUCT.price_ars : PRODUCT.price_usd,
         subtotal: this.getTotalPriceProduct(PRODUCT),
         total: this.getTotalPriceProduct(PRODUCT) * 1,
         currency: this.currency,
