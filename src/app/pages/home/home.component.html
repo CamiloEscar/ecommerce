@@ -509,7 +509,7 @@
                     <div class="col-xl-3 col-lg-3 col-sm-6">
                       <div class="tp-product-item p-relative transition-3 mb-25">
                         <div class="tp-product-thumb p-relative fix m-img">
-                          <a [routerLink]="['/producto/'+TRENDING_PRODUCT.slug]">
+                          <a target="_blank" [routerLink]="['/producto/'+TRENDING_PRODUCT.slug]">
                             <img
                               [src]="TRENDING_PRODUCT.imagen" style="width: 304px; height:261px; object-fit:contain"
                               alt="product-electronic"
@@ -661,10 +661,10 @@
                         <!-- product content -->
                         <div class="tp-product-content">
                           <div class="tp-product-category">
-                            <a [routerLink]="['/producto/'+TRENDING_PRODUCT.slug]">{{TRENDING_PRODUCT.brand.name}}</a>
+                            <a target="_blank" [routerLink]="['/producto/'+TRENDING_PRODUCT.slug]">{{TRENDING_PRODUCT.brand.name}}</a>
                           </div>
                           <h3 class="tp-product-title">
-                            <a [routerLink]="['/producto/'+TRENDING_PRODUCT.slug]">
+                            <a target="_blank" [routerLink]="['/producto/'+TRENDING_PRODUCT.slug]">
                               {{TRENDING_PRODUCT.title}}
                             </a>
                           </h3>
@@ -709,7 +709,7 @@
                   <div class="col-xl-3 col-lg-3 col-sm-6">
                     <div class="tp-product-item p-relative transition-3 mb-25">
                       <div class="tp-product-thumb p-relative fix m-img">
-                        <a [routerLink]="['/producto/'+product.slug]">
+                        <a target="_blank" [routerLink]="['/producto/'+product.slug]">
                           <img
                             [src]="product.imagen" style="width: 304px; height:261px; object-fit:contain"
                             alt="product-electronic"
@@ -861,10 +861,10 @@
                       <!-- product content -->
                       <div class="tp-product-content">
                         <div class="tp-product-category">
-                          <a [routerLink]="['/producto/'+product.slug]">{{product.brand.name}}</a>
+                          <a target="_blank" [routerLink]="['/producto/'+product.slug]">{{product.brand.name}}</a>
                         </div>
                         <h3 class="tp-product-title">
-                          <a [routerLink]="['/producto/'+product.slug]">
+                          <a target="_blank" [routerLink]="['/producto/'+product.slug]">
                             {{product.title}}
                           </a>
                         </h3>
@@ -910,7 +910,7 @@
                   <div class="col-xl-3 col-lg-3 col-sm-6">
                     <div class="tp-product-item p-relative transition-3 mb-25">
                       <div class="tp-product-thumb p-relative fix m-img">
-                        <a [routerLink]="['/producto/'+product.slug]">
+                        <a target="_blank" [routerLink]="['/producto/'+product.slug]">
                           <img
                             [src]="product.imagen" style="width: 304px; height:261px; object-fit:contain"
                             alt="product-electronic"
@@ -1062,10 +1062,10 @@
                       <!-- product content -->
                       <div class="tp-product-content">
                         <div class="tp-product-category">
-                          <a [routerLink]="['/producto/'+product.slug]">{{product.brand.name}}</a>
+                          <a target="_blank" [routerLink]="['/producto/'+product.slug]">{{product.brand.name}}</a>
                         </div>
                         <h3 class="tp-product-title">
-                          <a [routerLink]="['/producto/'+product.slug]">
+                          <a target="_blank" [routerLink]="['/producto/'+product.slug]">
                             {{product.title}}
                           </a>
                         </h3>
@@ -1124,7 +1124,7 @@
                 <div class="tp-banner-content">
                   <span>{{ BANNER.subtitle}}</span>
                   <h3 class="tp-banner-title">
-                    <a [routerLink]="['/producto/'+BANNER.slug]" [id]="'title-banner-s-'+BANNER.id">{{ BANNER.title }}</a>
+                    <a target="_blank" [routerLink]="['/producto/'+BANNER.slug]" [id]="'title-banner-s-'+BANNER.id"><span [innerHTML]="BANNER.title"></span></a>
                     <!-- {{getTitleBannerSecundario(BANNER, 'title-banner-s-'+BANNER.id)}} -->
                   </h3>
                   @if(BANNER.link){
@@ -1173,7 +1173,7 @@
                 ></div>
                 <div class="tp-banner-content">
                   <h3 class="tp-banner-title">
-                    <a [routerLink]="['/producto/'+BANNER.slug]" [id]="'title-banner-sa-'+BANNER.id">{{ BANNER.title }}
+                    <a target="_blank" [routerLink]="['/producto/'+BANNER.slug]" [id]="'title-banner-sa-'+BANNER.id"><span [innerHTML]="BANNER.title"></span>
                       <!-- {{getTitleBannerSecundario(BANNER, 'title-banner-sa-'+BANNER.id)}} -->
                       </a>
                   </h3>
@@ -1289,7 +1289,7 @@
                   <div class="tp-product-offer-item tp-product-item transition-3 swiper-slide"
                   >
                     <div class="tp-product-thumb p-relative fix m-img">
-                      <a [routerLink]="['/producto/'+DISCOUNT_FLASH_PRODUCT.slug]" [queryParams]="{campaing_discount: DISCOUNT_FLASH.code}">
+                      <a target="_blank" [routerLink]="['/producto/'+DISCOUNT_FLASH_PRODUCT.slug]" [queryParams]="{campaing_discount: DISCOUNT_FLASH.code}">
                         <img
                           [src]="DISCOUNT_FLASH_PRODUCT.imagen"
                           style="width: 386px; height: 386px; object-fit:contain"
@@ -1466,10 +1466,10 @@
                     <!-- product content -->
                     <div class="tp-product-content">
                       <div class="tp-product-category">
-                        <a [routerLink]="['/producto/'+DISCOUNT_FLASH_PRODUCT.slug]" [queryParams]="{campaing_discount: DISCOUNT_FLASH.code}">{{DISCOUNT_FLASH_PRODUCT.brand.name}}</a>
+                        <a target="_blank" [routerLink]="['/producto/'+DISCOUNT_FLASH_PRODUCT.slug]" [queryParams]="{campaing_discount: DISCOUNT_FLASH.code}">{{DISCOUNT_FLASH_PRODUCT.brand.name}}</a>
                       </div>
                       <h3 class="tp-product-title">
-                        <a [routerLink]="['/producto/'+DISCOUNT_FLASH_PRODUCT.slug]" [queryParams]="{campaing_discount: DISCOUNT_FLASH.code}">>
+                        <a target="_blank" [routerLink]="['/producto/'+DISCOUNT_FLASH_PRODUCT.slug]" [queryParams]="{campaing_discount: DISCOUNT_FLASH.code}">>
                           {{DISCOUNT_FLASH_PRODUCT.title}}
                         </a>
                       </h3>
@@ -1568,7 +1568,7 @@
                             </a> -->
                             <ul class="mega-menu tp-submenu">
                               <li *ngFor="let sub of cat.subcategories">
-                                <a [routerLink]="['/producto/'+sub.slug]">{{ sub.name }}</a>
+                                <a target="_blank" [routerLink]="['/producto/'+sub.slug]">{{ sub.name }}</a>
                                 <!-- <img *ngIf="sub.imagen" [src]="sub.imagen" style="width: 247px; height: 149px; object-fit: cover;"> -->
                               </li>
                             </ul>
@@ -1661,7 +1661,7 @@
                 <div class="col-xl-4 col-sm-6">
                   <div class="tp-product-item p-relative transition-3 mb-25" >
                     <div class="tp-product-thumb p-relative fix m-img">
-                      <a [routerLink]="['/producto/'+PRODUCT_COMIC.slug]">
+                      <a target="_blank" [routerLink]="['/producto/'+PRODUCT_COMIC.slug]">
                         <img
                           [src]="PRODUCT_COMIC.imagen"
                           style="width: 248px; height: 240px; object-fit:contain"
@@ -1809,10 +1809,10 @@
                     <!-- product content -->
                     <div class="tp-product-content">
                       <div class="tp-product-category">
-                        <a [routerLink]="['/producto/'+PRODUCT_COMIC.slug]">{{PRODUCT_COMIC.brand.name}}</a>
+                        <a target="_blank" [routerLink]="['/producto/'+PRODUCT_COMIC.slug]">{{PRODUCT_COMIC.brand.name}}</a>
                       </div>
                       <h3 class="tp-product-title">
-                        <a [routerLink]="['/producto/'+PRODUCT_COMIC.slug]" onclick="return false;">
+                        <a target="_blank" [routerLink]="['/producto/'+PRODUCT_COMIC.slug]" onclick="return false;">
                           {{PRODUCT_COMIC.title}}
                         </a>
                       </h3>
@@ -1993,7 +1993,7 @@
                 @for(PRODUCT_CAROUSEL of PRODUCTS_CAROUSEL; track PRODUCT_CAROUSEL.id) {
                   <div class="tp-product-item transition-3 mb-25 swiper-slide">
                     <div class="tp-product-thumb p-relative fix m-img">
-                      <a [routerLink]="['/producto/'+PRODUCT_CAROUSEL.slug]">
+                      <a target="_blank" [routerLink]="['/producto/'+PRODUCT_CAROUSEL.slug]">
                         <img
                           [src]="PRODUCT_CAROUSEL.imagen"
                           style="width: 282px; height: 242px; object-fit:contain"
@@ -2144,7 +2144,7 @@
                         <a href="shop.html">{{PRODUCT_CAROUSEL.brand.name}}</a>
                       </div>
                       <h3 class="tp-product-title">
-                        <a [routerLink]="['/producto/'+PRODUCT_CAROUSEL.slug]">
+                        <a target="_blank" [routerLink]="['/producto/'+PRODUCT_CAROUSEL.slug]">
                           {{PRODUCT_CAROUSEL.title}}
                         </a>
                       </h3>
@@ -2215,16 +2215,16 @@
               @for(LAST_PRODUCT_DISCOUNT of LASTS_PRODUCTS_DISCOUNTS; track LAST_PRODUCT_DISCOUNT.id) {
                 <div class="tp-product-sm-item d-flex align-items-center">
                   <div class="tp-product-thumb mr-25 fix">
-                    <a [routerLink]="['/producto/'+LAST_PRODUCT_DISCOUNT.slug]">
+                    <a target="_blank" [routerLink]="['/producto/'+LAST_PRODUCT_DISCOUNT.slug]">
                       <img [src]="LAST_PRODUCT_DISCOUNT.imagen" style="width:140px; height: 140px; object-fit:contain" alt="" />
                     </a>
                   </div>
                   <div class="tp-product-sm-content">
                     <div class="tp-product-category">
-                      <a [routerLink]="['/producto/'+LAST_PRODUCT_DISCOUNT.slug]">{{LAST_PRODUCT_DISCOUNT.brand.name}}</a>
+                      <a target="_blank" [routerLink]="['/producto/'+LAST_PRODUCT_DISCOUNT.slug]">{{LAST_PRODUCT_DISCOUNT.brand.name}}</a>
                     </div>
                     <h3 class="tp-product-title">
-                      <a [routerLink]="['/producto/'+LAST_PRODUCT_DISCOUNT.slug]">
+                      <a target="_blank" [routerLink]="['/producto/'+LAST_PRODUCT_DISCOUNT.slug]">
                         {{LAST_PRODUCT_DISCOUNT.title}}
                       </a>
                     </h3>
@@ -2281,16 +2281,16 @@
               @for(LAST_PRODUCT_FEATURED of LASTS_PRODUCTS_FEATURED; track LAST_PRODUCT_FEATURED.id) {
                 <div class="tp-product-sm-item d-flex align-items-center">
                   <div class="tp-product-thumb mr-25 fix">
-                    <a [routerLink]="['/producto/'+LAST_PRODUCT_FEATURED.slug]">
+                    <a target="_blank" [routerLink]="['/producto/'+LAST_PRODUCT_FEATURED.slug]">
                       <img [src]="LAST_PRODUCT_FEATURED.imagen" style="width:140px; height: 140px; object-fit:contain" alt="" />
                     </a>
                   </div>
                   <div class="tp-product-sm-content">
                     <div class="tp-product-category">
-                      <a [routerLink]="['/producto/'+LAST_PRODUCT_FEATURED.slug]">{{LAST_PRODUCT_FEATURED.brand.name}}</a>
+                      <a target="_blank" [routerLink]="['/producto/'+LAST_PRODUCT_FEATURED.slug]">{{LAST_PRODUCT_FEATURED.brand.name}}</a>
                     </div>
                     <h3 class="tp-product-title">
-                      <a [routerLink]="['/producto/'+LAST_PRODUCT_FEATURED.slug]">
+                      <a target="_blank" [routerLink]="['/producto/'+LAST_PRODUCT_FEATURED.slug]">
                         {{LAST_PRODUCT_FEATURED.title}}
                       </a>
                     </h3>
@@ -2348,16 +2348,16 @@
               @for(LAST_PRODUCT_SELLING of LASTS_PRODUCTS_SELLING; track LAST_PRODUCT_SELLING.id) {
                 <div class="tp-product-sm-item d-flex align-items-center">
                   <div class="tp-product-thumb mr-25 fix">
-                    <a [routerLink]="['/producto/'+LAST_PRODUCT_SELLING.slug]">
+                    <a target="_blank" [routerLink]="['/producto/'+LAST_PRODUCT_SELLING.slug]">
                       <img [src]="LAST_PRODUCT_SELLING.imagen" style="width:140px; height: 140px; object-fit:contain" alt="" />
                     </a>
                   </div>
                   <div class="tp-product-sm-content">
                     <div class="tp-product-category">
-                      <a [routerLink]="['/producto/'+LAST_PRODUCT_SELLING.slug]">{{LAST_PRODUCT_SELLING.brand.name}}</a>
+                      <a target="_blank" [routerLink]="['/producto/'+LAST_PRODUCT_SELLING.slug]">{{LAST_PRODUCT_SELLING.brand.name}}</a>
                     </div>
                     <h3 class="tp-product-title">
-                      <a [routerLink]="['/producto/'+LAST_PRODUCT_SELLING.slug]">
+                      <a target="_blank" [routerLink]="['/producto/'+LAST_PRODUCT_SELLING.slug]">
                         {{LAST_PRODUCT_SELLING.title}}
                       </a>
                     </h3>

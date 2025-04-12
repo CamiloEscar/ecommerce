@@ -278,18 +278,24 @@ export class HomeComponent {
       return;
     }
 
+    let discount_g = null;
+
+    if(PRODUCT.discount_g){
+      discount_g = PRODUCT.discount_g;
+    }
+
     let data = {
         product_id: PRODUCT.id,
-        type_discount: null,
-        discount: 0,
-        type_campaing: null,
+        type_discount: discount_g ? discount_g.type_discount : null,
+        discount: discount_g ? discount_g.discount : null,
+        type_campaing: discount_g ? discount_g.type_campaing : null,
         code_cupon: null,
-        code_discount: null,
+        code_discount: discount_g ? discount_g.code : null,
         product_variation_id: null,
         quantity: 1,
         price_unit: PRODUCT.price_ars,
-        subtotal: PRODUCT.price_ars,
-        total: PRODUCT.price_ars,
+        subtotal: this.getTotalPriceProduct(PRODUCT),
+        total: this.getTotalPriceProduct(PRODUCT) * 1,
         currency: this.currency,
     }
 

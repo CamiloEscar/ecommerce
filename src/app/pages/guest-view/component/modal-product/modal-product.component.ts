@@ -54,6 +54,39 @@ export class ModalProductComponent {
     }
   }
 
+  //TODO: VER BUG DE QUANTITY QUE SE SUMA CON EL MODAL
+  ngOnInit(): void {
+    //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
+    //Add 'implements OnInit' to the class.
+    setTimeout(() => {
+      document.querySelectorAll<HTMLButtonElement>('.tp-cart-minus').forEach(button => {
+        button.addEventListener('click', function (e: Event) {
+          const parent = this.parentElement;
+          const input = parent?.querySelector<HTMLInputElement>('input');
+          if (!input) return;
+
+          let count = parseInt(input.value) - 1;
+          count = count < 1 ? 1 : count;
+          input.value = count.toString();
+          input.dispatchEvent(new Event('change'));
+          e.preventDefault();
+        });
+      });
+
+      document.querySelectorAll<HTMLButtonElement>('.tp-cart-plus').forEach(button => {
+        button.addEventListener('click', function (e: Event) {
+          const parent = this.parentElement;
+          const input = parent?.querySelector<HTMLInputElement>('input');
+          if (!input) return;
+
+          input.value = (parseInt(input.value) + 1).toString();
+          input.dispatchEvent(new Event('change'));
+          e.preventDefault();
+        });
+      });
+    }, 50);
+  }
+
   applyButtonStyles() {
     // Target all spans with data-bg-color attribute
     const bgElements = document.querySelectorAll<HTMLElement>("span[data-bg-color]")
@@ -95,32 +128,6 @@ export class ModalProductComponent {
         btn.classList.add("active")
       }
     })
-
-    document.querySelectorAll<HTMLButtonElement>('.tp-cart-minus').forEach(button => {
-      button.addEventListener('click', function (e: Event) {
-        const parent = this.parentElement;
-        const input = parent?.querySelector<HTMLInputElement>('input');
-        if (!input) return;
-
-        let count = parseInt(input.value) - 1;
-        count = count < 1 ? 1 : count;
-        input.value = count.toString();
-        input.dispatchEvent(new Event('change'));
-        e.preventDefault();
-      });
-    });
-
-    document.querySelectorAll<HTMLButtonElement>('.tp-cart-plus').forEach(button => {
-      button.addEventListener('click', function (e: Event) {
-        const parent = this.parentElement;
-        const input = parent?.querySelector<HTMLInputElement>('input');
-        if (!input) return;
-
-        input.value = (parseInt(input.value) + 1).toString();
-        input.dispatchEvent(new Event('change'));
-        e.preventDefault();
-      });
-    });
   }
 
   getTotalPriceProduct(DISCOUNT_FLASH_PRODUCT:any) {
@@ -129,18 +136,18 @@ export class ModalProductComponent {
     }
       return DISCOUNT_FLASH_PRODUCT.price_ars;
   }
-selectedVariation(variation: any) {
-    this.variation_selected = null
-    this.sub_variation_selected = null
-    setTimeout(() => {
-      this.variation_selected = variation
-
-      // Add another timeout to ensure the DOM is updated with the new subvariations
+  selectedVariation(variation: any) {
+      this.variation_selected = null
+      this.sub_variation_selected = null
       setTimeout(() => {
-        this.applyButtonStyles()
+        this.variation_selected = variation
+
+        // Add another timeout to ensure the DOM is updated with the new subvariations
+        setTimeout(() => {
+          this.applyButtonStyles()
+        }, 50)
       }, 50)
-    }, 50)
-  }
+    }
 
   selectedSubVariation(subvariation:any){
     this.sub_variation_selected = null

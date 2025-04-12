@@ -153,22 +153,24 @@
 
                          <!-- single item -->
                          <div class="tp-product-details-variation-item" *ngIf="variation_selected">
-                          <h4 class="tp-product-details-variation-title">{{variation_selected.subvariation.attribute.name}} :</h4>
+                          <h4 class="tp-product-details-variation-title" *ngIf="sub_variation_selected">
+                            {{sub_variation_selected.attribute?.name}} :
+                          </h4>
                           <div class="tp-product-details-variation-list">
                                 @for(subvariation of variation_selected.subvariations; track subvariation.id) {
                                   @if(subvariation.propertie && subvariation.propertie.code){
-                              <button type="button" class="color tp-color-variation-btn mx-1">
+                              <button type="button" class="color tp-color-variation-btn mx-1" (click)="selectedSubVariation(subvariation)">
                                 <span [attr.data-bg-color]="subvariation.propertie.code"></span>
                                 <span class="tp-color-variation-tootltip">{{subvariation.propertie.name}}</span>
                               </button>
                             }
                             @if(subvariation.propertie && !subvariation.propertie.code){
-                              <button type="button" class="tp-size-variation-btn" style="width: 70px !important;">
+                              <button type="button" class="tp-size-variation-btn" (click)="selectedSubVariation(subvariation)" style="width: 70px !important;">
                                 {{subvariation.propertie.name}}
                               </button>
                             }
                             @if(!subvariation.propertie){
-                              <button type="button" class="tp-size-variation-btn" style="width: 70px !important;">
+                              <button type="button" class="tp-size-variation-btn" (click)="selectedSubVariation(subvariation)" style="width: 70px !important;">
                                 {{subvariation.value_add}}
                               </button>
                             }
@@ -179,17 +181,17 @@
 
                       <!-- actions -->
                       <div class="tp-product-details-action-wrapper">
-                         <h3 class="tp-product-details-action-title">Quantity</h3>
+                         <h3 class="tp-product-details-action-title">Cantidad <small>ver bug cantidad se suma con el modal</small></h3>
                          <div class="tp-product-details-action-item-wrapper d-flex align-items-center">
                             <div class="tp-product-details-quantity">
                                <div class="tp-product-quantity mb-15 mr-15">
-                                  <span class="tp-cart-minus">
+                                  <span class="tp-cart-minus" id="tp-cart-minus-landing">
                                      <svg width="11" height="2" viewBox="0 0 11 2" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M1 1H10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                                      </svg>
                                   </span>
-                                  <input class="tp-cart-input" type="text" value="1">
-                                  <span class="tp-cart-plus">
+                                  <input class="tp-cart-input" type="text" id="tp-cart-input-val" value="1">
+                                  <span class="tp-cart-plus" id="tp-cart-plus-landing">
                                      <svg width="11" height="12" viewBox="0 0 11 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M1 6H10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                                         <path d="M5.5 10.5V1.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -198,7 +200,7 @@
                                </div>
                             </div>
                             <div class="tp-product-details-add-to-cart mb-15 w-100">
-                               <button class="tp-product-details-add-to-cart-btn w-100">Add To Cart</button>
+                               <button class="tp-product-details-add-to-cart-btn w-100" (click)="addCart()">Add To Cart</button>
                             </div>
                          </div>
                          <button class="tp-product-details-buy-now-btn w-100">Buy Now</button>
@@ -272,8 +274,8 @@
                    <div class="tp-product-details-tab-nav tp-tab">
                       <nav>
                          <div class="nav nav-tabs justify-content-center p-relative tp-product-tab" id="navPresentationTab" role="tablist">
-                           <button class="nav-link" id="nav-description-tab" data-bs-toggle="tab" data-bs-target="#nav-description" type="button" role="tab" aria-controls="nav-description" aria-selected="true">Description</button>
-                           <button class="nav-link active" id="nav-addInfo-tab" data-bs-toggle="tab" data-bs-target="#nav-addInfo" type="button" role="tab" aria-controls="nav-addInfo" aria-selected="false">Additional information</button>
+                           <button class="nav-link" id="nav-description-tab" data-bs-toggle="tab" data-bs-target="#nav-description" type="button" role="tab" aria-controls="nav-description" aria-selected="true">Descripcion</button>
+                           <button class="nav-link active" id="nav-addInfo-tab" data-bs-toggle="tab" data-bs-target="#nav-addInfo" type="button" role="tab" aria-controls="nav-addInfo" aria-selected="false">Informacion adicional</button>
                            <button class="nav-link" id="nav-review-tab" data-bs-toggle="tab" data-bs-target="#nav-review" type="button" role="tab" aria-controls="nav-review" aria-selected="false">Reviews (2)</button>
 
                            <span id="productTabMarker" class="tp-product-details-tab-line"></span>
@@ -522,7 +524,7 @@
                       <div class="swiper-slide">
                          <div class="tp-product-item-3 tp-product-style-primary mb-50">
                             <div class="tp-product-thumb-3 mb-15 fix p-relative z-index-1">
-                               <a href="#" onclick="return false;">
+                               <a [routerLink]="['/producto/'+PRODUCT.slug]" target="_blank">
                                   <img [src]="PRODUCT.imagen" alt="" style="width: 282px; height:320px; object-fit:contain">
                                </a>
 
@@ -589,10 +591,9 @@
 
                                <div class="tp-product-price-wrapper-3">
                                 @if(PRODUCT.discount_g){
-                                  <span class="tp-product-price-3 new-price">{{getTotalCurrency(PRODUCT)}} {{currency}}</span>
-                                }
-                                <span class="tp-product-price-3 old-price">{{getTotalPriceProduct(PRODUCT)}} {{currency}}</span
-                                >
+                                  <span class="tp-product-price-3 old-price"> {{getTotalCurrency(PRODUCT)}} {{currency}}</span>
+                                 }
+                                 <span class="tp-product-price-3 new-price"> {{getTotalPriceProduct(PRODUCT)}} {{currency}}</span>
                                </div>
                             </div>
                          </div>
