@@ -90,8 +90,8 @@
                              <div class="tp-cart-coupon-input-box">
                                 <label>Coupon Code:</label>
                                 <div class="tp-cart-coupon-input d-flex align-items-center">
-                                   <input type="text" placeholder="Enter Coupon Code">
-                                   <button type="submit">Apply</button>
+                                   <input type="text" [(ngModel)]="code_cupon" placeholder="Enter Coupon Code">
+                                   <button type="button" (click)="applyCupon()">Apply</button>
                                 </div>
                              </div>
                           </form>

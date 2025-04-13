@@ -59,6 +59,12 @@ onClickOutside(event: MouseEvent): void {
         this.cartService.listCart().subscribe((resp:any) => {
           // console.log(resp)
           resp.carts.data.forEach((cart:any) => {
+            if(cart.currency != this.currency){
+              this.cookieService.set("currency", cart.currency);
+              setTimeout(() => {
+                window.location.reload();
+              }, 25);
+            }
             this.cartService.changeCart(cart)
           });
         })

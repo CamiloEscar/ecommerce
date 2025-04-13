@@ -684,12 +684,13 @@
                               <span>(7 Review)</span>
                             </div>
                           </div>
-                          <div class="tp-product-price-wrapper">
-                            @if(TRENDING_PRODUCT.discount_g){
-                              <span class="tp-product-price old-price mx-1">{{getTotalCurrency(TRENDING_PRODUCT)}} {{currency}}</span>
-                            }
-                            <span class="tp-product-price new-price mx-1">{{getTotalPriceProduct(TRENDING_PRODUCT)}} {{currency}}</span
-                            >
+                          <div *ngIf="TRENDING_PRODUCT && TRENDING_PRODUCT.price_ars">
+                            <span *ngIf="TRENDING_PRODUCT.discount_g" class="tp-product-price old-price mx-1">
+                              {{ getTotalCurrency(TRENDING_PRODUCT) }} {{ currency }}
+                            </span>
+                            <span class="tp-product-price new-price mx-1">
+                              {{ getTotalPriceProduct(TRENDING_PRODUCT) }} {{ currency }}
+                            </span>
                           </div>
                         </div>
                       </div>
