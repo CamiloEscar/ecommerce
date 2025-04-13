@@ -49,24 +49,45 @@ export class HomeComponent {
 
   currency: string = 'ARS';
 
-  constructor(public homeService: HomeService,
-              private cdr: ChangeDetectorRef,
-              private cookieService: CookieService,
-              public cartService: CartService,
-              private toastr: ToastrService,
-              private router: Router,
-            ) {
-    // afterNextRender(() => {
-      this.homeService.home().subscribe((resp: any) => {
-        // console.log(resp);
-        this.SLIDERS = resp.sliders_principal;
-        this.CATEGORIES_RANDOMS = resp.categories_randoms;
-        this.TRENDING_PRODUCTS_NEW = resp.products_trending_new.data;
-        this.TRENDING_PRODUCTS_FEATURED = resp.products_trending_featured.data;
-        this.TRENDING_PRODUCTS_TOP_SELLER =
-          resp.products_trending_top_sellers.data;
-        this.BANNER_SECUNDARIOS = resp.sliders_secundario;
-        this.BANNER_PRODUCTOS = resp.sliders_productos;
+  constructor(
+    public homeService: HomeService,
+    private cdr: ChangeDetectorRef,
+    private cookieService: CookieService,
+    public cartService: CartService,
+    private toastr: ToastrService,
+    private router: Router,
+  ) {}
+
+  ngOnInit(): void {
+    // Set currency FIRST before loading any data
+    this.currency = this.cookieService.get("currency") || 'ARS';
+
+    // Load home data
+    this.loadHomeData();
+
+    // Subscribe to cart changes
+    this.cartService.currentDataCart$.subscribe((resp: any) => {
+      // Handle cart updates if needed
+      this.cdr.markForCheck(); // Mark for check instead of detectChanges
+    });
+  }
+
+  ngAfterViewInit(): void {
+    // Force change detection after view init
+    this.cdr.detectChanges();
+  }
+
+  loadHomeData(): void {
+    this.homeService.home().subscribe((resp: any) => {
+      console.log('Discount Flash:', resp.discount_flash);
+    console.log('Discount Flash Products:', resp.discount_flash_product);
+      this.SLIDERS = resp.sliders_principal;
+      this.CATEGORIES_RANDOMS = resp.categories_randoms;
+      this.TRENDING_PRODUCTS_NEW = resp.products_trending_new.data;
+      this.TRENDING_PRODUCTS_FEATURED = resp.products_trending_featured.data;
+      this.TRENDING_PRODUCTS_TOP_SELLER = resp.products_trending_top_sellers.data;
+      this.BANNER_SECUNDARIOS = resp.sliders_secundario;
+      this.BANNER_PRODUCTOS = resp.sliders_productos;
 
         this.PRODUCTS_COMICS = resp.products_comics.data;
         this.PRODUCTS_CAROUSEL = resp.products_carousel.data;
@@ -75,8 +96,10 @@ export class HomeComponent {
         this.LASTS_PRODUCTS_FEATURED = resp.products_last_featured.data;
         this.LASTS_PRODUCTS_SELLING = resp.products_last_selling.data;
 
-        this.DISCOUNT_FLASH = resp.discount_flash;
-        this.DISCOUNT_FLASH_PRODUCT = resp.discount_flash_product;
+      this.DISCOUNT_FLASH = resp.discount_flash;
+      this.DISCOUNT_FLASH_PRODUCT = resp.discount_flash_product;
+
+      this.cdr.markForCheck();
 
         setTimeout(() => {
           this.cdr.detectChanges();
@@ -258,13 +281,6 @@ export class HomeComponent {
     // });
   }
 
-  ngOnInit(): void {
-
-    this.cartService.currentDataCart$.subscribe((resp:any) => {
-      // console.log(resp);
-    })
-  }
-
   addCart(PRODUCT:any){
     if(!this.cartService.authService.user){
       this.toastr.error('Error', 'Ingrese a la tienda');
@@ -330,40 +346,56 @@ export class HomeComponent {
     return '';
   }
 
-  getNewTotal(DISCOUNT_FLASH_PRODUCT:any, DISCOUNT_FLASH_P:any) {
+  getNewTotal(DISCOUNT_FLASH_PRODUCT: any, DISCOUNT_FLASH_P: any): number {
     if(this.currency == 'ARS') {
       if (DISCOUNT_FLASH_P.type_discount == 1) { //% de descuento
-        return (DISCOUNT_FLASH_PRODUCT.price_ars - (DISCOUNT_FLASH_PRODUCT.price_ars * (DISCOUNT_FLASH_P.discount * 0.01))).toFixed(2);
+        return parseFloat((DISCOUNT_FLASH_PRODUCT.price_ars - (DISCOUNT_FLASH_PRODUCT.price_ars * (DISCOUNT_FLASH_P.discount * 0.01))).toFixed(2));
       } else { //monto fijo /-pesos -dolares
-        return (DISCOUNT_FLASH_PRODUCT.price_ars - DISCOUNT_FLASH_P.discount).toFixed(2);
+        return parseFloat((DISCOUNT_FLASH_PRODUCT.price_ars - DISCOUNT_FLASH_P.discount).toFixed(2));
       }
     } else {
       if (DISCOUNT_FLASH_P.type_discount == 1) { //% de descuento
-        return (DISCOUNT_FLASH_PRODUCT.price_usd - (DISCOUNT_FLASH_PRODUCT.price_usd * (DISCOUNT_FLASH_P.discount * 0.01))).toFixed(2);
+        return parseFloat((DISCOUNT_FLASH_PRODUCT.price_usd - (DISCOUNT_FLASH_PRODUCT.price_usd * (DISCOUNT_FLASH_P.discount * 0.01))).toFixed(2));
       } else { //monto fijo /-pesos -dolares
-        return (DISCOUNT_FLASH_PRODUCT.price_usd - DISCOUNT_FLASH_P.discount).toFixed(2);
+        return parseFloat((DISCOUNT_FLASH_PRODUCT.price_usd - DISCOUNT_FLASH_P.discount).toFixed(2));
       }
     }
   }
 
-  getTotalPriceProduct(DISCOUNT_FLASH_PRODUCT: any)
-  {
+  getTotalPriceProduct(DISCOUNT_FLASH_PRODUCT: any): number {
+    // Add null checks
+    if (!DISCOUNT_FLASH_PRODUCT) {
+      return 0;
+    }
+
+    let result: number;
+
     // primero chequeamos que hay un descuento en el producto
     if (DISCOUNT_FLASH_PRODUCT.discount_g) {
       return this.getNewTotal(DISCOUNT_FLASH_PRODUCT, DISCOUNT_FLASH_PRODUCT.discount_g);
     }
-
     // luego chequeamos si tiene el descuento flash
-    if (this.DISCOUNT_FLASH && this.DISCOUNT_FLASH_PRODUCT.includes(DISCOUNT_FLASH_PRODUCT)) {
-      return this.getNewTotal(DISCOUNT_FLASH_PRODUCT, this.DISCOUNT_FLASH);
+    else if (this.DISCOUNT_FLASH && this.DISCOUNT_FLASH_PRODUCT &&
+             this.DISCOUNT_FLASH_PRODUCT.includes &&
+             this.DISCOUNT_FLASH_PRODUCT.includes(DISCOUNT_FLASH_PRODUCT)) {
+      result = this.getNewTotal(DISCOUNT_FLASH_PRODUCT, this.DISCOUNT_FLASH);
+    }
+    // precio comun
+    else {
+      if (this.currency == "ARS") {
+        if (!DISCOUNT_FLASH_PRODUCT.price_ars) {
+          return 0;
+        }
+        result = parseFloat(DISCOUNT_FLASH_PRODUCT.price_ars.toFixed(2));
+      } else {
+        if (!DISCOUNT_FLASH_PRODUCT.price_usd) {
+          return 0;
+        }
+        result = parseFloat(DISCOUNT_FLASH_PRODUCT.price_usd.toFixed(2));
+      }
     }
 
-    // precio comun
-    if (this.currency == "ARS") {
-      return DISCOUNT_FLASH_PRODUCT.price_ars;
-    } else {
-      return DISCOUNT_FLASH_PRODUCT.price_usd;
-    }
+    return result;
   }
 
   getTotalCurrency(DISCOUNT_FLASH_PRODUCT:any){
