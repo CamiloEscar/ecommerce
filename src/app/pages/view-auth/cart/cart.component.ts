@@ -17,7 +17,7 @@ export class CartComponent {
   currency:string= 'ARS';
   listCarts: any = [];
   totalCarts:number = 0;
-
+  code_cupon: any;
   constructor(
   public cartService: CartService,
   private cookieService: CookieService,
@@ -45,38 +45,50 @@ deleteCart(CART:any){
   })
 }
 
-minusQuantity(cart:any){
-  if(cart.quantity == 1){
-    this.toastr.error('Validacion', "El valor no puede ser menor a 1");
-    return;
+  minusQuantity(cart:any){
+    if(cart.quantity == 1){
+      this.toastr.error('Validacion', "El valor no puede ser menor a 1");
+      return;
+    }
+    cart.quantity = cart.quantity - 1
+    cart.total = cart.subtotal * cart.quantity;
+    this.cartService.updateCart(cart.id, cart).subscribe((resp:any) => {
+      console.log(resp)
+      if(resp.message == 403){
+        this.toastr.error('Validacion', resp.message_text);
+      } else {
+        this.cartService.changeCart(resp.cart);
+        this.toastr.info("Exito", "Se actualizo el producto " + resp.cart.product.title)
+      }
+    })
   }
-  cart.quantity = cart.quantity - 1
-  cart.total = cart.subtotal * cart.quantity;
-  this.cartService.updateCart(cart.id, cart).subscribe((resp:any) => {
-    console.log(resp)
-    if(resp.message == 403){
-      this.toastr.error('Validacion', resp.message_text);
-    } else {
-      this.cartService.changeCart(resp.cart);
-      this.toastr.info("Exito", "Se actualizo el producto " + resp.cart.product.title)
+  plusQuantity(cart:any){
+    let quantity_old = cart.quantity;
+    cart.quantity = cart.quantity + 1
+    cart.total = cart.subtotal * cart.quantity;
+    this.cartService.updateCart(cart.id, cart).subscribe((resp:any) => {
+      console.log(resp)
+      if(resp.message == 403){
+        cart.quantity = quantity_old;
+        cart.total = cart.subtotal * cart.quantity;
+        this.toastr.error('Validacion', resp.message_text);
+      } else {
+        this.cartService.changeCart(resp.cart);
+        this.toastr.info("Exito", "Se actualizo el producto " + resp.cart.product.title)
+      }
+    })
+  }
+  applyCupon(){
+    if(!this.code_cupon){
+      this.toastr.error('Validacion', 'Se necesita ingresar un codigo de cupon');
+      return;
     }
-  })
-}
-plusQuantity(cart:any){
-  let quantity_old = cart.quantity;
-  cart.quantity = cart.quantity + 1
-  cart.total = cart.subtotal * cart.quantity;
-  this.cartService.updateCart(cart.id, cart).subscribe((resp:any) => {
-    console.log(resp)
-    if(resp.message == 403){
-      cart.quantity = quantity_old;
-      cart.total = cart.subtotal * cart.quantity;
-      this.toastr.error('Validacion', resp.message_text);
-    } else {
-      this.cartService.changeCart(resp.cart);
-      this.toastr.info("Exito", "Se actualizo el producto " + resp.cart.product.title)
+    let data = {
+      code_cupon : this.code_cupon
     }
-  })
-}
 
+    this.cartService.applyCupon(data).subscribe((resp:any) => {
+      console.log(resp)
+    })
+  }
 }
