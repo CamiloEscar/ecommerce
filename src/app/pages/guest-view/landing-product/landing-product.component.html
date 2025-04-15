@@ -586,14 +586,14 @@
                                   <span>{{ PRODUCT.brand.name}}</span>
                                </div>
                                <h3 class="tp-product-title-3">
-                                  <a href="#" onclick="return false;">{{PRODUCT.title}}</a>
+                                  <a [routerLink]="['/producto/'+PRODUCT.slug]">{{PRODUCT.title}}</a>
                                </h3>
 
                                <div class="tp-product-price-wrapper-3">
                                 @if(PRODUCT.discount_g){
                                   <span class="tp-product-price-3 old-price"> {{getTotalCurrency(PRODUCT)}} {{currency}}</span>
-                                 }
-                                 <span class="tp-product-price-3 new-price"> {{getTotalPriceProduct(PRODUCT)}} {{currency}}</span>
+                                }
+                                <span class="tp-product-price-3 new-price"> {{getTotalPriceProduct(PRODUCT)}} {{currency}}</span>
                                </div>
                             </div>
                          </div>

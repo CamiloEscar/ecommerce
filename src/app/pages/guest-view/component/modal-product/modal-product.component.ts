@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, SimpleChanges } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, SimpleChanges } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
@@ -27,22 +27,32 @@ export class ModalProductComponent {
     private toastr: ToastrService,
     private router: Router,
     private cartService: CartService,
-    public cookieService: CookieService
+    public cookieService: CookieService,
+    private cdr: ChangeDetectorRef,
   ){
     afterRender(() => {
-      this.currency = this.cookieService.get("currency") ? this.cookieService.get("currency") : 'ARS';
+      // this.currency = this.cookieService.get("currency") ? this.cookieService.get("currency") : 'ARS';
           })
   }
-  ngOnChanges(changes: SimpleChanges): void {
+  nngOnChanges(changes: SimpleChanges): void {
     if (changes['product_selected'] && changes['product_selected'].currentValue) {
       this.resetModal();
     }
   }
 
   resetModal() {
+    console.log('Producto seleccionado:', this.product_selected);
+    console.log('Variaciones disponibles:', this.product_selected?.variations);
+
     this.variation_selected = null;
+    this.sub_variation_selected = null;
+
+    // Force change detection immediately
+    this.cdr.detectChanges();
+
+    // Apply button styles soon after
     setTimeout(() => {
-      this.applyButtonStyles(); // si querés aplicar colores al render nuevo
+      this.applyButtonStyles();
     }, 50);
   }
 
@@ -64,6 +74,7 @@ export class ModalProductComponent {
 
   //TODO: VER BUG DE QUANTITY QUE SE SUMA CON EL MODAL
   ngOnInit(): void {
+    this.currency = this.cookieService.get("currency") ? this.cookieService.get("currency") : 'ARS';
     //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
     //Add 'implements OnInit' to the class.
     setTimeout(() => {
@@ -148,18 +159,33 @@ export class ModalProductComponent {
       return DISCOUNT_FLASH_PRODUCT.price_usd
     }
   }
-  selectedVariation(variation: any) {
-      this.variation_selected = null
-      this.sub_variation_selected = null
-      setTimeout(() => {
-        this.variation_selected = variation
 
-        // Add another timeout to ensure the DOM is updated with the new subvariations
-        setTimeout(() => {
-          this.applyButtonStyles()
-        }, 50)
-      }, 50)
+  getTotalCurrency(DISCOUNT_FLASH_PRODUCT: any) {
+    if (this.currency == "ARS") {
+      return DISCOUNT_FLASH_PRODUCT.price_ars
+    } else {
+      return DISCOUNT_FLASH_PRODUCT.price_usd
     }
+  }
+
+  selectedVariation(variation: any) {
+    this.variation_selected = null;
+    this.sub_variation_selected = null;
+
+    // Force immediate change detection
+    this.cdr.detectChanges();
+
+    // Set the new value
+    this.variation_selected = variation;
+
+    // Force another change detection
+    this.cdr.detectChanges();
+
+    // Apply styles
+    setTimeout(() => {
+      this.applyButtonStyles();
+    }, 50);
+  }
 
   selectedSubVariation(subvariation:any){
     this.sub_variation_selected = null
