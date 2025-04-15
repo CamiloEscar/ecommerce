@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import { DolarService } from '../service/dolar.service';
 
 declare var paypal:any;
 @Component({
@@ -37,12 +38,16 @@ export class CheckoutComponent {
   address_selected: any;
 
   @ViewChild('paypal',{static: true}) paypalElement?: ElementRef;
+
+
+  price_dolar:number = 1200;
   constructor(
     public cartService: CartService,
     public cookieService: CookieService,
     public addressService: UserAddressService,
     private toastr: ToastrService,
     public router: Router,
+    // private dolarService: DolarService
   ){
 
     afterNextRender(() => {
@@ -57,6 +62,10 @@ export class CheckoutComponent {
     //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
     //Add 'implements OnInit' to the class.
     this.currency = this.cookieService.get("currency") || 'ARS';
+    //TODO: ERROR DE LA API CON PAYPAL
+    // this.dolarService.obtenerDolar().subscribe((resp: any) => {
+    //   this.price_dolar = resp.value_sell;
+    // });
     this.cartService.currentDataCart$.subscribe((resp:any)=>{
       this.listCarts = resp;
       this.totalCarts = this.listCarts.reduce((sum:number, item:any) => sum + item.total, 0 ).toFixed(2);
@@ -74,7 +83,7 @@ export class CheckoutComponent {
       createOrder: (data:any, actions:any) => {
           // pass in any options from the v2 orders create call:
           // https://developer.paypal.com/api/orders/v2/#orders-create-request-body
-
+        console.log(this.totalPaypal())
           if(this.totalCarts == 0){
             this.toastr.error("Validacion", "No puedes procesar el pago con un monto de 0")
             return;
@@ -106,7 +115,7 @@ export class CheckoutComponent {
               {
                 amount: {
                     description: "COMPRAR POR EL FUNKO ECOMMERCE",
-                    value: this.totalCarts
+                    value: this.totalPaypal(),
                 }
               }
             ]
@@ -126,8 +135,8 @@ export class CheckoutComponent {
             currency_total: this.currency,
             currency_payment: 'USD',
             discount: 0,
-            subtotal: this.totalCarts,
-            total: this.totalCarts,
+            subtotal: this.totalPaypal(),
+            total: this.totalPaypal(),
             price_dolar: 0,
             n_transaccion: Order.purchase_units[0].payments.captures[0].id,
             description: this.description,
@@ -147,7 +156,10 @@ export class CheckoutComponent {
           this.cartService.checkout(dataSale).subscribe((resp:any) =>{
             console.log(resp)
             this.toastr.success("Exito", "Compra realizada");
-            this.router.navigateByUrl("/gracias-por-tu-compra/"+Order.purchase_units[0].payments.captures[0].id)
+            this.cartService.resetCart();
+            setTimeout(() => {
+              this.router.navigateByUrl("/gracias-por-tu-compra/"+Order.purchase_units[0].payments.captures[0].id)
+            }, 50);
             //TODO: redireccion a la pagina de gracias
           })
 
@@ -159,6 +171,13 @@ export class CheckoutComponent {
           console.error('An error prevented the buyer from checking out with PayPal');
       }
   }).render(this.paypalElement?.nativeElement);
+  }
+  totalPaypal(){
+    if(this.currency == 'USD'){
+      return this.totalCarts;
+    } else {
+      return (this.totalCarts / this.price_dolar).toFixed(2);
+    }
   }
 
   registerAddress(){
