@@ -32,6 +32,7 @@ export class CheckoutComponent {
   postcode_zip:string = '';
   phone:string = '';
   email:string = '';
+  description:string = '';
 
   address_selected: any;
 
@@ -73,11 +74,37 @@ export class CheckoutComponent {
           // pass in any options from the v2 orders create call:
           // https://developer.paypal.com/api/orders/v2/#orders-create-request-body
 
+          if(this.totalCarts == 0){
+            this.toastr.error("Validacion", "No puedes procesar el pago con un monto de 0")
+            return;
+          }
+
+          if(this.listCarts.length == 0){
+            this.toastr.error("Validacion", "No puedes procesar el pago si no tienes nada cargado")
+            return;
+          }
+
+          if(
+            !this.name ||
+            !this.surname ||
+            !this.company ||
+            !this.country_region ||
+            !this.address ||
+            !this.street ||
+            !this.city ||
+            !this.postcode_zip ||
+            !this.phone ||
+            !this.email
+          ){
+            this.toastr.error("Validacion", "Todos los campos de la direccion son necesarios");
+            return;
+          }
+
           const createOrderPayload = {
             purchase_units: [
               {
                 amount: {
-                    description: "COMPRAR POR EL ECOMMERCE",
+                    description: "COMPRAR POR EL FUNKO ECOMMERCE",
                     value: this.totalCarts
                 }
               }
@@ -91,7 +118,36 @@ export class CheckoutComponent {
       onApprove: async (data:any, actions:any) => {
 
           let Order = await actions.order.capture();
-  // Order.purchase_units[0].payments.captures[0].id
+          // Order.purchase_units[0].payments.captures[0].id
+
+          let dataSale = {
+            method_payment: 'PAYPAL',
+            currency_total: this.currency,
+            currency_payment: 'USD',
+            discount: 0,
+            subtotal: this.totalCarts,
+            total: this.totalCarts,
+            price_dolar: 0,
+            n_transaccion: Order.purchase_units[0].payments.captures[0].id,
+            description: this.description,
+            sale_address: {
+              name: this.name,
+              surname: this.surname,
+              company: this.company,
+              country_region: this.country_region,
+              address: this.address,
+              street: this.street,
+              city: this.city,
+              postcode_zip: this.postcode_zip,
+              phone: this.phone,
+              email: this.email,
+            }
+          }
+          this.cartService.checkout(dataSale).subscribe((resp:any) =>{
+            console.log(resp)
+            this.toastr.success("Exito", "Compra realizada");
+            //TODO: redireccion a la pagina de gracias
+          })
 
           // return actions.order.capture().then(captureOrderHandler);
       },
