@@ -1,4 +1,4 @@
-import { afterNextRender, Component } from '@angular/core';
+import { afterNextRender, Component, ElementRef, ViewChild } from '@angular/core';
 import { CartService } from '../../home/service/cart.service';
 import { CookieService } from 'ngx-cookie-service';
 import { UserAddressService } from '../service/user-address.service';
@@ -7,6 +7,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 
+declare var paypal:any;
 @Component({
   selector: 'app-checkout',
   standalone: true,
@@ -33,6 +34,8 @@ export class CheckoutComponent {
   email:string = '';
 
   address_selected: any;
+
+  @ViewChild('paypal',{static: true}) paypalElement?: ElementRef;
   constructor(
     public cartService: CartService,
     public cookieService: CookieService,
@@ -56,6 +59,48 @@ export class CheckoutComponent {
       this.listCarts = resp;
       this.totalCarts = this.listCarts.reduce((sum:number, item:any) => sum + item.total, 0 ).toFixed(2);
     })
+    paypal.Buttons({
+      // optional styling for buttons
+      // https://developer.paypal.com/docs/checkout/standard/customize/buttons-style-guide/
+      style: {
+        color: "gold",
+        shape: "rect",
+        layout: "vertical"
+      },
+
+      // set up the transaction
+      createOrder: (data:any, actions:any) => {
+          // pass in any options from the v2 orders create call:
+          // https://developer.paypal.com/api/orders/v2/#orders-create-request-body
+
+          const createOrderPayload = {
+            purchase_units: [
+              {
+                amount: {
+                    description: "COMPRAR POR EL ECOMMERCE",
+                    value: this.totalCarts
+                }
+              }
+            ]
+          };
+
+          return actions.order.create(createOrderPayload);
+      },
+
+      // finalize the transaction
+      onApprove: async (data:any, actions:any) => {
+
+          let Order = await actions.order.capture();
+  // Order.purchase_units[0].payments.captures[0].id
+
+          // return actions.order.capture().then(captureOrderHandler);
+      },
+
+      // handle unrecoverable errors
+      onError: (err:any) => {
+          console.error('An error prevented the buyer from checking out with PayPal');
+      }
+  }).render(this.paypalElement?.nativeElement);
   }
 
   registerAddress(){
