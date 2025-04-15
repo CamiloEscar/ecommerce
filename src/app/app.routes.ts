@@ -7,6 +7,7 @@ import { LandingProductComponent } from './pages/guest-view/landing-product/land
 import { authGuard } from './pages/auth/service/auth.guard';
 import { CartComponent } from './pages/view-auth/cart/cart.component';
 import { CheckoutComponent } from './pages/view-auth/checkout/checkout.component';
+import { ThankYouOrderComponent } from './pages/view-auth/thank-you-order/thank-you-order.component';
 
 export const routes: Routes = [
     {
@@ -40,5 +41,10 @@ export const routes: Routes = [
       canActivate:[authGuard],
         path: 'proceso-de-pago',
         component: CheckoutComponent
+    },
+    {
+      canActivate:[authGuard],
+        path: 'gracias-por-tu-compra/:order',
+        component: ThankYouOrderComponent
     },
 ];
