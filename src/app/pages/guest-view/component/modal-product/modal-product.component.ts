@@ -16,12 +16,14 @@ import { CookieService } from 'ngx-cookie-service';
 })
 export class ModalProductComponent {
 
-  @Input() product_selected:any;
+  @Input() product_selected: any;
 
   variation_selected: any;
-  sub_variation_selected:any;
+  sub_variation_selected: any;
 
-  currency:string = 'ARS';
+  currency: string = 'ARS';
+
+  plus: number = 0;
 
   constructor(
     private toastr: ToastrService,
@@ -29,12 +31,14 @@ export class ModalProductComponent {
     private cartService: CartService,
     public cookieService: CookieService,
     private cdr: ChangeDetectorRef,
-  ){
+  ) {
     afterRender(() => {
-      // this.currency = this.cookieService.get("currency") ? this.cookieService.get("currency") : 'ARS';
-          })
+      this.currency = this.cookieService.get("currency") ? this.cookieService.get("currency") : 'ARS';
+    });
   }
-  nngOnChanges(changes: SimpleChanges): void {
+
+  // Fixed method name from nngOnChanges to ngOnChanges
+  ngOnChanges(changes: SimpleChanges): void {
     if (changes['product_selected'] && changes['product_selected'].currentValue) {
       this.resetModal();
     }
@@ -44,8 +48,10 @@ export class ModalProductComponent {
     console.log('Producto seleccionado:', this.product_selected);
     console.log('Variaciones disponibles:', this.product_selected?.variations);
 
+    // Reset selections and price adjustments
     this.variation_selected = null;
     this.sub_variation_selected = null;
+    this.plus = 0;
 
     // Force change detection immediately
     this.cdr.detectChanges();
@@ -56,27 +62,30 @@ export class ModalProductComponent {
     }, 50);
   }
 
-  getNewTotal(DISCOUNT_FLASH_PRODUCT:any, DISCOUNT_FLASH_P:any) {
-    if(this.currency == 'ARS') {
-    if (DISCOUNT_FLASH_P.type_discount == 1) { //% de descuento
-      return (DISCOUNT_FLASH_PRODUCT.price_ars - (DISCOUNT_FLASH_PRODUCT.price_ars * (DISCOUNT_FLASH_P.discount * 0.01))).toFixed(2);
-    } else { //monto fijo /-pesos -dolares
-      return (DISCOUNT_FLASH_PRODUCT.price_ars - DISCOUNT_FLASH_P.discount).toFixed(2);
-    }
-  } else {
-      if (DISCOUNT_FLASH_P.type_discount == 1) { //% de descuento
-        return (DISCOUNT_FLASH_PRODUCT.price_usd - (DISCOUNT_FLASH_PRODUCT.price_usd * (DISCOUNT_FLASH_P.discount * 0.01))).toFixed(2);
-      } else { //monto fijo /-pesos -dolares
-        return (DISCOUNT_FLASH_PRODUCT.price_usd - DISCOUNT_FLASH_P.discount).toFixed(2);
-      }
+  getNewTotal(DISCOUNT_FLASH_PRODUCT: any, DISCOUNT_FLASH_P: any) {
+    const basePrice = this.getBasePrice(DISCOUNT_FLASH_PRODUCT);
+
+    if (DISCOUNT_FLASH_P.type_discount == 1) { // % de descuento
+      return (basePrice - basePrice * (DISCOUNT_FLASH_P.discount * 0.01)).toFixed(2);
+    } else { // monto fijo /-pesos -dolares
+      return (basePrice - DISCOUNT_FLASH_P.discount).toFixed(2);
     }
   }
 
-  //TODO: VER BUG DE QUANTITY QUE SE SUMA CON EL MODAL
+  // Helper method to get the base price including variation adjustments
+  getBasePrice(product: any): number {
+    if (this.currency == 'ARS') {
+      return product.price_ars + this.plus;
+    } else {
+      return product.price_usd + this.plus;
+    }
+  }
+
   ngOnInit(): void {
+    // Set currency from cookies
     this.currency = this.cookieService.get("currency") ? this.cookieService.get("currency") : 'ARS';
-    //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
-    //Add 'implements OnInit' to the class.
+
+    // Initialize quantity control buttons
     setTimeout(() => {
       document.querySelectorAll<HTMLButtonElement>('.tp-cart-minus').forEach(button => {
         button.addEventListener('click', function (e: Event) {
@@ -103,139 +112,142 @@ export class ModalProductComponent {
           e.preventDefault();
         });
       });
+
+      this.applyButtonStyles();
     }, 50);
   }
 
   applyButtonStyles() {
     // Target all spans with data-bg-color attribute
-    const bgElements = document.querySelectorAll<HTMLElement>("span[data-bg-color]")
+    const bgElements = document.querySelectorAll<HTMLElement>("span[data-bg-color]");
     bgElements.forEach((el) => {
-      const color = el.getAttribute("data-bg-color")
+      const color = el.getAttribute("data-bg-color");
       if (color) {
-        el.style.backgroundColor = color
+        el.style.backgroundColor = color;
       }
-    })
+    });
 
     // Also handle Angular's [attr.data-bg-color] binding
-    // This is needed because Angular might render these differently
     document.querySelectorAll<HTMLElement>(".tp-color-variation-btn span").forEach((span) => {
       // Check if this span has a background color set by Angular
-      const computedStyle = window.getComputedStyle(span)
+      const computedStyle = window.getComputedStyle(span);
       if (computedStyle.backgroundColor === "rgba(0, 0, 0, 0)" || computedStyle.backgroundColor === "transparent") {
         // Try to get the color from the attribute
-        const color = span.getAttribute("data-bg-color")
+        const color = span.getAttribute("data-bg-color");
         if (color) {
-          span.style.backgroundColor = color
+          span.style.backgroundColor = color;
         }
       }
-    })
+    });
 
     // Activar botón de color
-    const colorBtns = document.querySelectorAll<HTMLElement>(".tp-color-variation-btn")
+    const colorBtns = document.querySelectorAll<HTMLElement>(".tp-color-variation-btn");
     colorBtns.forEach((btn) => {
       btn.onclick = () => {
-        colorBtns.forEach((b) => b.classList.remove("active"))
-        btn.classList.add("active")
-      }
-    })
+        colorBtns.forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+      };
+    });
 
     // Activar botón de tamaño
-    const sizeBtns = document.querySelectorAll<HTMLElement>(".tp-size-variation-btn")
+    const sizeBtns = document.querySelectorAll<HTMLElement>(".tp-size-variation-btn");
     sizeBtns.forEach((btn) => {
       btn.onclick = () => {
-        sizeBtns.forEach((b) => b.classList.remove("active"))
-        btn.classList.add("active")
-      }
-    })
+        sizeBtns.forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+      };
+    });
   }
 
-  getTotalPriceProduct(DISCOUNT_FLASH_PRODUCT:any) {
-    if(DISCOUNT_FLASH_PRODUCT.discount_g) {
-      return this.getNewTotal(DISCOUNT_FLASH_PRODUCT, DISCOUNT_FLASH_PRODUCT.discount_g);
+  getTotalPriceProduct(product: any) {
+    // If there's a discount, calculate with discount
+    if (product.discount_g) {
+      return this.getNewTotal(product, product.discount_g);
     }
-    if (this.currency == "ARS") {
-      return DISCOUNT_FLASH_PRODUCT.price_ars
-    } else {
-      return DISCOUNT_FLASH_PRODUCT.price_usd
-    }
+
+    // Otherwise return the price with variation adjustment
+    return this.getBasePrice(product).toFixed(2);
   }
 
-  getTotalCurrency(DISCOUNT_FLASH_PRODUCT: any) {
-    if (this.currency == "ARS") {
-      return DISCOUNT_FLASH_PRODUCT.price_ars
-    } else {
-      return DISCOUNT_FLASH_PRODUCT.price_usd
-    }
+  getTotalCurrency(product: any) {
+    return this.getBasePrice(product).toFixed(2);
   }
 
   selectedVariation(variation: any) {
-    this.variation_selected = null;
+    // Reset selections
+    this.plus = 0;
+    this.variation_selected = variation;
     this.sub_variation_selected = null;
 
-    // Force immediate change detection
+    // Add the variation price adjustment
+    this.plus = variation.add_price;
+
+    // Force change detection
     this.cdr.detectChanges();
 
-    // Set the new value
-    this.variation_selected = variation;
-
-    // Force another change detection
-    this.cdr.detectChanges();
-
-    // Apply styles
+    // Apply styles after a short delay
     setTimeout(() => {
       this.applyButtonStyles();
     }, 50);
   }
 
-  selectedSubVariation(subvariation:any){
-    this.sub_variation_selected = null
-    setTimeout(() => {
-      this.sub_variation_selected = subvariation
+  selectedSubVariation(subvariation: any) {
+    // Reset to just the main variation price
+    this.plus = this.variation_selected ? this.variation_selected.add_price : 0;
+    this.sub_variation_selected = subvariation;
 
-    }, 50)
+    // Add the subvariation price adjustment
+    this.plus += subvariation.add_price;
+
+    // Force change detection
+    this.cdr.detectChanges();
   }
 
-  addCart(){
-    if(!this.cartService.authService.user){
-
+  addCart() {
+    if (!this.cartService.authService.user) {
       this.toastr.error('Error', 'Ingrese a la tienda');
-      this.router.navigateByUrl("/login")
-      return
+      this.router.navigateByUrl("/login");
+      return;
     }
 
-    let product_variation_id = null
-    if(this.product_selected.variations.length > 0){
-      if(!this.variation_selected){
+    let product_variation_id = null;
+    // Check if product has variations and validate selection
+    if (this.product_selected.variations && this.product_selected.variations.length > 0) {
+      if (!this.variation_selected) {
         this.toastr.error('Error', 'Necesitas seleccionar una variacion');
         return;
       }
 
-      if(this.variation_selected && this.variation_selected.subvariations.length > 0 ){
-        if(!this.sub_variation_selected){
+      if (this.variation_selected && this.variation_selected.subvariations &&
+          this.variation_selected.subvariations.length > 0) {
+        if (!this.sub_variation_selected) {
           this.toastr.error('Error', 'Necesitas seleccionar una caracteristica');
           return;
         }
       }
     }
 
-    if(this.product_selected.variations.length > 0 && this.variation_selected &&
-      this.variation_selected.subvariations.length == 0){
-      product_variation_id = this.variation_selected.id;
-    }
-
-    if(this.product_selected.variations.length > 0 && this.variation_selected &&
-      this.variation_selected.subvariations.length > 0){
-      product_variation_id = this.sub_variation_selected.id;
+    // Determine the variation ID to use
+    if (this.product_selected.variations && this.product_selected.variations.length > 0 && this.variation_selected) {
+      if (this.variation_selected.subvariations && this.variation_selected.subvariations.length == 0) {
+        product_variation_id = this.variation_selected.id;
+      } else if (this.variation_selected.subvariations && this.variation_selected.subvariations.length > 0 && this.sub_variation_selected) {
+        product_variation_id = this.sub_variation_selected.id;
+      }
     }
 
     const input = document.getElementById("tp-cart-input-val") as HTMLInputElement | null;
     const quantity = input ? parseInt(input.value) || 1 : 1;
 
     let discount_g = null;
-
-    if(this.product_selected.discount_g){
+    if (this.product_selected.discount_g) {
       discount_g = this.product_selected.discount_g;
     }
+
+    const currentPrice = this.getBasePrice(this.product_selected);
+    const discountedTotal = discount_g ?
+      parseFloat(this.getNewTotal(this.product_selected, discount_g)) :
+      currentPrice;
 
     let data = {
       product_id: this.product_selected.id,
@@ -246,16 +258,15 @@ export class ModalProductComponent {
       code_discount: discount_g ? discount_g.code : null,
       product_variation_id: product_variation_id,
       quantity: quantity,
-      price_unit: this.currency == 'ARS' ? this.product_selected.price_ars : this.product_selected.price_usd,
-      subtotal: this.getTotalPriceProduct(this.product_selected),
-      total: this.getTotalPriceProduct(this.product_selected) * quantity,
+      price_unit: currentPrice,
+      subtotal: discountedTotal,
+      total: discountedTotal * quantity,
       currency: this.currency,
     };
 
-
-    this.cartService.registerCart(data).subscribe((resp:any) => {
+    this.cartService.registerCart(data).subscribe((resp: any) => {
       console.log(resp);
-      if(resp.message == 403){
+      if (resp.message == 403) {
         this.toastr.error('Error', resp.message_text);
       } else {
         this.cartService.changeCart(resp.cart);
@@ -263,6 +274,6 @@ export class ModalProductComponent {
       }
     }, err => {
       console.log(err);
-    })
+    });
   }
 }

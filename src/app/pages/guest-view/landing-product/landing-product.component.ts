@@ -32,6 +32,8 @@ export class LandingProductComponent {
 
   DISCOUNT_CAMPAING: any;
 
+  plus:number = 0;
+
   constructor(
     public homeService: HomeService,
     public activatedRoute: ActivatedRoute,
@@ -122,23 +124,23 @@ export class LandingProductComponent {
       if (DISCOUNT_FLASH_P.type_discount == 1) {
         //% de descuento
         return (
-          DISCOUNT_FLASH_PRODUCT.price_ars -
-          DISCOUNT_FLASH_PRODUCT.price_ars * (DISCOUNT_FLASH_P.discount * 0.01)
+          (DISCOUNT_FLASH_PRODUCT.price_ars + this.plus) -
+          (DISCOUNT_FLASH_PRODUCT.price_ars + this.plus) * (DISCOUNT_FLASH_P.discount * 0.01)
         ).toFixed(2)
       } else {
         //monto fijo /-pesos -dolares
-        return (DISCOUNT_FLASH_PRODUCT.price_ars - DISCOUNT_FLASH_P.discount).toFixed(2)
+        return ((DISCOUNT_FLASH_PRODUCT.price_ars + this.plus) - DISCOUNT_FLASH_P.discount).toFixed(2)
       }
     } else {
       if (DISCOUNT_FLASH_P.type_discount == 1) {
         //% de descuento
         return (
-          DISCOUNT_FLASH_PRODUCT.price_usd -
-          DISCOUNT_FLASH_PRODUCT.price_usd * (DISCOUNT_FLASH_P.discount * 0.01)
+          (DISCOUNT_FLASH_PRODUCT.price_usd + this.plus) -
+          (DISCOUNT_FLASH_PRODUCT.price_usd + this.plus) * (DISCOUNT_FLASH_P.discount * 0.01)
         ).toFixed(2)
       } else {
         //monto fijo /-pesos -dolares
-        return (DISCOUNT_FLASH_PRODUCT.price_usd - DISCOUNT_FLASH_P.discount).toFixed(2)
+        return ((DISCOUNT_FLASH_PRODUCT.price_usd + this.plus) - DISCOUNT_FLASH_P.discount).toFixed(2)
       }
     }
   }
@@ -148,9 +150,9 @@ export class LandingProductComponent {
       return this.getNewTotal(DISCOUNT_FLASH_PRODUCT, DISCOUNT_FLASH_PRODUCT.discount_g)
     }
     if (this.currency == "ARS") {
-      return DISCOUNT_FLASH_PRODUCT.price_ars
+      return DISCOUNT_FLASH_PRODUCT.price_ars + this.plus
     } else {
-      return DISCOUNT_FLASH_PRODUCT.price_usd
+      return DISCOUNT_FLASH_PRODUCT.price_usd + this.plus
     }
   }
 
@@ -165,7 +167,9 @@ export class LandingProductComponent {
   selectedVariation(variation: any) {
     this.variation_selected = null
     this.sub_variation_selected = null
+    this.plus = 0;
     setTimeout(() => {
+      this.plus += variation.add_price;
       this.variation_selected = variation
 
       // Add another timeout to ensure the DOM is updated with the new subvariations
@@ -252,8 +256,10 @@ export class LandingProductComponent {
   }
 
   selectedSubVariation(subvariation: any) {
-    this.sub_variation_selected = null
+    this.sub_variation_selected = null;
+    this.plus = this.variation_selected.add_price
     setTimeout(() => {
+      this.plus += subvariation.add_price;
       this.sub_variation_selected = subvariation
     }, 50)
   }
