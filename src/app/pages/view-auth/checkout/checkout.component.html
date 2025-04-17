@@ -222,10 +222,11 @@
                   </div>
                   <div class="tp-checkout-payment-item">
                      <input type="radio" id="cod" name="payment">
-                     <label for="cod">Mercado Pago</label>
-                     <div class="tp-checkout-payment-desc cash-on-delivery">
+                     <label for="cod" (click)="openMercadoPago()">Mercado Pago</label>
+                     <div id="wallet_container"></div>
+                     <!-- <div class="tp-checkout-payment-desc cash-on-delivery">
                         <p>Realiza tu pago por mercado pago. Por favor, usa tu ID de pedido como referencia de pago. Tu pedido no será enviado hasta que los fondos hayan sido confirmados en nuestra cuenta.</p>
-                     </div>
+                     </div> -->
                   </div>
                   <div class="tp-checkout-payment-item paypal-payment">
                      <input type="radio" id="paypal" name="payment" checked>

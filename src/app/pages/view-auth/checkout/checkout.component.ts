@@ -9,6 +9,7 @@ import { ToastrService } from 'ngx-toastr';
 import { DolarService } from '../service/dolar.service';
 
 declare var paypal:any;
+declare var MercadoPago:any;
 @Component({
   selector: 'app-checkout',
   standalone: true,
@@ -38,7 +39,7 @@ export class CheckoutComponent {
   address_selected: any;
 
   @ViewChild('paypal',{static: true}) paypalElement?: ElementRef;
-
+  PREFERENCE_ID:string = '';
 
   price_dolar:number = 1200;
   constructor(
@@ -70,6 +71,7 @@ export class CheckoutComponent {
       this.listCarts = resp;
       this.totalCarts = this.listCarts.reduce((sum:number, item:any) => sum + item.total, 0 ).toFixed(2);
     })
+
     paypal.Buttons({
       // optional styling for buttons
       // https://developer.paypal.com/docs/checkout/standard/customize/buttons-style-guide/
@@ -170,14 +172,43 @@ export class CheckoutComponent {
       onError: (err:any) => {
           console.error('An error prevented the buyer from checking out with PayPal');
       }
-  }).render(this.paypalElement?.nativeElement);
-  }
+    }).render(this.paypalElement?.nativeElement);
+    }
   totalPaypal(){
     if(this.currency == 'USD'){
       return this.totalCarts;
     } else {
       return (this.totalCarts / this.price_dolar).toFixed(2);
     }
+  }
+
+  openMercadoPago(){
+    this.cartService.mercadopago(this.totalCarts).subscribe((resp:any) => {
+      console.log(resp)
+
+    this.PREFERENCE_ID = resp.preference.id
+
+    const mp = new MercadoPago('TEST-8d1841e1-ba74-4790-a451-60adea26788b')
+    const bricksBuilder = mp.bricks();
+
+    mp.checkout({
+      preference: {
+        id: this.PREFERENCE_ID,
+      },
+      render: {
+        container: "#wallet_container",
+        label: "Pagar",
+      },
+      callback: (response:any) => {
+        console.log(response);
+        if (response.status === 'approved') {
+          console.log('Pago aprobado. Detalles:', response);
+        } else {
+          console.log('Pago no aprobado o cancelado. Detalles:', response);
+        }
+      },
+    })
+    });
   }
 
   registerAddress(){
