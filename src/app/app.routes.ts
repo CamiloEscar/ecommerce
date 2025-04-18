@@ -11,6 +11,7 @@ import { ThankYouOrderComponent } from './pages/view-auth/thank-you-order/thank-
 import { CheckoutSuccessComponent } from './pages/view-auth/checkout/checkout-success/checkout-success.component';
 import { CheckoutFailureComponent } from './pages/view-auth/checkout/checkout-failure/checkout-failure.component';
 import { CheckoutPendingComponent } from './pages/view-auth/checkout/checkout-pending/checkout-pending.component';
+import { ProfileClientComponent } from './pages/view-auth/profile-client/profile-client.component';
 
 export const routes: Routes = [
     {
@@ -64,5 +65,11 @@ export const routes: Routes = [
       canActivate:[authGuard],
         path: 'mercado-pago-pending',
         component: CheckoutPendingComponent
+    },
+    //rutas para el usuario
+    {
+      canActivate:[authGuard],
+        path: 'perfil-del-cliente',
+        component: ProfileClientComponent
     },
 ];
