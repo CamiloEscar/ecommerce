@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import { CartService } from '../../../home/service/cart.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-checkout-success',
@@ -20,6 +21,8 @@ export class CheckoutSuccessComponent {
     public cartService: CartService,
     public activatedRoute: ActivatedRoute,
     public cookieService: CookieService,
+    public toastr: ToastrService,
+    public router: Router
   ){
 
   }
@@ -57,6 +60,8 @@ export class CheckoutSuccessComponent {
     }
     this.cartService.checkoutMercadoPago(data).subscribe((resp) => {
       console.log(resp)
+      this.toastr.success("Exito", "Compra realizada");
+      this.router.navigateByUrl("/gracias-por-tu-compra/"+this.payment_id)
     });
   }
 }
