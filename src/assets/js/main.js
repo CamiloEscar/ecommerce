@@ -647,8 +647,8 @@ function HOMEINIT($) {
 
 
 	////////////////////////////////////////////////////
-	// 12. Nice Select Js
-	$('.tp-header-search-category select, .tp-shop-area select, .tp-checkout-area select, .profile__area select').niceSelect();
+	// 12. Nice Select Js  .profile__area select
+	$('.tp-header-search-category select, .tp-shop-area select, .tp-checkout-area select, ').niceSelect();
 
 	////////////////////////////////////////////////////
 	// 13. Smooth Scroll Js

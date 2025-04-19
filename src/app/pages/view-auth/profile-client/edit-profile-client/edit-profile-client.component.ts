@@ -43,5 +43,28 @@ export class EditProfileClientComponent {
   }
 
   updateUser(){
+    if(!this.name || !this.email) {
+      this.toastr.error('Validacion', "Es necesario ingresar un nombre y un email");
+      return;
+    }
+    let data = {
+      name : this.name,
+      surname : this.surname,
+      email : this.email,
+      phone : this.phone,
+      bio : this.bio,
+      fb : this.fb,
+      sexo : this.sexo,
+      address_city : this.address_city,
+    }
+    this.profileClient.updateProfile(data).subscribe((resp:any) => {
+      console.log(resp);
+
+      if(resp.message == 403){
+        this.toastr.error('Error', resp.message_text)
+      } else {
+        this.toastr.success('Exito', "El usuario ha sido editado correctamente")
+      }
+    })
   }
 }
