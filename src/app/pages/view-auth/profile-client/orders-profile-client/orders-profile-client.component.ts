@@ -15,6 +15,11 @@ export class OrdersProfileClientComponent {
 
   sales: any = [];
 
+  sale_detail_review:any;
+
+  rating:number = 0;
+
+  message: string = '';
   constructor(
     public profileClient: ProfileClientService
   ) {
@@ -28,6 +33,19 @@ export class OrdersProfileClientComponent {
 
   detailShow(sale:any){
     sale.sale_detail_show = !sale.sale_detail_show;
+  }
+  reviewShow(sale_detail:any){
+    this.sale_detail_review = sale_detail;
+  }
+
+  selectedRating(val:number){
+    this.rating = val;
+  }
+
+  backlist(){
+    this.sale_detail_review = null;
+    this.rating = 0;
+    this.message = '';
   }
 
 }
