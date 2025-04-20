@@ -21,8 +21,8 @@
                         <button class="nav-link" id="nav-information-tab" data-bs-toggle="tab" data-bs-target="#nav-information" type="button" (click)="selectTab(1)" role="tab" aria-controls="nav-information" aria-selected="false"><span><i class="fa-regular fa-circle-info"></i></span> Information</button>
                         <button class="nav-link" id="nav-address-tab" data-bs-toggle="tab" data-bs-target="#nav-address" type="button" (click)="selectTab(2)" role="tab" aria-controls="nav-address" aria-selected="false"><span><i class="fa-light fa-location-dot"></i></span> Address </button>
                         <button class="nav-link" id="nav-order-tab" data-bs-toggle="tab" data-bs-target="#nav-order" type="button" (click)="selectTab(3)" role="tab" aria-controls="nav-order" aria-selected="false"><span><i class="fa-light fa-clipboard-list-check"></i></span> My Orders </button>
-                        <button class="nav-link" id="nav-notification-tab" data-bs-toggle="tab" data-bs-target="#nav-notification" type="button" role="tab" aria-controls="nav-notification" aria-selected="false"><span><i class="fa-regular fa-bell"></i></span> Notification</button>
-                        <button class="nav-link" id="nav-password-tab" data-bs-toggle="tab" data-bs-target="#nav-password" type="button" role="tab" aria-controls="nav-password" aria-selected="false"><span><i class="fa-regular fa-lock"></i></span> Change Password</button>
+                        <button class="nav-link" id="nav-notification-tab" data-bs-toggle="tab" data-bs-target="#nav-notification" type="button" (click)="selectTab(4)" role="tab" aria-controls="nav-notification" aria-selected="false"><span><i class="fa-regular fa-bell"></i></span> Notification</button>
+                        <button class="nav-link" id="nav-password-tab" data-bs-toggle="tab" data-bs-target="#nav-password" type="button" (click)="selectTab(5)" role="tab" aria-controls="nav-password" aria-selected="false"><span><i class="fa-regular fa-lock"></i></span> Change Password</button>
                         <span id="marker-vertical" class="tp-tab-line d-none d-sm-inline-block"></span>
                      </div>
                   </nav>
@@ -52,7 +52,7 @@
                                  </div>
                                  <div class="col-md-6">
                                     <div class="profile__main-logout text-sm-end">
-                                       <a href="login.html" class="tp-logout-btn">Logout</a>
+                                       <a href="#" onclick="return false;" (click)="logout()" class="tp-logout-btn">Logout</a>
                                     </div>
                                  </div>
                               </div>
@@ -115,7 +115,11 @@
                       }
                      </div>
                      <div class="tab-pane fade" id="nav-password" role="tabpanel" aria-labelledby="nav-password-tab">
-                        <app-password-profile-client></app-password-profile-client>
+                      @defer (when selected_tab == 5) {
+                          <app-password-profile-client></app-password-profile-client>
+                      }  @placeholder {
+                          <div>Wait for the duck</div>
+                      }
                      </div>
                      <div class="tab-pane fade" id="nav-address" role="tabpanel" aria-labelledby="nav-address-tab">
                       @defer (when selected_tab == 2) {
