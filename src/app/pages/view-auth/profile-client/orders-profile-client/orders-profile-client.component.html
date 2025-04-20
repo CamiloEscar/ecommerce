@@ -57,7 +57,7 @@
           </div>
        </div>
        <div class="tp-product-details-review-btn-wrapper">
-          <button type="button" class="tp-product-details-review-btn">Enviar reseña</button>
+          <button type="button" class="tp-product-details-review-btn" (click)="saveReview()">{{this.sale_detail_review.review ? 'Editar reseña' : 'Enviar reseña'}}</button>
           <button type="button" class="btn btn-dark mx-3" (click)="backlist()">Salir</button>
        </div>
     </form>

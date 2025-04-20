@@ -3,6 +3,7 @@ import { ProfileClientService } from '../service/profile-client.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-orders-profile-client',
@@ -21,7 +22,8 @@ export class OrdersProfileClientComponent {
 
   message: string = '';
   constructor(
-    public profileClient: ProfileClientService
+    public profileClient: ProfileClientService,
+    public toastr: ToastrService,
   ) {
 
     this.profileClient.showOrders().subscribe((resp:any) => {
@@ -36,6 +38,10 @@ export class OrdersProfileClientComponent {
   }
   reviewShow(sale_detail:any){
     this.sale_detail_review = sale_detail;
+    if(this.sale_detail_review.review){
+      this.rating = this.sale_detail_review.review.rating,
+      this.message = this.sale_detail_review.review.message
+    }
   }
 
   selectedRating(val:number){
@@ -46,6 +52,33 @@ export class OrdersProfileClientComponent {
     this.sale_detail_review = null;
     this.rating = 0;
     this.message = '';
+  }
+
+  saveReview(){
+    if(!this.message || !this.rating){
+      this.toastr.error("Validacion", "Necesitas seleccionar una calificacion y escribir un comentario");
+      return;
+    }
+
+    let data = {
+      product_id: this.sale_detail_review.product_id,
+      sale_detail_id: this.sale_detail_review.id,
+      message: this.message,
+      rating: this.rating,
+    }
+    if(this.sale_detail_review.review){
+      this.profileClient.updateReview(this.sale_detail_review.review.id, data).subscribe((resp:any) => {
+        this.toastr.success("Exitos", "La reseña se edito correctamente");
+        this.sale_detail_review.review = resp.review;
+      })
+
+    } else {
+      this.profileClient.registerReview(data).subscribe((resp:any) => {
+        this.toastr.success("Exitos", "La reseña se registro correctamente");
+        this.sale_detail_review.review = resp.review;
+      })
+
+    }
   }
 
 }
