@@ -34,6 +34,8 @@ export class LandingProductComponent {
 
   plus:number = 0;
 
+  reviews:any = [];
+
   constructor(
     public homeService: HomeService,
     public activatedRoute: ActivatedRoute,
@@ -57,6 +59,7 @@ export class LandingProductComponent {
         this.PRODUCT_SELECTED = resp.product;
         this.PRODUCT_RELATEDS = resp.product_relateds.data;
         this.DISCOUNT_CAMPAING = resp.discount_campaing;
+        this.reviews = resp.reviews;
 
         if(this.DISCOUNT_CAMPAING){
           this.PRODUCT_SELECTED.discount_g = this.DISCOUNT_CAMPAING;
