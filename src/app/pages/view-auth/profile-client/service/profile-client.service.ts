@@ -22,7 +22,7 @@ export class ProfileClientService {
   updateProfile(data:any){
     let headers = new HttpHeaders({'Authorization': 'Bearer '+this.authService.token});
     let URL = URL_SERVICIOS+"/ecommerce/profile_client";
-    return this.http.put(URL, data, {headers: headers});
+    return this.http.post(URL, data, {headers: headers});  //cambiamos de put a post porque no se puede actualizar el perfil, porque de tipo put no lo va a leer, en un mensaje con video o imagen
   }
 
   showUser(){

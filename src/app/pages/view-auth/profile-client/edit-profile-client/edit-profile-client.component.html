@@ -74,6 +74,7 @@
                  </div>
               </div>
            </div>
+
            <div class="col-xxl-6 col-md-6">
               <div class="profile__input-box">
                  <div class="profile__input">
@@ -98,6 +99,18 @@
                  </div>
               </div>
            </div>
+           <div class="col-xxl-6 col-md-6 mb-10">
+            <div class="profile__input-box">
+                <label class="form-label">Sube tu imagen: *</label>
+                <div class="custom-file">
+                <input type="file" class="custom-file-input" id="customFile"  accept=".jpeg, .bmp, .jpg, .png, .gif, .webp"  (change)="processFile($event)">
+                <label class="custom-file-label" for="customFile">Choose file</label>
+                </div>
+            </div>
+            <div class="img py-6" *ngIf="imagen_previsualizacion">
+              <img [src]="imagen_previsualizacion" width="200" alt="" />
+            </div>
+         </div>
 
            <div class="col-xxl-12">
               <div class="profile__input-box">

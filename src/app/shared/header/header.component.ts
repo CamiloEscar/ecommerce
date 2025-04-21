@@ -84,6 +84,12 @@ onClickOutside(event: MouseEvent): void {
     })
   }
 
+  logout(){
+    this.cartService.authService.logout();
+    setTimeout(() => {
+      window.location.reload();
+    }, 50);
+  }
   deleteCart(CART:any){
     this.cartService.deleteCart(CART.id).subscribe((resp:any)=> {  //lo eliminamos del front
       this.toastr.info('Eliminacion', "Se elimino el producto: "+CART.product.title + " del carrito de compra");

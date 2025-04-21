@@ -29,5 +29,8 @@ export class ProfileClientComponent {
 
   logout(){
     this.authService.logout();
+    setTimeout(() => {
+      window.location.reload();
+    }, 50);
   }
 }
