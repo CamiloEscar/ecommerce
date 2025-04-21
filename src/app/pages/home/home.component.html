@@ -672,16 +672,14 @@
                             class="tp-product-rating d-flex align-items-center"
                           >
                             <div class="tp-product-rating-icon">
-                              <span><i class="fa-solid fa-star"></i></span>
-                              <span><i class="fa-solid fa-star"></i></span>
-                              <span><i class="fa-solid fa-star"></i></span>
-                              <span><i class="fa-solid fa-star"></i></span>
-                              <span
-                                ><i class="fa-solid fa-star-half-stroke"></i
-                              ></span>
+                              <span><i class="fa-solid fa-star" [ngClass]="{'fa-start-gris': TRENDING_PRODUCT.avg_reviews < 1}"></i></span>
+                              <span><i class="fa-solid fa-star" [ngClass]="{'fa-start-gris' : TRENDING_PRODUCT.avg_reviews < 2}"></i></span>
+                              <span><i class="fa-solid fa-star" [ngClass]="{'fa-start-gris' : TRENDING_PRODUCT.avg_reviews < 3}"></i></span>
+                              <span><i class="fa-solid fa-star" [ngClass]="{'fa-start-gris' : TRENDING_PRODUCT.avg_reviews < 4}"></i></span>
+                              <span><i class="fa-solid fa-star" [ngClass]="{'fa-start-gris': TRENDING_PRODUCT.avg_reviews < 5}"></i></span>
                             </div>
                             <div class="tp-product-rating-text">
-                              <span>(7 Review)</span>
+                              <span>({{TRENDING_PRODUCT.count_reviews}} Comentarios)</span>
                             </div>
                           </div>
                           <div class="tp-product-price-wrapper">
@@ -872,16 +870,14 @@
                           class="tp-product-rating d-flex align-items-center"
                         >
                           <div class="tp-product-rating-icon">
-                            <span><i class="fa-solid fa-star"></i></span>
-                            <span><i class="fa-solid fa-star"></i></span>
-                            <span><i class="fa-solid fa-star"></i></span>
-                            <span><i class="fa-solid fa-star"></i></span>
-                            <span
-                              ><i class="fa-solid fa-star-half-stroke"></i
-                            ></span>
+                            <span><i class="fa-solid fa-star" [ngClass]="{'fa-start-gris': product.avg_reviews < 1}"></i></span>
+                              <span><i class="fa-solid fa-star" [ngClass]="{'fa-start-gris' : product.avg_reviews < 2}"></i></span>
+                              <span><i class="fa-solid fa-star" [ngClass]="{'fa-start-gris' : product.avg_reviews < 3}"></i></span>
+                              <span><i class="fa-solid fa-star" [ngClass]="{'fa-start-gris' : product.avg_reviews < 4}"></i></span>
+                              <span><i class="fa-solid fa-star" [ngClass]="{'fa-start-gris': product.avg_reviews < 5}"></i></span>
                           </div>
                           <div class="tp-product-rating-text">
-                            <span>(7 Review)</span>
+                            <span>({{product.count_reviews}} Comentarios)</span>
                           </div>
                         </div>
                         <div class="tp-product-price-wrapper">
@@ -1073,16 +1069,14 @@
                           class="tp-product-rating d-flex align-items-center"
                         >
                           <div class="tp-product-rating-icon">
-                            <span><i class="fa-solid fa-star"></i></span>
-                            <span><i class="fa-solid fa-star"></i></span>
-                            <span><i class="fa-solid fa-star"></i></span>
-                            <span><i class="fa-solid fa-star"></i></span>
-                            <span
-                              ><i class="fa-solid fa-star-half-stroke"></i
-                            ></span>
+                            <span><i class="fa-solid fa-star" [ngClass]="{'fa-start-gris': product.avg_reviews < 1}"></i></span>
+                              <span><i class="fa-solid fa-star" [ngClass]="{'fa-start-gris' : product.avg_reviews < 2}"></i></span>
+                              <span><i class="fa-solid fa-star" [ngClass]="{'fa-start-gris' : product.avg_reviews < 3}"></i></span>
+                              <span><i class="fa-solid fa-star" [ngClass]="{'fa-start-gris' : product.avg_reviews < 4}"></i></span>
+                              <span><i class="fa-solid fa-star" [ngClass]="{'fa-start-gris': product.avg_reviews < 5}"></i></span>
                           </div>
                           <div class="tp-product-rating-text">
-                            <span>(7 Review)</span>
+                            <span>({{product.count_reviews}} Comentarios)</span>
                           </div>
                         </div>
                         <div class="tp-product-price-wrapper">
@@ -1475,14 +1469,14 @@
                       </h3>
                       <div class="tp-product-rating d-flex align-items-center">
                         <div class="tp-product-rating-icon">
-                          <span><i class="fa-solid fa-star"></i></span>
-                          <span><i class="fa-solid fa-star"></i></span>
-                          <span><i class="fa-solid fa-star"></i></span>
-                          <span><i class="fa-solid fa-star"></i></span>
-                          <span><i class="fa-solid fa-star"></i></span>
+                          <span><i class="fa-solid fa-star" [ngClass]="{'fa-start-gris': DISCOUNT_FLASH_PRODUCT.avg_reviews < 1}"></i></span>
+                              <span><i class="fa-solid fa-star" [ngClass]="{'fa-start-gris' : DISCOUNT_FLASH_PRODUCT.avg_reviews < 2}"></i></span>
+                              <span><i class="fa-solid fa-star" [ngClass]="{'fa-start-gris' : DISCOUNT_FLASH_PRODUCT.avg_reviews < 3}"></i></span>
+                              <span><i class="fa-solid fa-star" [ngClass]="{'fa-start-gris' : DISCOUNT_FLASH_PRODUCT.avg_reviews < 4}"></i></span>
+                              <span><i class="fa-solid fa-star" [ngClass]="{'fa-start-gris': DISCOUNT_FLASH_PRODUCT.avg_reviews < 5}"></i></span>
                         </div>
                         <div class="tp-product-rating-text">
-                          <span>(15 Review)</span>
+                          <span>({{DISCOUNT_FLASH_PRODUCT.count_reviews}} Comentarios)</span>
                         </div>
                       </div>
                       <div class="tp-product-price-wrapper">
@@ -1818,16 +1812,14 @@
                       </h3>
                       <div class="tp-product-rating d-flex align-items-center">
                         <div class="tp-product-rating-icon">
-                          <span><i class="fa-solid fa-star"></i></span>
-                          <span><i class="fa-solid fa-star"></i></span>
-                          <span><i class="fa-solid fa-star"></i></span>
-                          <span><i class="fa-solid fa-star"></i></span>
-                          <span
-                            ><i class="fa-solid fa-star-half-stroke"></i
-                          ></span>
+                          <span><i class="fa-solid fa-star" [ngClass]="{'fa-start-gris': PRODUCT_COMIC.avg_reviews < 1}"></i></span>
+                              <span><i class="fa-solid fa-star" [ngClass]="{'fa-start-gris' : PRODUCT_COMIC.avg_reviews < 2}"></i></span>
+                              <span><i class="fa-solid fa-star" [ngClass]="{'fa-start-gris' : PRODUCT_COMIC.avg_reviews < 3}"></i></span>
+                              <span><i class="fa-solid fa-star" [ngClass]="{'fa-start-gris' : PRODUCT_COMIC.avg_reviews < 4}"></i></span>
+                              <span><i class="fa-solid fa-star" [ngClass]="{'fa-start-gris': PRODUCT_COMIC.avg_reviews < 5}"></i></span>
                         </div>
                         <div class="tp-product-rating-text">
-                          <span>(6 Review)</span>
+                          <span>({{PRODUCT_COMIC.count_reviews}} Comentarios)</span>
                         </div>
                       </div>
                       <div class="tp-product-price-wrapper">
@@ -2150,16 +2142,14 @@
                       </h3>
                       <div class="tp-product-rating d-flex align-items-center">
                         <div class="tp-product-rating-icon">
-                          <span><i class="fa-solid fa-star"></i></span>
-                          <span><i class="fa-solid fa-star"></i></span>
-                          <span><i class="fa-solid fa-star"></i></span>
-                          <span><i class="fa-solid fa-star"></i></span>
-                          <span
-                            ><i class="fa-solid fa-star-half-stroke"></i
-                          ></span>
+                          <span><i class="fa-solid fa-star" [ngClass]="{'fa-start-gris': PRODUCT_CAROUSEL.avg_reviews < 1}"></i></span>
+                              <span><i class="fa-solid fa-star" [ngClass]="{'fa-start-gris' : PRODUCT_CAROUSEL.avg_reviews < 2}"></i></span>
+                              <span><i class="fa-solid fa-star" [ngClass]="{'fa-start-gris' : PRODUCT_CAROUSEL.avg_reviews < 3}"></i></span>
+                              <span><i class="fa-solid fa-star" [ngClass]="{'fa-start-gris' : PRODUCT_CAROUSEL.avg_reviews < 4}"></i></span>
+                              <span><i class="fa-solid fa-star" [ngClass]="{'fa-start-gris': PRODUCT_CAROUSEL.avg_reviews < 5}"></i></span>
                         </div>
                         <div class="tp-product-rating-text">
-                          <span>(7 Review)</span>
+                          <span>({{PRODUCT_CAROUSEL.count_reviews}} Comentarios)</span>
                         </div>
                       </div>
                       <div class="tp-product-price-wrapper">
@@ -2230,14 +2220,14 @@
                     </h3>
                     <div class="tp-product-rating d-sm-flex align-items-center">
                       <div class="tp-product-rating-icon">
-                        <span><i class="fa-solid fa-star"></i></span>
-                        <span><i class="fa-solid fa-star"></i></span>
-                        <span><i class="fa-solid fa-star"></i></span>
-                        <span><i class="fa-solid fa-star"></i></span>
-                        <span><i class="fa-solid fa-star"></i></span>
+                        <span><i class="fa-solid fa-star" [ngClass]="{'fa-start-gris': LAST_PRODUCT_DISCOUNT.avg_reviews < 1}"></i></span>
+                              <span><i class="fa-solid fa-star" [ngClass]="{'fa-start-gris' : LAST_PRODUCT_DISCOUNT.avg_reviews < 2}"></i></span>
+                              <span><i class="fa-solid fa-star" [ngClass]="{'fa-start-gris' : LAST_PRODUCT_DISCOUNT.avg_reviews < 3}"></i></span>
+                              <span><i class="fa-solid fa-star" [ngClass]="{'fa-start-gris' : LAST_PRODUCT_DISCOUNT.avg_reviews < 4}"></i></span>
+                              <span><i class="fa-solid fa-star" [ngClass]="{'fa-start-gris': LAST_PRODUCT_DISCOUNT.avg_reviews < 5}"></i></span>
                       </div>
                       <div class="tp-product-rating-text">
-                        <span>(4 Review)</span>
+                        <span>({{LAST_PRODUCT_DISCOUNT.count_reviews}} Comentarios)</span>
                       </div>
                     </div>
                     <div class="tp-product-price-wrapper">
@@ -2296,14 +2286,14 @@
                     </h3>
                     <div class="tp-product-rating d-sm-flex align-items-center">
                       <div class="tp-product-rating-icon">
-                        <span><i class="fa-solid fa-star"></i></span>
-                        <span><i class="fa-solid fa-star"></i></span>
-                        <span><i class="fa-solid fa-star"></i></span>
-                        <span><i class="fa-solid fa-star"></i></span>
-                        <span><i class="fa-solid fa-star"></i></span>
+                        <span><i class="fa-solid fa-star" [ngClass]="{'fa-start-gris': LAST_PRODUCT_FEATURED.avg_reviews < 1}"></i></span>
+                              <span><i class="fa-solid fa-star" [ngClass]="{'fa-start-gris' : LAST_PRODUCT_FEATURED.avg_reviews < 2}"></i></span>
+                              <span><i class="fa-solid fa-star" [ngClass]="{'fa-start-gris' : LAST_PRODUCT_FEATURED.avg_reviews < 3}"></i></span>
+                              <span><i class="fa-solid fa-star" [ngClass]="{'fa-start-gris' : LAST_PRODUCT_FEATURED.avg_reviews < 4}"></i></span>
+                              <span><i class="fa-solid fa-star" [ngClass]="{'fa-start-gris': LAST_PRODUCT_FEATURED.avg_reviews < 5}"></i></span>
                       </div>
                       <div class="tp-product-rating-text">
-                        <span>(4 Review)</span>
+                        <span>({{LAST_PRODUCT_FEATURED.count_reviews}} Comentarios)</span>
                       </div>
                     </div>
                     <div class="tp-product-price-wrapper">
@@ -2363,14 +2353,14 @@
                     </h3>
                     <div class="tp-product-rating d-sm-flex align-items-center">
                       <div class="tp-product-rating-icon">
-                        <span><i class="fa-solid fa-star"></i></span>
-                        <span><i class="fa-solid fa-star"></i></span>
-                        <span><i class="fa-solid fa-star"></i></span>
-                        <span><i class="fa-solid fa-star"></i></span>
-                        <span><i class="fa-solid fa-star"></i></span>
+                        <span><i class="fa-solid fa-star" [ngClass]="{'fa-start-gris': LAST_PRODUCT_SELLING.avg_reviews < 1}"></i></span>
+                              <span><i class="fa-solid fa-star" [ngClass]="{'fa-start-gris' : LAST_PRODUCT_SELLING.avg_reviews < 2}"></i></span>
+                              <span><i class="fa-solid fa-star" [ngClass]="{'fa-start-gris' : LAST_PRODUCT_SELLING.avg_reviews < 3}"></i></span>
+                              <span><i class="fa-solid fa-star" [ngClass]="{'fa-start-gris' : LAST_PRODUCT_SELLING.avg_reviews < 4}"></i></span>
+                              <span><i class="fa-solid fa-star" [ngClass]="{'fa-start-gris': LAST_PRODUCT_SELLING.avg_reviews < 5}"></i></span>
                       </div>
                       <div class="tp-product-rating-text">
-                        <span>(4 Review)</span>
+                        <span>({{LAST_PRODUCT_SELLING.count_reviews}} Comentarios)</span>
                       </div>
                     </div>
                     <div class="tp-product-price-wrapper">

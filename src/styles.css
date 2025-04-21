@@ -191,3 +191,7 @@ button.toast-close-button {
     width: 25em;
   }
 }
+
+.fa-start-gris {
+  color: #9a9a9a !important;
+}
