@@ -38,6 +38,9 @@ export class FilterAdvanceComponent {
   colors_selected:any = [];
   brands_selected: any = [];
 
+  min_price: number = 0;
+  max_price: number = 0;
+
   constructor(
     public homeService: HomeService,
     public cookieService: CookieService,
@@ -65,6 +68,22 @@ export class FilterAdvanceComponent {
   ngOnInit(): void {
     // Set currency FIRST before loading any data
     this.currency = this.cookieService.get("currency") || 'ARS';
+
+    $("#slider-range").slider({
+			range: true,
+			min: 0,
+			max: 40000,
+			values: [10, 10000],
+			slide: (event:any, ui:any) => {
+				$("#amount").val(this.currency+ " " + ui.values[0] + " - "+this.currency+ " " + ui.values[1]);
+        this.min_price = ui.values[0];
+        this.max_price = ui.values[1];
+			},stop: () => {
+        this.filterAdvanceProduct();
+      }
+		});
+		$("#amount").val(this.currency+ " " + $("#slider-range").slider("values", 0) +
+			" - "+this.currency+ " " + $("#slider-range").slider("values", 1));
     };
 
 
@@ -127,6 +146,9 @@ export class FilterAdvanceComponent {
         categories_selected: this.categories_selected,
         colors_selected: this.colors_selected,
         brands_selected: this.brands_selected,
+        min_price: this.min_price,
+        max_price: this.max_price,
+        currency: this.currency,
       }
       this.homeService.filterAdvanceProduct(data).subscribe((resp:any) => {
         console.log(resp);
