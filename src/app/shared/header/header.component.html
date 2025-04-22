@@ -138,7 +138,7 @@
               </div>
               <form action="#">
                  <div class="tp-search-input mb-10">
-                    <input type="text" placeholder="Search for product...">
+                    <input type="text" (keyup.enter)= "searchProduct()" [(ngModel)]="searchT" name="searchT" placeholder="Busca tus productos">
                     <button type="submit"><i class="flaticon-search-1"></i></button>
                  </div>
                  <div class="tp-search-category">
@@ -316,7 +316,7 @@
                     <form action="#">
                        <div class="tp-header-search-wrapper d-flex align-items-center">
                           <div class="tp-header-search-box">
-                             <input type="text" placeholder="Search for Products...">
+                            <input type="text" (keyup.enter)= "searchProduct()" [(ngModel)]="searchT" name="searchT" placeholder="Busca tus productos">
                           </div>
                           <div class="tp-header-search-category">
                              <select>
