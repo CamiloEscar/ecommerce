@@ -75,7 +75,7 @@
                  </div>
                  <!-- color -->
                  <div class="tp-shop-widget mb-50">
-                    <h3 class="tp-shop-widget-title">Filter by Color</h3>
+                    <h3 class="tp-shop-widget-title">Filtro por Color</h3>
 
                     <div class="tp-shop-widget-content">
                        <div class="tp-shop-widget-checkbox-circle-list">
@@ -83,11 +83,11 @@
                             @for(color of Colors; track color.id){
                               <li>
                                  <div class="tp-shop-widget-checkbox-circle">
-                                    <input type="checkbox" [id]="color.name">
+                                    <input type="checkbox" (click)="addColor(color)" [id]="color.name">
                                     <label [for]="color.name">{{color.name}}</label>
                                     <span [attr.data-bg-color]="color.code" class="tp-shop-widget-checkbox-circle-self"></span>
                                  </div>
-                                 <span class="tp-shop-widget-checkbox-circle-number">{{color.products_count}}</span>
+                                 <span class="tp-shop-widget-checkbox-circle-number" [ngClass]="{'tp-shop-widget-checkbox-selected': colors_selected.includes(color.id)}">{{color.products_count}}</span>
                               </li>
                             }
                           </ul>
@@ -96,7 +96,7 @@
                  </div>
                  <!-- product rating -->
                  <div class="tp-shop-widget mb-50">
-                    <h3 class="tp-shop-widget-title">Top Rated Products</h3>
+                    <h3 class="tp-shop-widget-title">Productos Top</h3>
 
                     <div class="tp-shop-widget-content">
                        <div class="tp-shop-widget-product">
