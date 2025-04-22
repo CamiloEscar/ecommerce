@@ -67,7 +67,7 @@
                        <div class="tp-shop-widget-categories">
                           <ul>
                             @for(categorie of Categories; track categorie.id){
-                              <li><a href="#">{{categorie.name}} <span>{{ categorie.products_count}}</span></a></li>
+                              <li><a href="#" onclick="return false;" (click)="addCategorie(categorie)" [ngClass]="{'selected-categories': categories_selected.includes(categorie.id)}">{{categorie.name}} <span>{{ categorie.products_count}}</span></a></li>
                             }
                           </ul>
                        </div>

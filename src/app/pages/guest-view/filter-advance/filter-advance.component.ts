@@ -33,6 +33,8 @@ export class FilterAdvanceComponent {
   variation_selected: any = null;
   DISCOUNT_FLASH: any = null;
 
+  categories_selected:any = [];
+
   constructor(
     public homeService: HomeService,
     public cookieService: CookieService,
@@ -62,6 +64,34 @@ export class FilterAdvanceComponent {
     this.currency = this.cookieService.get("currency") || 'ARS';
     };
 
+
+    addCategorie(categorie:any){
+
+      //chequeamos si la categoria ya fue seleccionada
+      let INDEX = this.categories_selected.findIndex((item:any) => item == categorie.id);
+      //SI YA EXISTE
+      if(INDEX != -1){
+        //la eliminamos de la lista de seleccionados
+        this.categories_selected.splice(INDEX, 1)
+      } else {
+        //si no fue seleccionada la agregamos
+        this.categories_selected.push(categorie.id);
+      }
+      // console.log(this.categories_selected)
+      //cada vez que seleccionamos una categoria llamamos al servicio para filtrar los product
+      this.filterAdvanceProduct();
+    }
+
+    filterAdvanceProduct(){
+
+      let data = {
+        categories_selected: this.categories_selected,
+      }
+      this.homeService.filterAdvanceProduct(data).subscribe((resp:any) => {
+        console.log(resp);
+        this.PRODUCTS = resp.products.data;
+      })
+    }
 
   getTotalCurrency(PRODUCTS: any): number {
     // Add null checks
