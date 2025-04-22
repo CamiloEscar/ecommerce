@@ -2792,14 +2792,14 @@
   >
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
-        @defer (on viewport; when product_selected){
+        <!-- @defer (on viewport; when product_selected){ -->
 
           @if(product_selected){
             <app-modal-product [product_selected] = "product_selected"></app-modal-product>
             }
-          } @placeholder (minimum 1000ms) {
+          <!-- } @placeholder (minimum 1000ms) {
             <div>Loading...</div>
-          }
+          } -->
 
 
       </div>

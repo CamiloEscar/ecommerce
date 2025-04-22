@@ -1,0 +1,15 @@
+.selected-categories {
+  color: #0989ff;
+}
+
+.selected-categories span {
+  background-color: #0989ff;
+  border-color: #0989ff;
+  color: #fff
+}
+
+.tp-shop-widget-checkbox-selected {
+  background-color: #0989ff;
+  border-color: #0989ff;
+  color: #fff
+}

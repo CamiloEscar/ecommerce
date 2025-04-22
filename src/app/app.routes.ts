@@ -12,6 +12,7 @@ import { CheckoutSuccessComponent } from './pages/view-auth/checkout/checkout-su
 import { CheckoutFailureComponent } from './pages/view-auth/checkout/checkout-failure/checkout-failure.component';
 import { CheckoutPendingComponent } from './pages/view-auth/checkout/checkout-pending/checkout-pending.component';
 import { ProfileClientComponent } from './pages/view-auth/profile-client/profile-client.component';
+import { FilterAdvanceComponent } from './pages/guest-view/filter-advance/filter-advance.component';
 
 export const routes: Routes = [
     {
@@ -71,5 +72,9 @@ export const routes: Routes = [
       canActivate:[authGuard],
         path: 'perfil-del-cliente',
         component: ProfileClientComponent
+    },
+    {
+        path: 'productos-busqueda',
+        component: FilterAdvanceComponent
     },
 ];

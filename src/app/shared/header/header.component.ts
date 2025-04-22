@@ -38,6 +38,7 @@ onClickOutside(event: MouseEvent): void {
   totalCarts:number = 0;
   isLoading:boolean = false;
 
+  searchT: string = '';
   constructor(public homeService: HomeService,
               public cookieService: CookieService,
               public cartService: CartService,
@@ -115,5 +116,9 @@ onClickOutside(event: MouseEvent): void {
           window.location.reload();
         }, 25);
       }
+  }
+
+  searchProduct(){
+    window.location.href = '/productos-busqueda?search=' + this.searchT;
   }
 }
