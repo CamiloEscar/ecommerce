@@ -36,6 +36,7 @@ export class FilterAdvanceComponent {
   categories_selected:any = [];
 
   colors_selected:any = [];
+  brands_selected: any = [];
 
   constructor(
     public homeService: HomeService,
@@ -84,6 +85,23 @@ export class FilterAdvanceComponent {
       this.filterAdvanceProduct();
     }
 
+    addBrand(categorie:any){
+
+      //chequeamos si la categoria ya fue seleccionada
+      let INDEX = this.brands_selected.findIndex((item:any) => item == categorie.id);
+      //SI YA EXISTE
+      if(INDEX != -1){
+        //la eliminamos de la lista de seleccionados
+        this.brands_selected.splice(INDEX, 1)
+      } else {
+        //si no fue seleccionada la agregamos
+        this.brands_selected.push(categorie.id);
+      }
+      // console.log(this.categories_selected)
+      //cada vez que seleccionamos una categoria llamamos al servicio para filtrar los product
+      this.filterAdvanceProduct();
+    }
+
     addColor(color:any){
 
       //chequeamos si la categoria ya fue seleccionada
@@ -108,6 +126,7 @@ export class FilterAdvanceComponent {
       let data = {
         categories_selected: this.categories_selected,
         colors_selected: this.colors_selected,
+        brands_selected: this.brands_selected,
       }
       this.homeService.filterAdvanceProduct(data).subscribe((resp:any) => {
         console.log(resp);

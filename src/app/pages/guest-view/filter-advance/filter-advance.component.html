@@ -156,7 +156,17 @@
                  <div class="tp-shop-widget mb-50">
                     <h3 class="tp-shop-widget-title">Marcas</h3>
 
-                    <div class="tp-shop-widget-content ">
+                    <div class="tp-shop-widget-content">
+                      <div class="tp-shop-widget-categories">
+                         <ul>
+                          @for(Brand of Brands; track Brand.id){
+                             <li><a href="#" onclick="return false;" (click)="addBrand(Brand)" [ngClass]="{'selected-categories': brands_selected.includes(Brand.id)}">{{Brand.name}} <span>{{ Brand.products_count}}</span></a></li>
+                           }
+                         </ul>
+                      </div>
+                   </div>
+
+                    <!-- <div class="tp-shop-widget-content ">
                        <div class="tp-shop-widget-brand-list d-flex align-items-center justify-content-between flex-wrap">
                           @for(Brand of Brands; track Brand.id){
                             <div class="tp-shop-widget-brand-item">
@@ -166,7 +176,7 @@
                               </div>
                           }
                        </div>
-                    </div>
+                    </div> -->
                  </div>
               </div>
            </div>
