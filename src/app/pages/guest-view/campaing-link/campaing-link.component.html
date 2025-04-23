@@ -6,10 +6,10 @@
         <div class="row">
            <div class="col-xxl-12">
               <div class="breadcrumb__content p-relative z-index-1">
-                 <h3 class="breadcrumb__title">Campaña tipo link</h3>
+                 <h3 class="breadcrumb__title">Campaña Link:  {{DISCOUNT_LINK ? 'Codigo: ' +  DISCOUNT_LINK.code : 'No existe'}}</h3>
                  <div class="breadcrumb__list">
                     <span><a href="#">Home</a></span>
-                    <span>Campaña tipo link</span>
+                    <span>Campaña tipo link {{DISCOUNT_LINK ? 'Desde: '+DISCOUNT_LINK.start_date_format+' hasta ' + DISCOUNT_LINK.end_date_format : 'No existe'}}</span>
                  </div>
               </div>
            </div>
@@ -24,76 +24,6 @@
         <div class="row">
            <div class="col-xl-3 col-lg-4">
               <div class="tp-shop-sidebar mr-10">
-                 <!-- filter -->
-                 <div class="tp-shop-widget mb-35">
-                    <h3 class="tp-shop-widget-title no-border">Price Filter</h3>
-
-                    <div class="tp-shop-widget-content">
-                       <div class="tp-shop-widget-filter">
-                          <div id="slider-range" class="mb-10"></div>
-                          <div class="tp-shop-widget-filter-info d-flex align-items-center justify-content-between">
-                             <span class="input-range">
-                                <input type="text" id="amount" readonly>
-                             </span>
-                             <button class="tp-shop-widget-filter-btn" type="button" (click)="reset()">Resetar busqueda</button>
-                          </div>
-                       </div>
-                    </div>
-                 </div>
-                 <!-- status -->
-                 <div class="tp-shop-widget mb-50">
-                    <h3 class="tp-shop-widget-title">Product Status</h3>
-
-                    <div class="tp-shop-widget-content">
-                       <div class="tp-shop-widget-checkbox">
-                          <ul class="filter-items filter-checkbox">
-                             <li class="filter-item checkbox">
-                                <input id="on_sale" type="checkbox" (click)="addOptionAditional('campaing')">
-                                <label for="on_sale">Por descuentos normal</label>
-                             </li>
-                             <li class="filter-item checkbox">
-                                <input id="in_stock" type="checkbox" (click)="addOptionAditional('review')">
-                                <label for="in_stock">Por Reseñas</label>
-                             </li>
-                          </ul><!-- .filter-items -->
-                       </div>
-                    </div>
-                 </div>
-                 <!-- categories -->
-                 <div class="tp-shop-widget mb-50">
-                    <h3 class="tp-shop-widget-title">Categorias</h3>
-
-                    <div class="tp-shop-widget-content">
-                       <div class="tp-shop-widget-categories">
-                          <ul>
-                            @for(categorie of Categories; track categorie.id){
-                              <li><a href="#" onclick="return false;" (click)="addCategorie(categorie)" [ngClass]="{'selected-categories': categories_selected.includes(categorie.id)}">{{categorie.name}} <span>{{ categorie.products_count}}</span></a></li>
-                            }
-                          </ul>
-                       </div>
-                    </div>
-                 </div>
-                 <!-- color -->
-                 <div class="tp-shop-widget mb-50">
-                    <h3 class="tp-shop-widget-title">Filtro por Color</h3>
-
-                    <div class="tp-shop-widget-content">
-                       <div class="tp-shop-widget-checkbox-circle-list">
-                          <ul>
-                            @for(color of Colors; track color.id){
-                              <li>
-                                 <div class="tp-shop-widget-checkbox-circle">
-                                    <input type="checkbox" (click)="addColor(color)" [id]="color.name">
-                                    <label [for]="color.name">{{color.name}}</label>
-                                    <span [attr.data-bg-color]="color.code" class="tp-shop-widget-checkbox-circle-self"></span>
-                                 </div>
-                                 <span class="tp-shop-widget-checkbox-circle-number" [ngClass]="{'tp-shop-widget-checkbox-selected': colors_selected.includes(color.id)}">{{color.products_count}}</span>
-                              </li>
-                            }
-                          </ul>
-                       </div>
-                    </div>
-                 </div>
                  <!-- product rating -->
                  <div class="tp-shop-widget mb-50">
                     <h3 class="tp-shop-widget-title">Productos Top</h3>
@@ -144,6 +74,7 @@
                                    <a [routerLink]="'/producto/'+PRODUCT.slug">{{PRODUCT.title}}</a>
                                 </h4>
                                 <div class="tp-shop-widget-product-price-wrapper">
+                                  <!-- TODO: poner old price -->
                                    <span class="tp-shop-widget-product-price">{{getTotalCurrency(PRODUCT)}}</span>
                                 </div>
                              </div>
@@ -151,32 +82,6 @@
                         }
                        </div>
                     </div>
-                 </div>
-                 <!-- brand -->
-                 <div class="tp-shop-widget mb-50">
-                    <h3 class="tp-shop-widget-title">Marcas</h3>
-
-                    <div class="tp-shop-widget-content">
-                      <div class="tp-shop-widget-categories">
-                         <ul>
-                          @for(Brand of Brands; track Brand.id){
-                             <li><a href="#" onclick="return false;" (click)="addBrand(Brand)" [ngClass]="{'selected-categories': brands_selected.includes(Brand.id)}">{{Brand.name}} <span>{{ Brand.products_count}}</span></a></li>
-                           }
-                         </ul>
-                      </div>
-                   </div>
-
-                    <!-- <div class="tp-shop-widget-content ">
-                       <div class="tp-shop-widget-brand-list d-flex align-items-center justify-content-between flex-wrap">
-                          @for(Brand of Brands; track Brand.id){
-                            <div class="tp-shop-widget-brand-item">
-                                 <a href="#">
-                                    {{Brand.name}} ({{Brand.products_count}})
-                                 </a>
-                              </div>
-                          }
-                       </div>
-                    </div> -->
                  </div>
               </div>
            </div>
@@ -253,7 +158,7 @@
                               <div class="col-xl-4 col-md-6 col-sm-6 infinite-item">
                                  <div class="tp-product-item-2 mb-40">
                                     <div class="tp-product-thumb-2 p-relative z-index-1 fix w-img">
-                                      <a target="_blank" [routerLink]="['/producto/'+PRODUCT.slug]">
+                                      <a target="_blank" [routerLink]="['/producto/'+PRODUCT.slug]" [queryParams]="{campaing_discount: DISCOUNT_LINK.code}">
                                         <img
                                           [src]="PRODUCT.imagen" style="width: 304px; height:261px; object-fit:contain"
                                           alt="product-electronic"
@@ -301,10 +206,11 @@
                                     </div>
                                     <div class="tp-product-content-2 pt-15">
                                        <div class="tp-product-tag-2">
-                                        <a target="_blank" [routerLink]="['/producto/'+PRODUCT.slug]">{{PRODUCT.brand.name}}</a>
+                                        <a target="_blank" [routerLink]="['/producto/'+PRODUCT.slug]" [queryParams]="{campaing_discount: DISCOUNT_LINK.code}">
+                                          {{PRODUCT.brand.name}}</a>
                                        </div>
                                        <h3 class="tp-product-title-2">
-                                          <a target="_blank" [routerLink]="['/producto/'+PRODUCT.slug]">{{PRODUCT.title}}</a>
+                                          <a target="_blank" [routerLink]="['/producto/'+PRODUCT.slug]" [queryParams]="{campaing_discount: DISCOUNT_LINK.code}">{{PRODUCT.title}}</a>
                                        </h3>
                                        <div class="tp-product-rating-icon tp-product-rating-icon-2">
                                         <span><i class="fa-solid fa-star" [ngClass]="{'fa-start-gris': PRODUCT.avg_reviews < 1}"></i></span>
@@ -317,7 +223,7 @@
                                         </div>
                                       </div>
                                        <div class="tp-product-price-wrapper-2">
-                                        @if(PRODUCT.discount_g){
+                                        @if(this.DISCOUNT_LINK){
                                           <span class="tp-product-price old-price mx-1">{{getTotalCurrency(PRODUCT)}} {{currency}}</span>
                                         }
                                         <span class="tp-product-price new-price mx-1">{{getTotalPriceProduct(PRODUCT)}} {{currency}}</span
@@ -393,7 +299,7 @@
                                                 </div>
                                              </div>
                                              <div class="tp-product-price-wrapper-2">
-                                              @if(PRODUCT.discount_g){
+                                              @if(this.DISCOUNT_LINK){
                                                 <span class="tp-product-price old-price mx-1">{{getTotalCurrency(PRODUCT)}} {{currency}}</span>
                                               }
                                               <span class="tp-product-price new-price mx-1">{{getTotalPriceProduct(PRODUCT)}} {{currency}}</span

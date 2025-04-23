@@ -44,6 +44,7 @@ Categories:any = [];
 
   CODE_DISCOUNT:any = null;
 
+  DISCOUNT_LINK:any = null;
   constructor(
     public homeService: HomeService,
     public cookieService: CookieService,
@@ -69,7 +70,12 @@ Categories:any = [];
 
     this.homeService.campaingDiscountLink({code_discount: this.CODE_DISCOUNT}).subscribe((resp:any) => {
       console.log(resp);
-      // this.PRODUCTS = resp.products.data;
+      if(resp.message == 403) {
+        this.toastr.info('Validacion', resp.message_text);
+        return;
+      }
+      this.PRODUCTS = resp.products;
+      this.DISCOUNT_LINK = resp.discount;
     })
   }
 
@@ -88,7 +94,7 @@ Categories:any = [];
                 this.min_price = ui.values[0];
                 this.max_price = ui.values[1];
               },stop: () => {
-                this.filterAdvanceProduct();
+                // this.filterAdvanceProduct();
               }
             });
             $("#amount").val(this.currency+ " " + $("#slider-range").slider("values", 0) +
@@ -113,7 +119,7 @@ Categories:any = [];
     }
     // console.log(this.categories_selected)
     //cada vez que seleccionamos una categoria llamamos al servicio para filtrar los product
-    this.filterAdvanceProduct();
+    // this.filterAdvanceProduct();
 
     }
 
@@ -131,7 +137,7 @@ Categories:any = [];
       }
       // console.log(this.categories_selected)
       //cada vez que seleccionamos una categoria llamamos al servicio para filtrar los product
-      this.filterAdvanceProduct();
+      // this.filterAdvanceProduct();
     }
 
     addBrand(categorie:any){
@@ -148,7 +154,7 @@ Categories:any = [];
       }
       // console.log(this.categories_selected)
       //cada vez que seleccionamos una categoria llamamos al servicio para filtrar los product
-      this.filterAdvanceProduct();
+      // this.filterAdvanceProduct();
     }
 
     addColor(color:any){
@@ -165,25 +171,25 @@ Categories:any = [];
       }
       // console.log(this.categories_selected)
       //cada vez que seleccionamos una categoria llamamos al servicio para filtrar los product
-      this.filterAdvanceProduct();
+      // this.filterAdvanceProduct();
     }
 
-    filterAdvanceProduct(){
+    // filterAdvanceProduct(){
 
-      let data = {
-        categories_selected: this.categories_selected,
-        colors_selected: this.colors_selected,
-        brands_selected: this.brands_selected,
-        min_price: this.min_price,
-        max_price: this.max_price,
-        currency: this.currency,
-        options_aditional: this.options_aditional,
-      }
-      this.homeService.filterAdvanceProduct(data).subscribe((resp:any) => {
-        console.log(resp);
-        this.PRODUCTS = resp.products.data;
-      })
-    }
+    //   let data = {
+    //     categories_selected: this.categories_selected,
+    //     colors_selected: this.colors_selected,
+    //     brands_selected: this.brands_selected,
+    //     min_price: this.min_price,
+    //     max_price: this.max_price,
+    //     currency: this.currency,
+    //     options_aditional: this.options_aditional,
+    //   }
+    //   this.homeService.filterAdvanceProduct(data).subscribe((resp:any) => {
+    //     console.log(resp);
+    //     this.PRODUCTS = resp.products.data;
+    //   })
+    // }
 
     getTotalCurrency(PRODUCTS: any): number {
       // Add null checks
@@ -320,14 +326,14 @@ Categories:any = [];
       let result: number;
 
       // primero chequeamos que hay un descuento en el producto
-      if (PRODUCTS.discount_g) {
-        result = this.getNewTotal(PRODUCTS, PRODUCTS.discount_g);
+      if (this.DISCOUNT_LINK) {
+        result = this.getNewTotal(PRODUCTS, this.DISCOUNT_LINK);
       }
       // luego chequeamos si tiene el descuento flash
-      else if (this.DISCOUNT_FLASH && this.PRODUCTS &&
+      else if (this.DISCOUNT_LINK && this.PRODUCTS &&
               this.PRODUCTS.includes &&
               this.PRODUCTS.includes(PRODUCTS)) {
-        result = this.getNewTotal(PRODUCTS, this.DISCOUNT_FLASH);
+        result = this.getNewTotal(PRODUCTS, this.DISCOUNT_LINK);
       }
       // precio comun
       else {
