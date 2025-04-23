@@ -13,6 +13,7 @@ import { CheckoutFailureComponent } from './pages/view-auth/checkout/checkout-fa
 import { CheckoutPendingComponent } from './pages/view-auth/checkout/checkout-pending/checkout-pending.component';
 import { ProfileClientComponent } from './pages/view-auth/profile-client/profile-client.component';
 import { FilterAdvanceComponent } from './pages/guest-view/filter-advance/filter-advance.component';
+import { CampaingLinkComponent } from './pages/guest-view/campaing-link/campaing-link.component';
 
 export const routes: Routes = [
     {
@@ -76,5 +77,9 @@ export const routes: Routes = [
     {
         path: 'productos-busqueda',
         component: FilterAdvanceComponent
+    },
+    {
+        path: 'discount/:code',
+        component: CampaingLinkComponent
     },
 ];
