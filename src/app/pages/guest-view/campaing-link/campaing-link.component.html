@@ -115,9 +115,9 @@
                                    </li>
                                  </ul>
                              </div>
-                             <div class="tp-shop-top-result">
-                                <p>Showing 1–14 of 26 results</p>
-                             </div>
+                             <div class="tp-shop-top-result" *ngIf="PRODUCTS.length > 0">
+                              <p>Mostrando {{ PRODUCTS.length }} de {{ PRODUCTS.length }} resultados</p>
+                            </div>
                           </div>
                        </div>
                        <div class="col-xl-6">
@@ -192,7 +192,7 @@
                                                 </svg>
                                                 <span class="tp-product-tooltip tp-product-tooltip-right">Add To Wishlist</span>
                                              </button>
-                                             <button type="button" class="tp-product-action-btn-2 tp-product-add-to-compare-btn">
+                                             <button type="button" (click)="addCompareProduct(PRODUCT)" class="tp-product-action-btn-2 tp-product-add-to-compare-btn">
                                                 <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                    <path d="M11.4144 6.16828L14 3.58412L11.4144 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                                                    <path d="M1.48883 3.58374L14 3.58374" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -268,7 +268,7 @@
                                                    </svg>
                                                    <span class="tp-product-tooltip tp-product-tooltip-right">Add To Wishlist</span>
                                                 </button>
-                                                <button type="button" class="tp-product-action-btn-2 tp-product-add-to-compare-btn">
+                                                <button type="button" (click)="addCompareProduct(PRODUCT)" class="tp-product-action-btn-2 tp-product-add-to-compare-btn">
                                                    <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                       <path d="M11.4144 6.16828L14 3.58412L11.4144 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                                                       <path d="M1.48883 3.58374L14 3.58374" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>

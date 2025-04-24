@@ -349,4 +349,25 @@ export class FilterAdvanceComponent {
       return result;
     }
 
+    addCompareProduct(PRODUCT:any){
+      let COMPARES = localStorage.getItem('compares') ? JSON.parse(localStorage.getItem('compares') || '') : [];
+
+      let INDEX = COMPARES.findIndex((item:any) => item.id == PRODUCT.id);
+
+      if(INDEX != -1) {
+
+        this.toastr.error('Validacion', 'El producto ya fue agregado a la comparacion')
+
+        return;
+      }
+
+      COMPARES.push(PRODUCT);
+      this.toastr.success('Exito', 'Producto agregado a la comparacion')
+
+      localStorage.setItem('compares', JSON.stringify(COMPARES));
+
+      if(COMPARES.length > 1) {
+        this.router.navigateByUrl('/compare-product')
+      }
+    }
 }
