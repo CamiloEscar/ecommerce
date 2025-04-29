@@ -116,6 +116,10 @@
                       </div>
                       <p>{{PRODUCT_SELECTED.resumen}}</p>
 
+                      <p style="color: green;">
+                        Quedan: {{sub_variation_selected?.stock || variation_selected?.stock || PRODUCT_SELECTED.stock}} productos
+                      </p>
+
                       <!-- price -->
                       <div class="tp-product-details-price-wrapper mb-20">
                          <span class="tp-product-details-price old-price" *ngIf="PRODUCT_SELECTED.discount_g">{{getTotalCurrency(PRODUCT_SELECTED)}} {{currency}}</span>
@@ -131,18 +135,18 @@
                             <div class="tp-product-details-variation-list">
                                   @for(variation of variation_p.variations; track variation.id) {
                                     @if(variation.propertie && variation.propertie.code){
-                                <button type="button" class="color tp-color-variation-btn mx-1" (click)="selectedVariation(variation)">
+                                <button type="button" class="color tp-color-variation-btn mx-1" (click)="selectedVariation(variation)" [disabled]="variation.stock === 0">
                                   <span [attr.data-bg-color]="variation.propertie.code"></span>
                                   <span class="tp-color-variation-tootltip">{{variation.propertie.name}}</span>
                                 </button>
                               }
                               @if(variation.propertie && !variation.propertie.code){
-                                <button type="button" class="tp-size-variation-btn" (click)="selectedVariation(variation)" style="width: 70px !important;">
+                                <button type="button" class="tp-size-variation-btn" (click)="selectedVariation(variation)" [disabled]="variation.stock === 0" style="width: 70px !important;">
                                   {{variation.propertie.name}}
                                 </button>
                               }
                               @if(!variation.propertie){
-                                <button type="button" class="tp-size-variation-btn" (click)="selectedVariation(variation)" style="width: 70px !important;">
+                                <button type="button" class="tp-size-variation-btn" (click)="selectedVariation(variation)" [disabled]="variation.stock === 0" style="width: 70px !important;">
                                   {{variation.value_add}}
                                 </button>
                                 }

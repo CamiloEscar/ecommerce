@@ -116,6 +116,10 @@
     <p>
       {{product_selected.resumen}}
     </p>
+    <p style="color: green;">
+      Quedan: {{sub_variation_selected?.stock || variation_selected?.stock || product_selected.stock}} productos
+    </p>
+
 
     <!-- price -->
     <div class="tp-product-details-price-wrapper mb-20">
@@ -137,20 +141,38 @@
           <div class="tp-product-details-variation-list">
             @for(variation of variation_p.variations; track variation.id) {
               @if(variation.propertie && variation.propertie.code){
-                <button type="button" class="color tp-color-variation-btn mx-1" (click)="selectedVariation(variation)">
+                <button
+                  type="button"
+                  class="color tp-color-variation-btn mx-1"
+                  (click)="selectedVariation(variation)"
+                  [disabled]="variation.stock === 0"
+                >
                   <span [attr.data-bg-color]="variation.propertie.code"></span>
                   <span class="tp-color-variation-tootltip">{{variation.propertie.name}}</span>
                 </button>
               } @else if(variation.propertie && !variation.propertie.code){
-                <button type="button" class="tp-size-variation-btn" (click)="selectedVariation(variation)" style="width: 70px !important;">
+                <button
+                  type="button"
+                  class="tp-size-variation-btn"
+                  (click)="selectedVariation(variation)"
+                  style="width: 70px !important;"
+                  [disabled]="variation.stock === 0"
+                >
                   {{variation.propertie.name}}
                 </button>
               } @else {
-                <button type="button" class="tp-size-variation-btn" (click)="selectedVariation(variation)" style="width: 70px !important;">
+                <button
+                  type="button"
+                  class="tp-size-variation-btn"
+                  (click)="selectedVariation(variation)"
+                  style="width: 70px !important;"
+                  [disabled]="variation.stock === 0"
+                >
                   {{variation.value_add}}
                 </button>
               }
             }
+
           </div>
         }
       </div>
@@ -165,16 +187,16 @@
         <div class="tp-product-details-variation-list">
           @for(subvariation of variation_selected.subvariations; track subvariation.id) {
             @if(subvariation.propertie && subvariation.propertie.code){
-              <button type="button" class="color tp-color-variation-btn mx-1" (click)="selectedSubVariation(subvariation)">
+              <button type="button" class="color tp-color-variation-btn mx-1" (click)="selectedSubVariation(subvariation)" [disabled]="subvariation.stock === 0">
                 <span [attr.data-bg-color]="subvariation.propertie.code"></span>
                 <span class="tp-color-variation-tootltip">{{subvariation.propertie.name}}</span>
               </button>
             } @else if(subvariation.propertie && !subvariation.propertie.code){
-              <button type="button" class="tp-size-variation-btn" (click)="selectedSubVariation(subvariation)" style="width: 70px !important;">
+              <button type="button" class="tp-size-variation-btn" (click)="selectedSubVariation(subvariation)" [disabled]="subvariation.stock === 0" style="width: 70px !important;">
                 {{subvariation.propertie.name}}
               </button>
             } @else {
-              <button type="button" class="tp-size-variation-btn" (click)="selectedSubVariation(subvariation)" style="width: 70px !important;">
+              <button type="button" class="tp-size-variation-btn" (click)="selectedSubVariation(subvariation)" [disabled]="subvariation.stock === 0" style="width: 70px !important;">
                 {{subvariation.value_add}}
               </button>
             }

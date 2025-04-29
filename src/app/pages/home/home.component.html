@@ -5,45 +5,48 @@
        <div class="swiper-wrapper">
          @for(SLIDER of SLIDERS;track SLIDER.id) {
             <!-- *ngFor="let SLIDER of SLIDERS" green-dark-bg-->
-            <ng-container >
-               <div class="tp-slider-item tp-slider-height d-flex align-items-center swiper-slide green-dark-bg" [ngStyle]="{'background-color': SLIDER.color+' !important;'}">
-                  <div class="tp-slider-shape">
-                     <img class="tp-slider-shape-1" src="assets/img/slider/shape/slider-shape-1.png" alt="slider-shape">
-                     <img class="tp-slider-shape-2" src="assets/img/slider/shape/slider-shape-2.png" alt="slider-shape">
-                     <img class="tp-slider-shape-3" src="assets/img/slider/shape/slider-shape-3.png" alt="slider-shape">
-                     <img class="tp-slider-shape-4" src="assets/img/slider/shape/slider-shape-4.png" alt="slider-shape">
-                  </div>
-                  <div class="container">
-                     <div class="row align-items-center">
-                        <div class="col-xl-5 col-lg-6 col-md-6">
-                           <div class="tp-slider-content p-relative z-index-1">
-                              <span [id]="'label-'+SLIDER.id"></span>
-                              <!-- {{ getLabelSlider(SLIDER) }} -->
-                              <h3 class="tp-slider-title">{{ SLIDER.title }}</h3>
-                              <p [id]="'subtitle-'+SLIDER.id"></p>
-                              <!-- {{ getSubtitleSlider(SLIDER) }} -->
+            <ng-container>
+              <div
+                class="tp-slider-item tp-slider-height d-flex align-items-center swiper-slide"
+                [ngStyle]="{
+                  'background': 'linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url(' + SLIDER.imagen + ')',
+                  'background-color': SLIDER.color,
+                  'background-size': 'cover',
+                  'background-position': 'center',
+                  'background-repeat': 'no-repeat'
+                }"
+              >
+                <div class="container">
+                  <div class="row align-items-center">
+                    <div class="col-xl-5 col-lg-6 col-md-6">
+                      <div class="tp-slider-content p-relative z-index-1 text-white">
+                        <span [id]="'label-'+SLIDER.id"></span>
+                        <h3 class="tp-slider-title">{{ SLIDER.title }}</h3>
+                        <p [id]="'subtitle-'+SLIDER.id"></p>
 
-                              @if(SLIDER.link){
-                                 <div class="tp-slider-btn">
-                                    <a [href]="SLIDER.link" target="_blank" class="tp-btn tp-btn-2 tp-btn-white">Shop Now
-                                       <svg width="17" height="14" viewBox="0 0 17 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                          <path d="M16 6.99976L1 6.99976" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                          <path d="M9.9502 0.975414L16.0002 6.99941L9.9502 13.0244" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                       </svg>
-                                    </a>
-                                 </div>
-                              }
-                           </div>
-                        </div>
-                        <div class="col-xl-7 col-lg-6 col-md-6">
-                           <div class="tp-slider-thumb text-end">
-                              <img [src]="SLIDER.imagen" alt="slider-img" style="width: 250px; height: 350px; object-fit:contain">
-                           </div>
-                        </div>
-                     </div>
+                        @if(SLIDER.link){
+                          <div class="tp-slider-btn">
+                            <a [href]="SLIDER.link" target="_blank" class="tp-btn tp-btn-2 tp-btn-white">
+                              Compra ahora!
+                              <svg width="17" height="14" viewBox="0 0 17 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M16 6.99976L1 6.99976" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M9.9502 0.975414L16.0002 6.99941L9.9502 13.0244" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                              </svg>
+                            </a>
+                          </div>
+                        }
+                      </div>
+                    </div>
+                    <div class="col-xl-7 col-lg-6 col-md-6">
+                      <div class="tp-slider-thumb text-end">
+                        <img [src]="SLIDER.imagen" alt="slider-img" style="width: 250px; height: 350px; object-fit: contain;">
+                      </div>
+                    </div>
                   </div>
-               </div>
+                </div>
+              </div>
             </ng-container>
+
          }
 
           <!-- <div class="tp-slider-item tp-slider-height d-flex align-items-center swiper-slide green-dark-bg" >
