@@ -98,6 +98,10 @@ export class HomeComponent implements OnInit, AfterViewInit {
       this.DISCOUNT_FLASH = resp.discount_flash;
       this.DISCOUNT_FLASH_PRODUCT = resp.discount_flash_product;
 
+      this.homeService.menus().subscribe((resp:any) => {
+        console.log(resp)
+        this.categories_menus = resp.categories_menus;
+      })
       // Initialize sliders after data is loaded
       setTimeout(() => {
         this.initializeSliders();
