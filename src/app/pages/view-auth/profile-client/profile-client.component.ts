@@ -7,6 +7,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { AuthService } from '../../auth/service/auth.service';
+import { ProfileClientService } from './service/profile-client.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-profile-client',
@@ -19,9 +21,37 @@ import { AuthService } from '../../auth/service/auth.service';
 export class ProfileClientComponent {
   selected_tab:number = 0;
 
+  name: string = '';
+  surname: string = '';
+  email: string = '';
+  phone: string = '';
+  bio: string = '';
+  fb: string = '';
+  ig: string = '';
+  sexo: string = '';
+  address_city: string = '';
+
+  file_imagen: any;
+  imagen_previsualizacion:any;
   constructor(
     public authService: AuthService,
-  ){}
+    public profileClient: ProfileClientService,
+    public toastr: ToastrService,
+  ){
+    this.profileClient.showUser().subscribe((resp:any) => {
+      console.log(resp)
+      this.name = resp.name
+      this.surname = resp.surname
+      this.email = resp.email
+      this.phone = resp.phone
+      this.bio = resp.bio
+      this.fb = resp.fb
+      this.ig = resp.ig
+      this.sexo = resp.sexo
+      this.address_city = resp.address_city
+      this.imagen_previsualizacion = resp.avatar
+    })
+  }
 
   selectTab(val:number){
     this.selected_tab = val;

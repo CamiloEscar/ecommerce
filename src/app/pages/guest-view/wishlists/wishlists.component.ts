@@ -9,13 +9,13 @@ import { ToastrService } from 'ngx-toastr';
 
 declare var $: any;
 @Component({
-  selector: 'app-compare-product',
+  selector: 'app-wishlists',
   standalone: true,
   imports: [FormsModule, CommonModule, RouterModule],
-  templateUrl: './compare-product.component.html',
-  styleUrl: './compare-product.component.css'
+  templateUrl: './wishlists.component.html',
+  styleUrl: './wishlists.component.css'
 })
-export class CompareProductComponent {
+export class FavoriteProductComponent {
 
   PRODUCTS:any = [];
 
@@ -42,7 +42,7 @@ export class CompareProductComponent {
     //Add 'implements OnInit' to the class.
 
 
-    this.PRODUCTS = localStorage.getItem('compares') ? JSON.parse(localStorage.getItem('compares') ?? "") : [];
+    this.PRODUCTS = localStorage.getItem('favorites') ? JSON.parse(localStorage.getItem('favorites') ?? "") : [];
 
     this.currency = this.cookieService.get('currency') ? this.cookieService.get('currency') : 'ARS';
   }
@@ -213,7 +213,7 @@ export class CompareProductComponent {
     if (INDEX != -1) {
       this.PRODUCTS.splice(INDEX, 1);
       setTimeout(() => {
-        localStorage.setItem('compares', JSON.stringify(this.PRODUCTS));
+        localStorage.setItem('favorites', JSON.stringify(this.PRODUCTS));
       }, 50);
       this.toastr.info('Exito', 'El producto se elimino de la comparativa');
     } else {

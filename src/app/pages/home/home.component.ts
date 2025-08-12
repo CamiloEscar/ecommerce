@@ -271,6 +271,22 @@ export class HomeComponent implements OnInit, AfterViewInit {
     }
   }
 
+  addFavoriteProduct(PRODUCT: any) {
+  let FAVORITES = localStorage.getItem('favorites') ? JSON.parse(localStorage.getItem('favorites') || '') : [];
+
+  let INDEX = FAVORITES.findIndex((item: any) => item.id == PRODUCT.id);
+
+  if (INDEX != -1) {
+    this.toastr.error('Validación', 'El producto ya está en favoritos');
+    return;
+  }
+
+  FAVORITES.push(PRODUCT);
+  localStorage.setItem('favorites', JSON.stringify(FAVORITES));
+  this.toastr.success('Éxito', 'Producto agregado a favoritos');
+}
+
+
   addCart(PRODUCT: any): void {
     if (!this.cartService.authService.user) {
       this.toastr.error('Error', 'Ingrese a la tienda');
