@@ -9,7 +9,7 @@
                  <h3 class="breadcrumb__title">Shopping Cart</h3>
                  <div class="breadcrumb__list">
                     <span><a href="#">Home</a></span>
-                    <span>Shopping Cart    <small>(agregar mas adelante precio de envio o calculo de las dos monedas)</small></span>
+                    <span>Shopping Cart    <small>(CHEQUEAR QUE TOME EL VALOR DEL ENVIO Y TAMBIEN CHEQUEAR QUE SE SUME AL CUPON SI EXISTE)</small></span>
                  </div>
               </div>
            </div>
@@ -114,20 +114,20 @@
                        <div class="tp-cart-coupon">
                           <form action="#">
                              <div class="tp-cart-coupon-input-box">
-                                <label>Coupon Code:</label>
+                                <label>Cupon:</label>
                                 <div class="tp-cart-coupon-input d-flex align-items-center">
-                                   <input type="text" name="code_cupon" [(ngModel)]="code_cupon" placeholder="Enter Coupon Code">
-                                   <button type="button" (click)="applyCupon()">Apply</button>
+                                   <input type="text" name="code_cupon" [(ngModel)]="code_cupon" placeholder="Colocar codigo del cupon">
+                                   <button type="button" (click)="applyCupon()">Aplicar</button>
                                 </div>
                              </div>
                           </form>
                        </div>
                     </div>
-                    <div class="col-xl-6 col-md-4">
+                    <!-- <div class="col-xl-6 col-md-4">
                        <div class="tp-cart-update text-md-end">
                           <button type="button" class="tp-cart-update-btn">Update Cart</button>
                        </div>
-                    </div>
+                    </div> -->
                  </div>
               </div>
            </div>
@@ -138,36 +138,86 @@
                     <span class="tp-cart-checkout-top-price">${{totalCarts}} {{currency}}</span>
                  </div>
                  <div class="tp-cart-checkout-shipping">
-                    <h4 class="tp-cart-checkout-shipping-title">Shipping</h4>
+                    <h4 class="tp-cart-checkout-shipping-title">Envio</h4>
 
-                    <div class="tp-cart-checkout-shipping-option-wrapper">
-                       <!-- <div class="tp-cart-checkout-shipping-option">
-                          <input id="flat_rate" type="radio" name="shipping">
-                          <label for="flat_rate">Flat rate: <span>$20.00</span></label>
-                       </div>
-                       <div class="tp-cart-checkout-shipping-option">
-                          <input id="local_pickup" type="radio" name="shipping">
-                          <label for="local_pickup">Local pickup: <span> $25.00</span></label>
-                       </div> -->
-                       <div class="tp-cart-checkout-shipping-option">
-                          <input id="free_shipping" type="radio" name="shipping">
-                          <label for="free_shipping">Free shipping</label>
-                          <label for="free_shipping">Agregar costo de envio, por provincia,solamente</label>
-                       </div>
+                    <form #provinciaForm="ngForm" (ngSubmit)="applyCosto()">
+                      <label for="provincia">Seleccionar provincia:</label>
+                      <div class="d-flex align-items-center">
+                        <select
+                          [(ngModel)]="selectedProvinceCode"
+                          name="provincia"
+                          id="provincia"
+                          required
+                          class="form-select"
+                          #provinciaControl="ngModel"
+                        >
+                          <option [ngValue]="null" disabled>-- SELECCIONAR --</option>
+                          <option *ngFor="let prov of provincias" [ngValue]="prov.code">
+                            {{ prov.name }}
+                          </option>
+                        </select>
+
+                        <button
+                          type="submit"
+                          class="btn btn-primary ms-2"
+                          [disabled]="provinciaForm.invalid"
+                        >
+                          Aplicar
+                        </button>
+
+                        <button
+                          *ngIf="selectedProvinceCode"
+                          type="button"
+                          (click)="removeProvincia()"
+                          class="btn btn-danger ms-2"
+                        >
+                          <span aria-hidden="true">×</span>
+                        </button>
+                      </div>
+
+                      <div *ngIf="provinciaControl.invalid && provinciaControl.touched" class="text-danger mt-1">
+                        La provincia es obligatoria.
+                      </div>
+
+                      <div *ngIf="costoEnvio !== null" class="mt-2">
+                        <span class="cartmini__quantity mx-2">• Costo de envío: {{ costoEnvio }} {{ currency }}</span>
+                      </div>
+
+                    </form>
+
+                  </div>
+                  <div class="tp-cart-checkout-total d-flex align-items-center justify-content-between">
+                    <span>Subtotal</span>
+                    <span>{{ totalCarts }} {{ currency }}</span>
+                  </div>
+                  <div *ngIf="costoEnvio !== null" class="tp-cart-checkout-total d-flex align-items-center justify-content-between">
+                    <span>Envío</span>
+                    <span>{{ costoEnvio }} {{ currency }}</span>
+                  </div>
+                  <div class="tp-cart-checkout-total d-flex align-items-center justify-content-between">
+                    <span><strong>Total</strong></span>
+                    <span><strong>{{ totalCarts + (costoEnvio ?? 0) }} {{ currency }}</strong></span>
+                  </div>
+                  <div class="tp-cart-checkout-proceed">
+                    <button
+                      class="tp-cart-checkout-btn w-100"
+                      [routerLink]="'/proceso-de-pago'"
+                      [disabled]="!selectedProvinceCode"
+                    >
+                      Ir al checkout
+                    </button>
+
+                    <div *ngIf="!selectedProvinceCode" class="text-danger text-center mt-2">
+                      Debes seleccionar una provincia antes de continuar.
                     </div>
-                 </div>
-                 <div class="tp-cart-checkout-total d-flex align-items-center justify-content-between">
-                    <span>Total</span>
-                    <span>${{totalCarts}} {{currency}}</span>
-                 </div>
-                 <div class="tp-cart-checkout-proceed">
-                    <a routerLink="/proceso-de-pago" class="tp-cart-checkout-btn w-100">Proceed to Checkout</a>
-                 </div>
-              </div>
-           </div>
-        </div>
-     </div>
-  </section>
+                  </div>
+
+
+                  </div>
+                  </div>
+                  </div>
+                  </div>
+                    </section>
   <!-- cart area end -->
 
 </main>

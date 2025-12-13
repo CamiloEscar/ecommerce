@@ -41,7 +41,7 @@ export class CheckoutComponent {
   @ViewChild('paypal',{static: true}) paypalElement?: ElementRef;
   PREFERENCE_ID:string = '';
 
-  price_dolar:number = 1200;
+  price_dolar:number = 1500;
   constructor(
     public cartService: CartService,
     public cookieService: CookieService,

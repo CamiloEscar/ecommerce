@@ -18,6 +18,7 @@ export class CartComponent {
   listCarts: any = [];
   totalCarts:number = 0;
   code_cupon: any;
+  code_costo: any;
   constructor(
   public cartService: CartService,
   private cookieService: CookieService,
@@ -102,4 +103,95 @@ deleteCart(CART:any){
       }
     })
   }
+  // applyCosto(){
+  //   if(!this.code_costo){
+  //     this.toastr.error('Validacion', 'Se necesita ingresar un codigo de cupon');
+  //     return;
+  //   }
+  //   let data = {
+  //     code_costo : this.code_costo
+  //   }
+
+  //   this.cartService.applyCosto(data).subscribe((resp:any) => {
+  //     console.log(resp)
+  //     if(resp.message == 403){
+  //       this.toastr.error("Validacion", resp.message_text);
+  //       return;
+  //     } else {
+  //       this.cartService.resetCart();
+  //       this.cartService.listCart().subscribe((resp:any) => {
+  //         resp.carts.data.forEach((cart:any) => {
+  //           this.cartService.changeCart(cart)
+  //         });
+  //       })
+  //     }
+  //   })
+  // }
+
+  selectedProvinceCode: string | null = null;
+  costoEnvio: number | null = null;
+
+  applyCosto() {
+  if (!this.selectedProvinceCode) {
+    this.toastr.error('Validación', 'Se necesita seleccionar una provincia');
+    return;
+  }
+
+  let data = {
+    code_costo: this.selectedProvinceCode
+  };
+
+  this.cartService.applyCosto(data).subscribe((resp: any) => {
+    console.log(resp);
+    if (resp.message == 403) {
+      this.toastr.error("Validación", resp.message_text);
+      return;
+    } else {
+      this.costoEnvio = resp.costo ?? 0;
+      this.cartService.resetCart();
+      this.cartService.listCart().subscribe((resp: any) => {
+        resp.carts.data.forEach((cart: any) => {
+          this.cartService.changeCart(cart);
+        });
+      });
+      this.toastr.success("Éxito", "Se aplicó el costo de envío");
+    }
+  });
+}
+
+removeProvincia() {
+  this.selectedProvinceCode = null;
+  this.costoEnvio = null;
+
+}
+
+
+  provincias: { name: string, code: string }[] = [
+  { name: "BUENOS AIRES", code: "BUENOSAIRES" },
+  { name: "CABA", code: "CABA" },
+  { name: "CATAMARCA", code: "CATAMARCA" },
+  { name: "CHACO", code: "CHACO" },
+  { name: "CHUBUT", code: "CHUBUT" },
+  { name: "CORDOBA", code: "CORDOBA" },
+  { name: "CORRIENTES", code: "CORRIENTES" },
+  { name: "ENTRE RIOS", code: "ENTRERIOS" },
+  { name: "FORMOSA", code: "FORMOSA" },
+  { name: "JUJUY", code: "JUJUY" },
+  { name: "LA PAMPA", code: "LAPAMPA" },
+  { name: "LA RIOJA", code: "LARIOJA" },
+  { name: "MENDOZA", code: "MENDOZA" },
+  { name: "MISIONES", code: "MISIONES" },
+  { name: "NEUQUÉN", code: "NEUQUEN" },
+  { name: "RIO NEGRO", code: "RIONEGRO" },
+  { name: "SALTA", code: "SALTA" },
+  { name: "SAN JUAN", code: "SANJUAN" },
+  { name: "SAN LUIS", code: "SANLUIS" },
+  { name: "SANTA CRUZ", code: "SANTACRUZ" },
+  { name: "SANTA FE", code: "SANTAFE" },
+  { name: "SANTIAGO DEL ESTERO", code: "SANTIAGODELESTERO" },
+  { name: "TIERRA DEL FUEGO", code: "TIERRADELFUEGO" },
+  { name: "TUCUMÁN", code: "TUCUMAN" },
+];
+
+
 }

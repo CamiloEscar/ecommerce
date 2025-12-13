@@ -111,7 +111,7 @@
                            </div>
                            <div class="col-md-6">
                               <div class="tp-checkout-input">
-                                 <label>Código Postal / ZIP</label>
+                                 <label>Código Postal / con el codigo, van a tener el costo de envio</label>
                                  <input type="text" name="postcode_zip" [(ngModel)]="postcode_zip" placeholder="">
                               </div>
                            </div>
@@ -160,14 +160,14 @@
            <div class="col-lg-5">
               <!-- checkout place order -->
               <div class="tp-checkout-place white-bg">
-                 <h3 class="tp-checkout-place-title">Your Order</h3>
+                 <h3 class="tp-checkout-place-title">Tu orden</h3>
 
                  <div class="tp-order-info-list">
                     <ul>
 
                        <!-- header -->
                        <li class="tp-order-info-list-header">
-                          <h4>Product</h4>
+                          <h4>Producto</h4>
                           <h4>Total</h4>
                        </li>
 
@@ -188,7 +188,7 @@
 
                        <!-- shipping -->
                        <li class="tp-order-info-list-shipping">
-                          <span>Shipping</span>
+                          <span>Envio</span>
                           <div class="tp-order-info-list-shipping-item d-flex flex-column align-items-end">
                              <span>
                                 <input id="flat_rate" type="radio" name="shipping">
@@ -196,7 +196,7 @@
                              </span>
                              <span>
                                 <input id="local_pickup" type="radio" name="shipping">
-                                <label for="local_pickup">Local pickup: <span>$0.00</span></label>
+                                <label for="local_pickup">Retiro en local: <span>$0.00</span></label>
                              </span>
                              <span>
                                 <input id="free_shipping" type="radio" name="shipping">
