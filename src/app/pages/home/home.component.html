@@ -5,44 +5,49 @@
        <div class="swiper-wrapper">
          @for(SLIDER of SLIDERS;track SLIDER.id) {
             <!-- *ngFor="let SLIDER of SLIDERS" green-dark-bg-->
-            <ng-container >
-               <div class="tp-slider-item tp-slider-height d-flex align-items-center swiper-slide green-dark-bg" [ngStyle]="{'background-color': SLIDER.color+' !important;'}">
-                  <div class="tp-slider-shape">
-                     <img class="tp-slider-shape-1" src="assets/img/slider/shape/slider-shape-1.png" alt="slider-shape">
-                     <img class="tp-slider-shape-2" src="assets/img/slider/shape/slider-shape-2.png" alt="slider-shape">
-                     <img class="tp-slider-shape-3" src="assets/img/slider/shape/slider-shape-3.png" alt="slider-shape">
-                     <img class="tp-slider-shape-4" src="assets/img/slider/shape/slider-shape-4.png" alt="slider-shape">
-                  </div>
-                  <div class="container">
-                     <div class="row align-items-center">
-                        <div class="col-xl-5 col-lg-6 col-md-6">
-                           <div class="tp-slider-content p-relative z-index-1">
-                              <span [id]="'label-'+SLIDER.id"></span>
-                              <!-- {{ getLabelSlider(SLIDER) }} -->
-                              <h3 class="tp-slider-title">{{ SLIDER.title }}</h3>
-                              <p [id]="'subtitle-'+SLIDER.id"></p>
-                              <!-- {{ getSubtitleSlider(SLIDER) }} -->
+            <ng-container>
+              <div
+                class="tp-slider-item swiper-slide d-flex align-items-center"
+                [ngStyle]="{
+                  'background': 'linear-gradient(to right, rgba(255,255,255,0.95) 40%, rgba(0,0,0,0.1) 100%), url(' + SLIDER.imagen + ')',
+                  'background-size': 'cover',
+                  'background-position': 'center',
+                  'height': '65vh'
+                }"
+              >
+                <div class="container">
+                  <div class="row align-items-center">
 
-                              @if(SLIDER.link){
-                                 <div class="tp-slider-btn">
-                                    <a [href]="SLIDER.link" target="_blank" class="tp-btn tp-btn-2 tp-btn-white">Shop Now
-                                       <svg width="17" height="14" viewBox="0 0 17 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                          <path d="M16 6.99976L1 6.99976" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                          <path d="M9.9502 0.975414L16.0002 6.99941L9.9502 13.0244" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                       </svg>
-                                    </a>
-                                 </div>
-                              }
-                           </div>
+                    <!-- Texto -->
+                    <div class="col-lg-6 col-md-7">
+                      <div class="slider-text">
+                        <span class="category-label">{{ SLIDER.category || 'Oferta Especial' }}</span>
+                        <h2 class="product-title">{{ SLIDER.title }}</h2>
+                        <p class="product-subtitle">{{ SLIDER.subtitle || 'Descubre nuestra última colección con descuentos exclusivos.' }}</p>
+
+                        <div class="btn-group">
+                          @if(SLIDER.link){
+                            <a [href]="SLIDER.link" target="_blank" class="btn btn-buy">
+                              🛒 Comprar ahora
+                            </a>
+                          }
+                          <a href="#productos" class="btn btn-outline">
+                            Ver más
+                          </a>
                         </div>
-                        <div class="col-xl-7 col-lg-6 col-md-6">
-                           <div class="tp-slider-thumb text-end">
-                              <img [src]="SLIDER.imagen" alt="slider-img">
-                           </div>
-                        </div>
-                     </div>
+                      </div>
+                    </div>
+
+                    <!-- Imagen -->
+                    <div class="col-lg-6 col-md-5 text-center">
+                      <div class="product-card">
+                        <img [src]="SLIDER.imagen" alt="Producto" class="product-img">
+                      </div>
+                    </div>
+
                   </div>
-               </div>
+                </div>
+              </div>
             </ng-container>
          }
 
@@ -142,7 +147,7 @@
  </section>
 
   <!-- product category area start -->
-  <section class="tp-product-category pt-60 pb-15">
+  <!-- <section class="tp-product-category pt-60 pb-15">
     <div class="container">
       <div class="row row-cols-xl-5 row-cols-lg-5 row-cols-md-4">
         @for(CATEGORIES_RANDOM of CATEGORIES_RANDOMS; track CATEGORIES_RANDOM.id) {
@@ -170,11 +175,12 @@
 
       </div>
     </div>
-  </section>
+  </section> -->
   <!-- product category area end -->
 
   <!-- feature area start -->
-  <section class="tp-feature-area tp-feature-border-radius pb-70">
+
+<section class="tp-feature-area tp-feature-border-radius pb-70">
     <div class="container">
       <div class="row gx-1 gy-1 gy-xl-0">
         <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6">
@@ -317,7 +323,7 @@
             </div>
             <div class="tp-feature-content">
               <h3 class="tp-feature-title">Descuento para miembros</h3>
-              <p>Pedido superior a AGREGAR CONDICIONAL ARS USD</p>
+              <p>Pedido superior a $50.000 ARS</p>
             </div>
           </div>
         </div>
@@ -351,7 +357,7 @@
             </div>
             <div class="tp-feature-content">
               <h3 class="tp-feature-title">Soporte 24/7</h3>
-              <p>Contactanos</p>
+              <p>Contáctanos</p>
             </div>
           </div>
         </div>
@@ -361,7 +367,7 @@
   <!-- feature area end -->
 
   <!-- product area start -->
-  <section class="tp-product-area pb-55">
+  <section class="tp-product-area pb-55" id="trending-products">
     <div class="container">
       <div class="row align-items-end">
         <div class="col-xl-5 col-lg-6 col-md-5">
@@ -590,7 +596,7 @@
                                 </svg>
 
                                 <span class="tp-product-tooltip"
-                                  >Add to Cart</span
+                                  >Añadir al carrito</span
                                 >
                               </button>
                               <button
@@ -623,11 +629,36 @@
                                   </g>
                                 </svg>
 
-                                <span class="tp-product-tooltip">Quick View</span>
+                                <span class="tp-product-tooltip">Vista rapida</span>
                               </button>
                               <button
                                 type="button"
+                                (click)="addCompareProduct(TRENDING_PRODUCT)"
+                                class="tp-product-action-btn tp-product-quick-view-btn"
+                                data-bs-toggle="tooltip"
+                                data-bs-placement="right"
+                                title="Comparar"
+                              >
+                                <svg
+                                  width="20"
+                                  height="17"
+                                  viewBox="0 0 15 15"
+                                  fill="none"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <path d="M11.4144 6.16828L14 3.58412L11.4144 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                  <path d="M1.48883 3.58374L14 3.58374" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                  <path d="M4.07446 8.32153L1.48884 10.9057L4.07446 13.4898" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                  <path d="M14 10.9058H1.48883" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+
+                                <span class="tp-product-tooltip">Comparar</span>
+                              </button>
+
+                              <button
+                                type="button"
                                 class="tp-product-action-btn tp-product-add-to-wishlist-btn"
+                                (click)="addFavoriteProduct(TRENDING_PRODUCT)"
                               >
                                 <svg
                                   width="20"
@@ -651,7 +682,7 @@
                                 </svg>
 
                                 <span class="tp-product-tooltip"
-                                  >Add To Wishlist</span
+                                  >Añadir a Favoritos</span
                                 >
                               </button>
                             </div>
@@ -788,7 +819,7 @@
                               </svg>
 
                               <span class="tp-product-tooltip"
-                                >Add to Cart</span
+                                >Añadir al carrito</span
                               >
                             </button>
                             <button
@@ -821,11 +852,35 @@
                                 </g>
                               </svg>
 
-                              <span class="tp-product-tooltip">Quick View</span>
+                              <span class="tp-product-tooltip">Vista rapida</span>
                             </button>
+                            <button
+                                type="button"
+                                (click)="addCompareProduct(product)"
+                                class="tp-product-action-btn tp-product-quick-view-btn"
+                                data-bs-toggle="tooltip"
+                                data-bs-placement="right"
+                                title="Comparar"
+                              >
+                                <svg
+                                  width="20"
+                                  height="17"
+                                  viewBox="0 0 15 15"
+                                  fill="none"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <path d="M11.4144 6.16828L14 3.58412L11.4144 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                  <path d="M1.48883 3.58374L14 3.58374" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                  <path d="M4.07446 8.32153L1.48884 10.9057L4.07446 13.4898" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                  <path d="M14 10.9058H1.48883" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+
+                                <span class="tp-product-tooltip">Comparar</span>
+                              </button>
                             <button
                               type="button"
                               class="tp-product-action-btn tp-product-add-to-wishlist-btn"
+                              (click)="addFavoriteProduct(product)"
                             >
                               <svg
                                 width="20"
@@ -849,7 +904,7 @@
                               </svg>
 
                               <span class="tp-product-tooltip"
-                                >Add To Wishlist</span
+                                >Añadir a Favoritos</span
                               >
                             </button>
                           </div>
@@ -987,7 +1042,7 @@
                               </svg>
 
                               <span class="tp-product-tooltip"
-                                >Add to Cart</span
+                                >Añadir al carrito</span
                               >
                             </button>
                             <button
@@ -1020,11 +1075,35 @@
                                 </g>
                               </svg>
 
-                              <span class="tp-product-tooltip">Quick View</span>
+                              <span class="tp-product-tooltip">Vista rapida</span>
                             </button>
+                            <button
+                                type="button"
+                                (click)="addCompareProduct(product)"
+                                class="tp-product-action-btn tp-product-quick-view-btn"
+                                data-bs-toggle="tooltip"
+                                data-bs-placement="right"
+                                title="Comparar"
+                              >
+                                <svg
+                                  width="20"
+                                  height="17"
+                                  viewBox="0 0 15 15"
+                                  fill="none"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <path d="M11.4144 6.16828L14 3.58412L11.4144 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                  <path d="M1.48883 3.58374L14 3.58374" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                  <path d="M4.07446 8.32153L1.48884 10.9057L4.07446 13.4898" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                  <path d="M14 10.9058H1.48883" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+
+                                <span class="tp-product-tooltip">Comparar</span>
+                              </button>
                             <button
                               type="button"
                               class="tp-product-action-btn tp-product-add-to-wishlist-btn"
+                              (click)="addFavoriteProduct(product)"
                             >
                               <svg
                                 width="20"
@@ -1048,7 +1127,7 @@
                               </svg>
 
                               <span class="tp-product-tooltip"
-                                >Add To Wishlist</span
+                                >Añadir a Favoritos</span
                               >
                             </button>
                           </div>
@@ -1213,7 +1292,7 @@
   <!-- banner area end -->
 
   <!-- product offer area start -->
-  <section class="tp-product-offer grey-bg-2 pt-70 pb-80">
+  <section class="tp-product-offer grey-bg-2 pt-70 pb-80" id="flash">
     <div class="container">
       <div class="row align-items-end">
         <div class="col-xl-4 col-md-5 col-sm-6">
@@ -1274,7 +1353,7 @@
           </div>
         </div>
       </div>
-      <div class="row">
+      <div class="row" id="discount_g">
         <div class="col-xl-12">
           <div class="tp-product-offer-slider fix">
             <div class="tp-product-offer-slider-active swiper-container">
@@ -1294,7 +1373,7 @@
                       <!-- product action -->
                       <div class="tp-product-action">
                         <div class="tp-product-action-item d-flex flex-column">
-                          <button
+                          <!-- <button
                             type="button"
                             class="tp-product-action-btn tp-product-compare-btn"
                           >
@@ -1336,7 +1415,7 @@
                             </svg>
 
                             <span class="tp-product-tooltip">Compare</span>
-                          </button>
+                          </button> -->
                           <button
                             type="button"
                             class="tp-product-action-btn tp-product-quick-view-btn"
@@ -1367,10 +1446,34 @@
                               </g>
                             </svg>
 
-                            <span class="tp-product-tooltip">Quick View</span>
+                            <span class="tp-product-tooltip">Vista rapida</span>
                           </button>
                           <button
+                                type="button"
+                                (click)="addCompareProduct(DISCOUNT_FLASH_PRODUCT)"
+                                class="tp-product-action-btn tp-product-quick-view-btn"
+                                data-bs-toggle="tooltip"
+                                data-bs-placement="right"
+                                title="Comparar"
+                              >
+                                <svg
+                                  width="20"
+                                  height="17"
+                                  viewBox="0 0 15 15"
+                                  fill="none"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <path d="M11.4144 6.16828L14 3.58412L11.4144 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                  <path d="M1.48883 3.58374L14 3.58374" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                  <path d="M4.07446 8.32153L1.48884 10.9057L4.07446 13.4898" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                  <path d="M14 10.9058H1.48883" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+
+                                <span class="tp-product-tooltip">Comparar</span>
+                              </button>
+                          <button
                             type="button"
+                            (click)="addFavoriteProduct(DISCOUNT_FLASH_PRODUCT)"
                             class="tp-product-action-btn tp-product-add-to-wishlist-btn"
                           >
                             <svg
@@ -1395,7 +1498,7 @@
                             </svg>
 
                             <span class="tp-product-tooltip"
-                              >Add To Wishlist</span
+                              >Añadir a Favoritos</span
                             >
                           </button>
                         </div>
@@ -1453,7 +1556,7 @@
                               fill="currentColor"
                             />
                           </svg>
-                          Add To Cart
+                          Añadir al carrito
                         </button>
                       </div>
                     </div>
@@ -1527,7 +1630,7 @@
                       <ng-container *ngIf="cat.name === 'Star Wars'">
                         <div *ngFor="let sub of cat.subcategories">
                           <!-- <a href="#" onclick="return false;">{{ sub.name }}</a> -->
-                          <img *ngIf="sub.imagen" [src]="sub.imagen" style="width: 247px; height: 149px; object-fit: cover;">
+                          <!-- <img *ngIf="sub.imagen" [src]="sub.imagen" style="width: 247px; height: 149px; object-fit: cover;"> -->
                         </div>
                       </ng-container>
                     </ng-container>
@@ -1610,32 +1713,32 @@
                 <div class="swiper-wrapper">
                   <div
                     class="tp-product-gadget-banner-item swiper-slide include-bg"
-                    data-background="assets/img/product/gadget/gadget-banner-1.jpg"
+                    data-background="assets/img/product/gadget/Star_Wars_Logo.svg.png"
                   >
                     <div class="tp-product-gadget-banner-content">
                       <span class="tp-product-gadget-banner-price"
-                        >Only $99.00</span
+                        >Producto banner</span
                       >
                       <h3 class="tp-product-gadget-banner-title">
                         <a href="product-details.html"
-                          >Selected novelty <br />
-                          Products</a
+                          >probar producto banner <br />
+                          asdasd</a
                         >
                       </h3>
                     </div>
                   </div>
                   <div
                     class="tp-product-gadget-banner-item swiper-slide include-bg"
-                    data-background="assets/img/product/gadget/gadget-banner-2.jpg"
+                    data-background="assets/img/product/gadget/DART2.webp"
                   >
                     <div class="tp-product-gadget-banner-content">
                       <span class="tp-product-gadget-banner-price"
-                        >Only $55.00</span
+                        >lo mismo</span
                       >
                       <h3 class="tp-product-gadget-banner-title">
                         <a href="product-details.html"
-                          >Top Rated <br />
-                          Products</a
+                          >adsafasdf <br />
+                          asdfasfd</a
                         >
                       </h3>
                     </div>
@@ -1734,7 +1837,7 @@
                               />
                             </svg>
 
-                            <span class="tp-product-tooltip">Add to Cart</span>
+                            <span class="tp-product-tooltip">Añadir al carrito</span>
                           </button>
                           <button
                             type="button"
@@ -1766,11 +1869,35 @@
                               </g>
                             </svg>
 
-                            <span class="tp-product-tooltip">Quick View</span>
+                            <span class="tp-product-tooltip">Vista rapida</span>
                           </button>
+                          <button
+                                type="button"
+                                (click)="addCompareProduct(PRODUCT_COMIC)"
+                                class="tp-product-action-btn tp-product-quick-view-btn"
+                                data-bs-toggle="tooltip"
+                                data-bs-placement="right"
+                                title="Comparar"
+                              >
+                                <svg
+                                  width="20"
+                                  height="17"
+                                  viewBox="0 0 15 15"
+                                  fill="none"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <path d="M11.4144 6.16828L14 3.58412L11.4144 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                  <path d="M1.48883 3.58374L14 3.58374" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                  <path d="M4.07446 8.32153L1.48884 10.9057L4.07446 13.4898" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                  <path d="M14 10.9058H1.48883" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+
+                                <span class="tp-product-tooltip">Comparar</span>
+                              </button>
                           <button
                             type="button"
                             class="tp-product-action-btn tp-product-add-to-wishlist-btn"
+                            (click)="addFavoriteProduct(PRODUCT_COMIC)"
                           >
                             <svg
                               width="20"
@@ -1794,7 +1921,7 @@
                             </svg>
 
                             <span class="tp-product-tooltip"
-                              >Add To Wishlist</span
+                              >Añadir a Favoritos</span
                             >
                           </button>
                         </div>
@@ -1905,7 +2032,7 @@
   <!-- product banner area end -->
 
   <!-- product arrival area start -->
-  <section class="tp-product-arrival-area pb-55">
+  <section class="tp-product-arrival-area pb-55" id="new">
     <div class="container">
       <div class="row align-items-end">
         <div class="col-xl-5 col-sm-6">
@@ -2064,7 +2191,7 @@
                               />
                             </svg>
 
-                            <span class="tp-product-tooltip">Add to Cart</span>
+                            <span class="tp-product-tooltip">Añadir al carrito</span>
                           </button>
                           <button
                             type="button"
@@ -2096,11 +2223,35 @@
                               </g>
                             </svg>
 
-                            <span class="tp-product-tooltip">Quick View</span>
+                            <span class="tp-product-tooltip">Vista rapida</span>
                           </button>
+                          <button
+                                type="button"
+                                (click)="addCompareProduct(PRODUCT_CAROUSEL)"
+                                class="tp-product-action-btn tp-product-quick-view-btn"
+                                data-bs-toggle="tooltip"
+                                data-bs-placement="right"
+                                title="Comparar"
+                              >
+                                <svg
+                                  width="20"
+                                  height="17"
+                                  viewBox="0 0 15 15"
+                                  fill="none"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <path d="M11.4144 6.16828L14 3.58412L11.4144 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                  <path d="M1.48883 3.58374L14 3.58374" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                  <path d="M4.07446 8.32153L1.48884 10.9057L4.07446 13.4898" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                  <path d="M14 10.9058H1.48883" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+
+                                <span class="tp-product-tooltip">Comparar</span>
+                              </button>
                           <button
                             type="button"
                             class="tp-product-action-btn tp-product-add-to-wishlist-btn"
+                            (click)="addFavoriteProduct(PRODUCT_CAROUSEL)"
                           >
                             <svg
                               width="20"
@@ -2124,7 +2275,7 @@
                             </svg>
 
                             <span class="tp-product-tooltip"
-                              >Add To Wishlist</span
+                              >Añadir a Favoritos</span
                             >
                           </button>
                         </div>
@@ -2383,7 +2534,7 @@
   <!-- product sm area end -->
 
   <!-- blog area start -->
-  <section class="tp-blog-area pt-50 pb-75">
+  <!-- <section class="tp-blog-area pt-50 pb-75">
     <div class="container">
       <div class="row align-items-end">
         <div class="col-xl-4 col-md-6">
@@ -2636,11 +2787,11 @@
         </div>
       </div>
     </div>
-  </section>
+  </section> -->
   <!-- blog area end -->
 
   <!-- instagram area start -->
-  <div class="tp-instagram-area pb-70">
+  <!-- <div class="tp-instagram-area pb-70">
     <div class="container">
       <div class="row row-cols-lg-5 row-cols-md-3 row-cols-sm-2 row-cols-1">
         <div class="col">
@@ -2695,11 +2846,11 @@
         </div>
       </div>
     </div>
-  </div>
+  </div> -->
   <!-- instagram area end -->
 
   <!-- subscribe area start -->
-  <section class="tp-subscribe-area pt-70 pb-65 theme-bg p-relative z-index-1">
+  <!-- <section class="tp-subscribe-area pt-70 pb-65 theme-bg p-relative z-index-1">
     <div class="tp-subscribe-shape">
       <img
         class="tp-subscribe-shape-1"
@@ -2721,7 +2872,7 @@
         src="assets/img/subscribe/subscribe-shape-4.png"
         alt=""
       />
-      <!-- plane shape -->
+
       <div class="tp-subscribe-plane">
         <img
           class="tp-subscribe-plane-shape"
@@ -2780,7 +2931,7 @@
         </div>
       </div>
     </div>
-  </section>
+  </section> -->
   <!-- subscribe area end -->
 
   <div

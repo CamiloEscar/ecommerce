@@ -1,7 +1,7 @@
 import { afterNextRender, Component, ElementRef, HostListener, OnInit, ViewChild, afterRender } from '@angular/core';
 import { HomeService } from '../../pages/home/service/home.service';
 import { FormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { Router , RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { CookieService } from 'ngx-cookie-service';
 import { CartService } from '../../pages/home/service/cart.service';
@@ -36,6 +36,9 @@ onClickOutside(event: MouseEvent): void {
   user:any;
   listCarts: any = [];
   totalCarts:number = 0;
+
+  //TODO: AGREGAR LISTA DE FAVORITOS SIMILAR A LISTCARTS
+
   isLoading:boolean = false;
 
   searchT: string = '';
@@ -43,7 +46,8 @@ onClickOutside(event: MouseEvent): void {
               public cookieService: CookieService,
               public cartService: CartService,
               private toastr: ToastrService,
-              private cdr: ChangeDetectorRef
+              private cdr: ChangeDetectorRef,
+              private router: Router
   ) {
     afterNextRender(() => {
       this.homeService.menus().subscribe((resp: any) => {
@@ -121,4 +125,10 @@ onClickOutside(event: MouseEvent): void {
   searchProduct(){
     window.location.href = '/productos-busqueda?search=' + this.searchT;
   }
+
+  buscarPorCategoria(nombreCategoria: string) {
+  this.router.navigate(['/productos-busqueda'], {
+    queryParams: { search: nombreCategoria }
+  });
+}
 }

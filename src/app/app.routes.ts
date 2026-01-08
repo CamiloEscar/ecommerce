@@ -13,6 +13,9 @@ import { CheckoutFailureComponent } from './pages/view-auth/checkout/checkout-fa
 import { CheckoutPendingComponent } from './pages/view-auth/checkout/checkout-pending/checkout-pending.component';
 import { ProfileClientComponent } from './pages/view-auth/profile-client/profile-client.component';
 import { FilterAdvanceComponent } from './pages/guest-view/filter-advance/filter-advance.component';
+import { CampaingLinkComponent } from './pages/guest-view/campaing-link/campaing-link.component';
+import { CompareProductComponent } from './pages/guest-view/compare-product/compare-product.component';
+import { FavoriteProductComponent } from './pages/guest-view/wishlists/wishlists.component';
 
 export const routes: Routes = [
     {
@@ -76,5 +79,17 @@ export const routes: Routes = [
     {
         path: 'productos-busqueda',
         component: FilterAdvanceComponent
+    },
+    {
+        path: 'discount/:code',
+        component: CampaingLinkComponent
+    },
+    {
+        path: 'compare-product',
+        component: CompareProductComponent
+    },
+    {
+        path: 'favoritos',
+        component: FavoriteProductComponent
     },
 ];

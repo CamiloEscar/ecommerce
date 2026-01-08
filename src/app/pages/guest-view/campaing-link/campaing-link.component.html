@@ -6,10 +6,10 @@
         <div class="row">
            <div class="col-xxl-12">
               <div class="breadcrumb__content p-relative z-index-1">
-                 <h3 class="breadcrumb__title">Shop Grid</h3>
+                 <h3 class="breadcrumb__title">Campaña Link:  {{DISCOUNT_LINK ? 'Codigo: ' +  DISCOUNT_LINK.code : 'No existe'}}</h3>
                  <div class="breadcrumb__list">
                     <span><a href="#">Home</a></span>
-                    <span>Shop Grid</span>
+                    <span>Campaña tipo link {{DISCOUNT_LINK ? 'Desde: '+DISCOUNT_LINK.start_date_format+' hasta ' + DISCOUNT_LINK.end_date_format : 'No existe'}}</span>
                  </div>
               </div>
            </div>
@@ -24,76 +24,6 @@
         <div class="row">
            <div class="col-xl-3 col-lg-4">
               <div class="tp-shop-sidebar mr-10">
-                 <!-- filter -->
-                 <div class="tp-shop-widget mb-35">
-                    <h3 class="tp-shop-widget-title no-border">Price Filter</h3>
-
-                    <div class="tp-shop-widget-content">
-                       <div class="tp-shop-widget-filter">
-                          <div id="slider-range" class="mb-10"></div>
-                          <div class="tp-shop-widget-filter-info d-flex align-items-center justify-content-between">
-                             <span class="input-range">
-                                <input type="text" id="amount" readonly>
-                             </span>
-                             <button class="tp-shop-widget-filter-btn" type="button" (click)="reset()">Resetar busqueda</button>
-                          </div>
-                       </div>
-                    </div>
-                 </div>
-                 <!-- status -->
-                 <div class="tp-shop-widget mb-50">
-                    <h3 class="tp-shop-widget-title">Product Status</h3>
-
-                    <div class="tp-shop-widget-content">
-                       <div class="tp-shop-widget-checkbox">
-                          <ul class="filter-items filter-checkbox">
-                             <li class="filter-item checkbox">
-                                <input id="on_sale" type="checkbox" (click)="addOptionAditional('campaing')">
-                                <label for="on_sale">Por descuentos normal</label>
-                             </li>
-                             <li class="filter-item checkbox">
-                                <input id="in_stock" type="checkbox" (click)="addOptionAditional('review')">
-                                <label for="in_stock">Por Reseñas</label>
-                             </li>
-                          </ul><!-- .filter-items -->
-                       </div>
-                    </div>
-                 </div>
-                 <!-- categories -->
-                 <div class="tp-shop-widget mb-50">
-                    <h3 class="tp-shop-widget-title">Categorias</h3>
-
-                    <div class="tp-shop-widget-content">
-                       <div class="tp-shop-widget-categories">
-                          <ul>
-                            @for(categorie of Categories; track categorie.id){
-                              <li><a href="#" onclick="return false;" (click)="addCategorie(categorie)" [ngClass]="{'selected-categories': categories_selected.includes(categorie.id)}">{{categorie.name}} <span>{{ categorie.products_count}}</span></a></li>
-                            }
-                          </ul>
-                       </div>
-                    </div>
-                 </div>
-                 <!-- color -->
-                 <div class="tp-shop-widget mb-50">
-                    <h3 class="tp-shop-widget-title">Filtro por Color</h3>
-
-                    <div class="tp-shop-widget-content">
-                       <div class="tp-shop-widget-checkbox-circle-list">
-                          <ul>
-                            @for(color of Colors; track color.id){
-                              <li>
-                                 <div class="tp-shop-widget-checkbox-circle">
-                                    <input type="checkbox" (click)="addColor(color)" [id]="color.name">
-                                    <label [for]="color.name">{{color.name}}</label>
-                                    <span [attr.data-bg-color]="color.code" class="tp-shop-widget-checkbox-circle-self"></span>
-                                 </div>
-                                 <span class="tp-shop-widget-checkbox-circle-number" [ngClass]="{'tp-shop-widget-checkbox-selected': colors_selected.includes(color.id)}">{{color.products_count}}</span>
-                              </li>
-                            }
-                          </ul>
-                       </div>
-                    </div>
-                 </div>
                  <!-- product rating -->
                  <div class="tp-shop-widget mb-50">
                     <h3 class="tp-shop-widget-title">Productos Top</h3>
@@ -144,6 +74,7 @@
                                    <a [routerLink]="'/producto/'+PRODUCT.slug">{{PRODUCT.title}}</a>
                                 </h4>
                                 <div class="tp-shop-widget-product-price-wrapper">
+                                  <!-- TODO: poner old price -->
                                    <span class="tp-shop-widget-product-price">{{getTotalCurrency(PRODUCT)}}</span>
                                 </div>
                              </div>
@@ -151,32 +82,6 @@
                         }
                        </div>
                     </div>
-                 </div>
-                 <!-- brand -->
-                 <div class="tp-shop-widget mb-50">
-                    <h3 class="tp-shop-widget-title">Marcas</h3>
-
-                    <div class="tp-shop-widget-content">
-                      <div class="tp-shop-widget-categories">
-                         <ul>
-                          @for(Brand of Brands; track Brand.id){
-                             <li><a href="#" onclick="return false;" (click)="addBrand(Brand)" [ngClass]="{'selected-categories': brands_selected.includes(Brand.id)}">{{Brand.name}} <span>{{ Brand.products_count}}</span></a></li>
-                           }
-                         </ul>
-                      </div>
-                   </div>
-
-                    <!-- <div class="tp-shop-widget-content ">
-                       <div class="tp-shop-widget-brand-list d-flex align-items-center justify-content-between flex-wrap">
-                          @for(Brand of Brands; track Brand.id){
-                            <div class="tp-shop-widget-brand-item">
-                                 <a href="#">
-                                    {{Brand.name}} ({{Brand.products_count}})
-                                 </a>
-                              </div>
-                          }
-                       </div>
-                    </div> -->
                  </div>
               </div>
            </div>
@@ -253,7 +158,7 @@
                               <div class="col-xl-4 col-md-6 col-sm-6 infinite-item">
                                  <div class="tp-product-item-2 mb-40">
                                     <div class="tp-product-thumb-2 p-relative z-index-1 fix w-img">
-                                      <a target="_blank" [routerLink]="['/producto/'+PRODUCT.slug]">
+                                      <a target="_blank" [routerLink]="['/producto/'+PRODUCT.slug]" [queryParams]="{campaing_discount: DISCOUNT_LINK.code}">
                                         <img
                                           [src]="PRODUCT.imagen" style="width: 304px; height:261px; object-fit:contain"
                                           alt="product-electronic"
@@ -278,7 +183,7 @@
                                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M8.99948 5.06828C7.80247 5.06828 6.82956 6.04044 6.82956 7.23542C6.82956 8.42951 7.80247 9.40077 8.99948 9.40077C10.1965 9.40077 11.1703 8.42951 11.1703 7.23542C11.1703 6.04044 10.1965 5.06828 8.99948 5.06828ZM8.99942 10.7482C7.0581 10.7482 5.47949 9.17221 5.47949 7.23508C5.47949 5.29705 7.0581 3.72021 8.99942 3.72021C10.9407 3.72021 12.5202 5.29705 12.5202 7.23508C12.5202 9.17221 10.9407 10.7482 8.99942 10.7482Z" fill="currentColor"/>
                                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M1.41273 7.2346C3.08674 10.9265 5.90646 13.1215 8.99978 13.1224C12.0931 13.1215 14.9128 10.9265 16.5868 7.2346C14.9128 3.54363 12.0931 1.34863 8.99978 1.34773C5.90736 1.34863 3.08674 3.54363 1.41273 7.2346ZM9.00164 14.4703H8.99804H8.99714C5.27471 14.4676 1.93209 11.8629 0.0546754 7.50073C-0.0182251 7.33091 -0.0182251 7.13864 0.0546754 6.96883C1.93209 2.60759 5.27561 0.00288103 8.99714 0.000185582C8.99894 -0.000712902 8.99894 -0.000712902 8.99984 0.000185582C9.00164 -0.000712902 9.00164 -0.000712902 9.00254 0.000185582C12.725 0.00288103 16.0676 2.60759 17.945 6.96883C18.0188 7.13864 18.0188 7.33091 17.945 7.50073C16.0685 11.8629 12.725 14.4676 9.00254 14.4703H9.00164Z" fill="currentColor"/>
                                                 </svg>
-                                                <span class="tp-product-tooltip tp-product-tooltip-right">Vista rapida</span>
+                                                <span class="tp-product-tooltip tp-product-tooltip-right">Vista Rapida</span>
                                              </button>
                                              <button type="button" class="tp-product-action-btn-2 tp-product-add-to-wishlist-btn">
                                                 <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -301,10 +206,11 @@
                                     </div>
                                     <div class="tp-product-content-2 pt-15">
                                        <div class="tp-product-tag-2">
-                                        <a target="_blank" [routerLink]="['/producto/'+PRODUCT.slug]">{{PRODUCT.brand.name}}</a>
+                                        <a target="_blank" [routerLink]="['/producto/'+PRODUCT.slug]" [queryParams]="{campaing_discount: DISCOUNT_LINK.code}">
+                                          {{PRODUCT.brand.name}}</a>
                                        </div>
                                        <h3 class="tp-product-title-2">
-                                          <a target="_blank" [routerLink]="['/producto/'+PRODUCT.slug]">{{PRODUCT.title}}</a>
+                                          <a target="_blank" [routerLink]="['/producto/'+PRODUCT.slug]" [queryParams]="{campaing_discount: DISCOUNT_LINK.code}">{{PRODUCT.title}}</a>
                                        </h3>
                                        <div class="tp-product-rating-icon tp-product-rating-icon-2">
                                         <span><i class="fa-solid fa-star" [ngClass]="{'fa-start-gris': PRODUCT.avg_reviews < 1}"></i></span>
@@ -317,7 +223,7 @@
                                         </div>
                                       </div>
                                        <div class="tp-product-price-wrapper-2">
-                                        @if(PRODUCT.discount_g){
+                                        @if(this.DISCOUNT_LINK){
                                           <span class="tp-product-price old-price mx-1">{{getTotalCurrency(PRODUCT)}} {{currency}}</span>
                                         }
                                         <span class="tp-product-price new-price mx-1">{{getTotalPriceProduct(PRODUCT)}} {{currency}}</span
@@ -353,7 +259,7 @@
                                                       <path fill-rule="evenodd" clip-rule="evenodd" d="M8.99948 5.06828C7.80247 5.06828 6.82956 6.04044 6.82956 7.23542C6.82956 8.42951 7.80247 9.40077 8.99948 9.40077C10.1965 9.40077 11.1703 8.42951 11.1703 7.23542C11.1703 6.04044 10.1965 5.06828 8.99948 5.06828ZM8.99942 10.7482C7.0581 10.7482 5.47949 9.17221 5.47949 7.23508C5.47949 5.29705 7.0581 3.72021 8.99942 3.72021C10.9407 3.72021 12.5202 5.29705 12.5202 7.23508C12.5202 9.17221 10.9407 10.7482 8.99942 10.7482Z" fill="currentColor"/>
                                                       <path fill-rule="evenodd" clip-rule="evenodd" d="M1.41273 7.2346C3.08674 10.9265 5.90646 13.1215 8.99978 13.1224C12.0931 13.1215 14.9128 10.9265 16.5868 7.2346C14.9128 3.54363 12.0931 1.34863 8.99978 1.34773C5.90736 1.34863 3.08674 3.54363 1.41273 7.2346ZM9.00164 14.4703H8.99804H8.99714C5.27471 14.4676 1.93209 11.8629 0.0546754 7.50073C-0.0182251 7.33091 -0.0182251 7.13864 0.0546754 6.96883C1.93209 2.60759 5.27561 0.00288103 8.99714 0.000185582C8.99894 -0.000712902 8.99894 -0.000712902 8.99984 0.000185582C9.00164 -0.000712902 9.00164 -0.000712902 9.00254 0.000185582C12.725 0.00288103 16.0676 2.60759 17.945 6.96883C18.0188 7.13864 18.0188 7.33091 17.945 7.50073C16.0685 11.8629 12.725 14.4676 9.00254 14.4703H9.00164Z" fill="currentColor"/>
                                                    </svg>
-                                                   <span class="tp-product-tooltip tp-product-tooltip-right">Vista rapida</span>
+                                                   <span class="tp-product-tooltip tp-product-tooltip-right">Vista Rapida</span>
                                                 </button>
                                                 <button type="button" class="tp-product-action-btn-2 tp-product-add-to-wishlist-btn">
                                                    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -393,7 +299,7 @@
                                                 </div>
                                              </div>
                                              <div class="tp-product-price-wrapper-2">
-                                              @if(PRODUCT.discount_g){
+                                              @if(this.DISCOUNT_LINK){
                                                 <span class="tp-product-price old-price mx-1">{{getTotalCurrency(PRODUCT)}} {{currency}}</span>
                                               }
                                               <span class="tp-product-price new-price mx-1">{{getTotalPriceProduct(PRODUCT)}} {{currency}}</span

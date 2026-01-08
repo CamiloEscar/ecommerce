@@ -5,6 +5,7 @@ import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 
 declare function password_show_toggle(): any;
+declare const FB: any;
 @Component({
   selector: 'app-login',
   standalone: true,
@@ -33,6 +34,7 @@ export class LoginComponent {
     //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
     //Add 'implements OnInit' to the class.
     // this.showSuccess();
+    this.csrfToken = this.getCsrfTokenFromMeta();
 
     if (this.authService.token && this.authService.user) {
       setTimeout(() => {
@@ -63,6 +65,21 @@ export class LoginComponent {
         }
       })
     }
+
+    // Inicializar Facebook SDK
+    (window as any).fbAsyncInit = () => {
+      FB.init({
+        appId      : '1124088342957116',
+        cookie     : true,
+        xfbml      : true,
+        version    : 'v19.0'
+      });
+    };
+
+    // Si llega token de query string, procesarlo
+    this.activatedRoute.queryParams.subscribe(params => {
+      // Aquí no hace falta, porque todo lo haremos desde el front
+    });
   }
 
   login() {
@@ -97,4 +114,35 @@ export class LoginComponent {
   showSuccess() {
     this.toastr.success('Hello world!', 'Toastr fun!');
   }
+
+  loginWithFacebook() {
+  // window.location.href = 'http://localhost:8000/auth/redirect';
+  FB.login((response: any) => {
+    if (response.authResponse) {
+      const accessToken = response.authResponse.accessToken;
+
+      // Aquí envías el token de Facebook a tu backend para validarlo
+      this.authService.loginWithFacebook(accessToken).subscribe(resp => {
+        if (resp == true) {
+          this.toastr.success('Login con Facebook exitoso', 'Bienvenido');
+          setTimeout(() => {
+            this.router.navigateByUrl('/');
+          }, 500);
+        }
+      });
+    } else {
+      this.toastr.error('Error', 'No se pudo iniciar sesión con Facebook');
+    }
+  }, { scope: 'email,public_profile' });
+}
+csrfToken = '';
+
+// ngOnInit() {
+//   this.csrfToken = this.getCsrfTokenFromMeta();
+// }
+
+getCsrfTokenFromMeta(): string {
+  const el: HTMLMetaElement | null = document.querySelector('meta[name="csrf-token"]');
+  return el ? el.content : '';
+}
 }

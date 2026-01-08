@@ -17,12 +17,12 @@
                <div class="profile__tab mr-40">
                   <nav>
                      <div class="nav nav-tabs tp-tab-menu flex-column" id="profile-tab" role="tablist">
-                        <button class="nav-link active" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile" type="button" (click)="selectTab(0)" role="tab" aria-controls="nav-profile" aria-selected="false"><span><i class="fa-regular fa-user-pen"></i></span>Profile</button>
-                        <button class="nav-link" id="nav-information-tab" data-bs-toggle="tab" data-bs-target="#nav-information" type="button" (click)="selectTab(1)" role="tab" aria-controls="nav-information" aria-selected="false"><span><i class="fa-regular fa-circle-info"></i></span> Information</button>
-                        <button class="nav-link" id="nav-address-tab" data-bs-toggle="tab" data-bs-target="#nav-address" type="button" (click)="selectTab(2)" role="tab" aria-controls="nav-address" aria-selected="false"><span><i class="fa-light fa-location-dot"></i></span> Address </button>
-                        <button class="nav-link" id="nav-order-tab" data-bs-toggle="tab" data-bs-target="#nav-order" type="button" (click)="selectTab(3)" role="tab" aria-controls="nav-order" aria-selected="false"><span><i class="fa-light fa-clipboard-list-check"></i></span> My Orders </button>
-                        <button class="nav-link" id="nav-notification-tab" data-bs-toggle="tab" data-bs-target="#nav-notification" type="button" (click)="selectTab(4)" role="tab" aria-controls="nav-notification" aria-selected="false"><span><i class="fa-regular fa-bell"></i></span> Notification</button>
-                        <button class="nav-link" id="nav-password-tab" data-bs-toggle="tab" data-bs-target="#nav-password" type="button" (click)="selectTab(5)" role="tab" aria-controls="nav-password" aria-selected="false"><span><i class="fa-regular fa-lock"></i></span> Change Password</button>
+                        <button class="nav-link active" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile" type="button" (click)="selectTab(0)" role="tab" aria-controls="nav-profile" aria-selected="false"><span><i class="fa-regular fa-user-pen"></i></span>Perfil</button>
+                        <button class="nav-link" id="nav-information-tab" data-bs-toggle="tab" data-bs-target="#nav-information" type="button" (click)="selectTab(1)" role="tab" aria-controls="nav-information" aria-selected="false"><span><i class="fa-regular fa-circle-info"></i></span> Informacion</button>
+                        <button class="nav-link" id="nav-address-tab" data-bs-toggle="tab" data-bs-target="#nav-address" type="button" (click)="selectTab(2)" role="tab" aria-controls="nav-address" aria-selected="false"><span><i class="fa-light fa-location-dot"></i></span> Direccion </button>
+                        <button class="nav-link" id="nav-order-tab" data-bs-toggle="tab" data-bs-target="#nav-order" type="button" (click)="selectTab(3)" role="tab" aria-controls="nav-order" aria-selected="false"><span><i class="fa-light fa-clipboard-list-check"></i></span> Mis ordenes </button>
+                        <!-- <button class="nav-link" id="nav-notification-tab" data-bs-toggle="tab" data-bs-target="#nav-notification" type="button" (click)="selectTab(4)" role="tab" aria-controls="nav-notification" aria-selected="false"><span><i class="fa-regular fa-bell"></i></span> Notification</button> -->
+                        <button class="nav-link" id="nav-password-tab" data-bs-toggle="tab" data-bs-target="#nav-password" type="button" (click)="selectTab(5)" role="tab" aria-controls="nav-password" aria-selected="false"><span><i class="fa-regular fa-lock"></i></span> Cambiar contraseña</button>
                         <span id="marker-vertical" class="tp-tab-line d-none d-sm-inline-block"></span>
                      </div>
                   </nav>
@@ -38,15 +38,15 @@
                                  <div class="col-md-6">
                                     <div class="profile__main-inner d-flex flex-wrap align-items-center">
                                        <div class="profile__main-thumb">
-                                          <img src="assets/img/users/user-10.jpg" alt="">
+                                          <img [src]="imagen_previsualizacion" width="200" alt="" />
                                           <div class="profile__main-thumb-edit">
                                              <input id="profile-thumb-input" class="profile-img-popup" type="file">
-                                             <label for="profile-thumb-input"><i class="fa-light fa-camera"></i></label>
+                                             <!-- <label for="profile-thumb-input"><i class="fa-light fa-camera"></i></label> -->
                                           </div>
                                        </div>
                                        <div class="profile__main-content">
-                                          <h4 class="profile__main-title">Welcome Mr. Admin!</h4>
-                                          <p>You have <span>08</span> notifications</p>
+                                          <h4 class="profile__main-title" name="name" [(ngModel)]="name">Hola {{name}} {{surname}}!</h4>
+                                          <p>Colocar info <span>info</span> info</p>
                                        </div>
                                     </div>
                                  </div>
@@ -57,7 +57,7 @@
                                  </div>
                               </div>
                            </div>
-                           <div class="profile__main-info">
+                           <!-- <div class="profile__main-info">
                               <div class="row gx-3">
                                  <div class="col-md-3 col-sm-6">
                                     <div class="profile__main-info-item">
@@ -104,7 +104,7 @@
                                     </div>
                                  </div>
                               </div>
-                           </div>
+                           </div> -->
                         </div>
                      </div>
                      <div class="tab-pane fade" id="nav-information" role="tabpanel" aria-labelledby="nav-information-tab">
@@ -135,7 +135,7 @@
                         <div>Wait for the duck</div>
                       }
                      </div>
-                     <div class="tab-pane fade" id="nav-notification" role="tabpanel" aria-labelledby="nav-notification-tab">
+                     <!-- <div class="tab-pane fade" id="nav-notification" role="tabpanel" aria-labelledby="nav-notification-tab">
                         <div class="profile__notification">
                            <div class="profile__notification-top mb-30">
                               <h3 class="profile__notification-title">My activity settings</h3>
@@ -174,7 +174,7 @@
                               </div>
                            </div>
                         </div>
-                     </div>
+                     </div>-->
                   </div>
                </div>
             </div>

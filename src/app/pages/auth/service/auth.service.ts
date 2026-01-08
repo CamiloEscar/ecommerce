@@ -87,4 +87,11 @@ export class AuthService {
       this.router.navigateByUrl('/login');
     }, 500);
   }
+
+  loginWithFacebook(fbToken: string) {
+  const URL = URL_SERVICIOS + '/auth/social/facebook';
+  return this.http.post(URL, { access_token: fbToken }).pipe(
+    map((resp: any) => this.saveLocalStorage(resp))
+  );
+}
 }

@@ -21,7 +21,7 @@
               </span>
            </div>
            <div class="profile__address-content">
-              <h3 class="profile__address-title"><a href="" onclick="return false;" (click)="selectedAddress(addres)">Shipping Address</a></h3>
+              <h3 class="profile__address-title"><a href="" onclick="return false;" (click)="selectedAddress(addres)">Direccion de envio</a></h3>
               <p><span>Nombre Completo:</span>{{addres.name + ' '+ addres.surname}}</p>
               <p><span>Calle:</span>{{addres.street}}</p>
               <p><span>Ciudad:</span>{{addres.city}}</p>
@@ -41,7 +41,7 @@
   <div class="row">
    <div class="col-12">
     <div class="tp-checkout-bill-area">
-      <h3 class="tp-checkout-bill-title">Billing Details</h3>
+      <h3 class="tp-checkout-bill-title">Detalle de envio</h3>
 
       <div class="tp-checkout-bill-form">
          <form action="#">
@@ -107,8 +107,8 @@
                 </div>
                   <div class="col-md-12">
                      <div class="tp-checkout-input">
-                        <label>Order notes (optional)</label>
-                        <textarea [(ngModel)]="description" name="description" placeholder="Notes about your order, e.g. special notes for delivery."></textarea>
+                        <label>Nota de la orden (opcional)</label>
+                        <textarea [(ngModel)]="description" name="description" placeholder="Notas acerca de tu orden, por ejemplo un detalle de tu casa o aviso al delivery."></textarea>
                      </div>
                   </div>
 

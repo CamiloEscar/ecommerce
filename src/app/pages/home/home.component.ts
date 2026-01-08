@@ -98,6 +98,10 @@ export class HomeComponent implements OnInit, AfterViewInit {
       this.DISCOUNT_FLASH = resp.discount_flash;
       this.DISCOUNT_FLASH_PRODUCT = resp.discount_flash_product;
 
+      this.homeService.menus().subscribe((resp:any) => {
+        console.log(resp)
+        this.categories_menus = resp.categories_menus;
+      })
       // Initialize sliders after data is loaded
       setTimeout(() => {
         this.initializeSliders();
@@ -244,6 +248,44 @@ export class HomeComponent implements OnInit, AfterViewInit {
       },
     });
   }
+
+  addCompareProduct(TRENDING_PRODUCT:any){
+    let COMPARES = localStorage.getItem('compares') ? JSON.parse(localStorage.getItem('compares') || '') : [];
+
+    let INDEX = COMPARES.findIndex((item:any) => item.id == TRENDING_PRODUCT.id);
+
+    if(INDEX != -1) {
+
+      this.toastr.error('Validacion', 'El producto ya fue agregado a la comparacion')
+
+      return;
+    }
+
+    COMPARES.push(TRENDING_PRODUCT);
+    this.toastr.success('Exito', 'Producto agregado a la comparacion')
+
+    localStorage.setItem('compares', JSON.stringify(COMPARES));
+
+    if(COMPARES.length > 1) {
+      this.router.navigateByUrl('/compare-product')
+    }
+  }
+
+  addFavoriteProduct(PRODUCT: any) {
+  let FAVORITES = localStorage.getItem('favorites') ? JSON.parse(localStorage.getItem('favorites') || '') : [];
+
+  let INDEX = FAVORITES.findIndex((item: any) => item.id == PRODUCT.id);
+
+  if (INDEX != -1) {
+    this.toastr.error('Validación', 'El producto ya está en favoritos');
+    return;
+  }
+
+  FAVORITES.push(PRODUCT);
+  localStorage.setItem('favorites', JSON.stringify(FAVORITES));
+  this.toastr.success('Éxito', 'Producto agregado a favoritos');
+}
+
 
   addCart(PRODUCT: any): void {
     if (!this.cartService.authService.user) {

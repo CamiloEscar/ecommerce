@@ -1,25 +1,24 @@
-import { afterNextRender, ChangeDetectorRef, Component } from '@angular/core';
-import { HomeService } from '../../home/service/home.service';
-import { CookieService } from 'ngx-cookie-service';
-import { CommonModule } from '@angular/common';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { FormsModule } from '@angular/forms';
-import { ModalProductComponent } from '../component/modal-product/modal-product.component';
-import { CartService } from '../../home/service/cart.service';
+import { CookieService } from 'ngx-cookie-service';
 import { ToastrService } from 'ngx-toastr';
+import { CartService } from '../../home/service/cart.service';
+import { HomeService } from '../../home/service/home.service';
+import { ModalProductComponent } from '../component/modal-product/modal-product.component';
+import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 
 
 declare var $:any;
 @Component({
-  selector: 'app-filter-advance',
+  selector: 'app-campaing-link',
   standalone: true,
   imports: [CommonModule, RouterModule, FormsModule, ModalProductComponent],
-  templateUrl: './filter-advance.component.html',
-  styleUrl: './filter-advance.component.css'
+  templateUrl: './campaing-link.component.html',
+  styleUrl: './campaing-link.component.css'
 })
-export class FilterAdvanceComponent {
-
-  Categories:any = [];
+export class CampaingLinkComponent {
+Categories:any = [];
   Colors:any = [];
   Brands:any = [];
   Products_relateds: any = [];
@@ -43,8 +42,9 @@ export class FilterAdvanceComponent {
 
   options_aditional:any = [];
 
-  search: string = '';
+  CODE_DISCOUNT:any = null;
 
+  DISCOUNT_LINK:any = null;
   constructor(
     public homeService: HomeService,
     public cookieService: CookieService,
@@ -64,13 +64,18 @@ export class FilterAdvanceComponent {
       this.Products_relateds = resp.product_relateds.data;
     })
 
-    this.activatedRoute.queryParams.subscribe((resp:any) => {
-      this.search = resp.search
+    this.activatedRoute.params.subscribe((resp:any) => {
+      this.CODE_DISCOUNT = resp.code;
     })
 
-    this.homeService.filterAdvanceProduct({search: this.search,}).subscribe((resp:any) => {
+    this.homeService.campaingDiscountLink({code_discount: this.CODE_DISCOUNT}).subscribe((resp:any) => {
       console.log(resp);
-      this.PRODUCTS = resp.products.data;
+      if(resp.message == 403) {
+        this.toastr.info('Validacion', resp.message_text);
+        return;
+      }
+      this.PRODUCTS = resp.products;
+      this.DISCOUNT_LINK = resp.discount;
     })
   }
 
@@ -89,7 +94,7 @@ export class FilterAdvanceComponent {
                 this.min_price = ui.values[0];
                 this.max_price = ui.values[1];
               },stop: () => {
-                this.filterAdvanceProduct();
+                // this.filterAdvanceProduct();
               }
             });
             $("#amount").val(this.currency+ " " + $("#slider-range").slider("values", 0) +
@@ -114,7 +119,7 @@ export class FilterAdvanceComponent {
     }
     // console.log(this.categories_selected)
     //cada vez que seleccionamos una categoria llamamos al servicio para filtrar los product
-    this.filterAdvanceProduct();
+    // this.filterAdvanceProduct();
 
     }
 
@@ -132,7 +137,7 @@ export class FilterAdvanceComponent {
       }
       // console.log(this.categories_selected)
       //cada vez que seleccionamos una categoria llamamos al servicio para filtrar los product
-      this.filterAdvanceProduct();
+      // this.filterAdvanceProduct();
     }
 
     addBrand(categorie:any){
@@ -149,7 +154,7 @@ export class FilterAdvanceComponent {
       }
       // console.log(this.categories_selected)
       //cada vez que seleccionamos una categoria llamamos al servicio para filtrar los product
-      this.filterAdvanceProduct();
+      // this.filterAdvanceProduct();
     }
 
     addColor(color:any){
@@ -166,26 +171,25 @@ export class FilterAdvanceComponent {
       }
       // console.log(this.categories_selected)
       //cada vez que seleccionamos una categoria llamamos al servicio para filtrar los product
-      this.filterAdvanceProduct();
+      // this.filterAdvanceProduct();
     }
 
-    filterAdvanceProduct(){
+    // filterAdvanceProduct(){
 
-      let data = {
-        categories_selected: this.categories_selected,
-        colors_selected: this.colors_selected,
-        brands_selected: this.brands_selected,
-        min_price: this.min_price,
-        max_price: this.max_price,
-        currency: this.currency,
-        options_aditional: this.options_aditional,
-        search: this.search,
-      }
-      this.homeService.filterAdvanceProduct(data).subscribe((resp:any) => {
-        console.log(resp);
-        this.PRODUCTS = resp.products.data;
-      })
-    }
+    //   let data = {
+    //     categories_selected: this.categories_selected,
+    //     colors_selected: this.colors_selected,
+    //     brands_selected: this.brands_selected,
+    //     min_price: this.min_price,
+    //     max_price: this.max_price,
+    //     currency: this.currency,
+    //     options_aditional: this.options_aditional,
+    //   }
+    //   this.homeService.filterAdvanceProduct(data).subscribe((resp:any) => {
+    //     console.log(resp);
+    //     this.PRODUCTS = resp.products.data;
+    //   })
+    // }
 
     getTotalCurrency(PRODUCTS: any): number {
       // Add null checks
@@ -322,14 +326,14 @@ export class FilterAdvanceComponent {
       let result: number;
 
       // primero chequeamos que hay un descuento en el producto
-      if (PRODUCTS.discount_g) {
-        result = this.getNewTotal(PRODUCTS, PRODUCTS.discount_g);
+      if (this.DISCOUNT_LINK) {
+        result = this.getNewTotal(PRODUCTS, this.DISCOUNT_LINK);
       }
       // luego chequeamos si tiene el descuento flash
-      else if (this.DISCOUNT_FLASH && this.PRODUCTS &&
+      else if (this.DISCOUNT_LINK && this.PRODUCTS &&
               this.PRODUCTS.includes &&
               this.PRODUCTS.includes(PRODUCTS)) {
-        result = this.getNewTotal(PRODUCTS, this.DISCOUNT_FLASH);
+        result = this.getNewTotal(PRODUCTS, this.DISCOUNT_LINK);
       }
       // precio comun
       else {

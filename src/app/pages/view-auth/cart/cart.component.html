@@ -9,7 +9,7 @@
                  <h3 class="breadcrumb__title">Shopping Cart</h3>
                  <div class="breadcrumb__list">
                     <span><a href="#">Home</a></span>
-                    <span>Shopping Cart    <small>(agregar mas adelante precio de envio o calculo de las dos monedas)</small></span>
+                    <span>Shopping Cart    <small>(CHEQUEAR QUE TOME EL VALOR DEL ENVIO Y TAMBIEN CHEQUEAR QUE SE SUME AL CUPON SI EXISTE)</small></span>
                  </div>
               </div>
            </div>
@@ -35,8 +35,8 @@
                       </tr>
                     </thead>
                     <tbody>
-                      @for(cart of listCarts; track cart.id){
-                        <tr>
+                      <tr *ngFor="let cart of listCarts">
+                        <ng-container *ngIf="cart.id !== 'SHIPPING'">
                            <!-- img -->
                            <td class="tp-cart-img"><a [routerLink]="['/producto/'+cart.product.slug]">
                             <img [src]="cart.product.imagen" alt=""></a></td>
@@ -45,29 +45,29 @@
                             {{cart.product.title}}
                           </a>
                           <div style="margin-left: 20px;">
-                            @if(cart.product_variation){
+                            <ng-container *ngIf="cart.product_variation">
                               <br>
                               <span class="cartmini__quantity mx-2">• {{cart.product_variation.attribute.name}}: {{cart.product_variation.propertie?.name || cart.product_variation.value_add}}</span>
-                              @if(cart.product_variation.variation_father){
+                              <ng-container *ngIf="cart.product_variation.variation_father">
                                 <br>
                                 <span class="cartmini__quantity mx-2">• {{cart.product_variation.variation_father.attribute.name}}: {{cart.product_variation.variation_father.propertie?.name || cart.product_variation.variation_father.value_add}}
                                 </span>
-                              }
-                            }
-                            @if(cart.code_cupon){
+                              </ng-container>
+                            </ng-container>
+                            <ng-container *ngIf="cart.code_cupon">
                               <br>
                               <span class="cartmini__quantity mx-2">• Cupon: {{cart.code_cupon}}</span>
-                            }
-                            @if(cart.code_discount){
+                            </ng-container>
+                            <ng-container *ngIf="cart.code_discount">
                               <br>
                               <span class="cartmini__quantity mx-2">• Campaña: {{cart.code_discount}}</span>
-                            }
-                            @if(cart.code_discount || cart.code_cupon){
+                            </ng-container>
+                            <ng-container *ngIf="cart.code_discount || cart.code_cupon">
                               <br>
                               <span class="text-primary mx-2">• Descuento:{{cart.discount}} {{cart.type_discount == 1 ? '%' : cart.currency}}</span>
                               <br>
                               <span class="text-danger mx-2">• Precio original: <del>{{cart.price_unit}}</del></span>
-                            }
+                            </ng-container>
                           </div>
                         </td>
                            <!-- price -->
@@ -101,12 +101,20 @@
                                  <span><br>Eliminar</span>
                               </button>
                            </td>
-                        </tr>
-
-                      }
+                        </ng-container>
+                      </tr>
 
                     </tbody>
                   </table>
+              </div>
+              <!-- Detalle del cupón y resumen intermedio -->
+              <div class="card p-3 mb-4">
+                <div *ngIf="globalCouponCode || discountTotal > 0" class="mb-2">
+                  <div><strong>Cupon:</strong> {{ globalCouponCode }}</div>
+                  <div *ngIf="discountTotal > 0">• <strong>Descuento:</strong> {{ discountTotal }} {{ currency }}</div>
+                  <div>• <strong>Precio original:</strong> <del>{{ subtotalOriginal }} {{ currency }}</del></div>
+                </div>
+                <div *ngIf="!globalCouponCode && discountTotal == 0" class="text-muted">No hay cupones aplicados</div>
               </div>
               <div class="tp-cart-bottom">
                  <div class="row align-items-end">
@@ -114,59 +122,115 @@
                        <div class="tp-cart-coupon">
                           <form action="#">
                              <div class="tp-cart-coupon-input-box">
-                                <label>Coupon Code:</label>
+                                <label>Cupon:</label>
                                 <div class="tp-cart-coupon-input d-flex align-items-center">
-                                   <input type="text" name="code_cupon" [(ngModel)]="code_cupon" placeholder="Enter Coupon Code">
-                                   <button type="button" (click)="applyCupon()">Apply</button>
+                                   <input type="text" name="code_cupon" [(ngModel)]="code_cupon" placeholder="Colocar codigo del cupon">
+                                   <button type="button" (click)="applyCupon()">Aplicar</button>
                                 </div>
                              </div>
                           </form>
                        </div>
                     </div>
-                    <div class="col-xl-6 col-md-4">
+                    <!-- <div class="col-xl-6 col-md-4">
                        <div class="tp-cart-update text-md-end">
                           <button type="button" class="tp-cart-update-btn">Update Cart</button>
                        </div>
-                    </div>
+                    </div> -->
                  </div>
               </div>
            </div>
            <div class="col-xl-3 col-lg-4 col-md-6">
               <div class="tp-cart-checkout-wrapper">
-                 <div class="tp-cart-checkout-top d-flex align-items-center justify-content-between">
+                  <div class="tp-cart-checkout-top d-flex align-items-center justify-content-between">
                     <span class="tp-cart-checkout-top-title">Subtotal: </span>
-                    <span class="tp-cart-checkout-top-price">${{totalCarts}} {{currency}}</span>
-                 </div>
+                    <span class="tp-cart-checkout-top-price">${{subtotalAfterDiscount}} {{currency}}</span>
+                  </div>
+                  <div *ngIf="globalCouponCode || discountTotal > 0" class="p-2">
+                   <div>Cupon: <strong>{{ globalCouponCode }}</strong></div>
+                   <div *ngIf="discountTotal > 0">Descuento: <strong>{{ discountTotal }} {{ currency }}</strong></div>
+                   <div>Precio original: <del>{{ subtotalOriginal }} {{ currency }}</del></div>
+                  </div>
                  <div class="tp-cart-checkout-shipping">
-                    <h4 class="tp-cart-checkout-shipping-title">Shipping</h4>
+                    <h4 class="tp-cart-checkout-shipping-title">Envio</h4>
 
-                    <div class="tp-cart-checkout-shipping-option-wrapper">
-                       <!-- <div class="tp-cart-checkout-shipping-option">
-                          <input id="flat_rate" type="radio" name="shipping">
-                          <label for="flat_rate">Flat rate: <span>$20.00</span></label>
-                       </div>
-                       <div class="tp-cart-checkout-shipping-option">
-                          <input id="local_pickup" type="radio" name="shipping">
-                          <label for="local_pickup">Local pickup: <span> $25.00</span></label>
-                       </div> -->
-                       <div class="tp-cart-checkout-shipping-option">
-                          <input id="free_shipping" type="radio" name="shipping">
-                          <label for="free_shipping">Free shipping</label>
-                       </div>
+                    <form #provinciaForm="ngForm" (ngSubmit)="applyCosto()">
+                      <label for="provincia">Seleccionar provincia:</label>
+                      <div class="d-flex align-items-center">
+                        <select
+                          [(ngModel)]="selectedProvinceCode"
+                          name="provincia"
+                          id="provincia"
+                          required
+                          class="form-select"
+                          #provinciaControl="ngModel"
+                        >
+                          <option [ngValue]="null" disabled>-- SELECCIONAR --</option>
+                          <option *ngFor="let prov of provincias" [ngValue]="prov.code">
+                            {{ prov.name }}
+                          </option>
+                        </select>
+
+                        <button
+                          type="submit"
+                          class="btn btn-primary ms-2"
+                          [disabled]="provinciaForm.invalid"
+                        >
+                          Aplicar
+                        </button>
+
+                        <button
+                          *ngIf="selectedProvinceCode"
+                          type="button"
+                          (click)="removeProvincia()"
+                          class="btn btn-danger ms-2"
+                        >
+                          <span aria-hidden="true">×</span>
+                        </button>
+                      </div>
+
+                      <div *ngIf="provinciaControl.invalid && provinciaControl.touched" class="text-danger mt-1">
+                        La provincia es obligatoria.
+                      </div>
+
+                      <div *ngIf="costoEnvio !== null" class="mt-2">
+                        <span class="cartmini__quantity mx-2">• Costo de envío: {{ costoEnvio }} {{ currency }}</span>
+                      </div>
+
+                    </form>
+
+                  </div>
+                  <div class="tp-cart-checkout-total d-flex align-items-center justify-content-between">
+                    <span>Subtotal</span>
+                    <span>{{ subtotalAfterDiscount }} {{ currency }}</span>
+                  </div>
+                  <div *ngIf="shippingCostValue" class="tp-cart-checkout-total d-flex align-items-center justify-content-between">
+                    <span>Envío</span>
+                    <span>{{ shippingCostValue }} {{ currency }}</span>
+                  </div>
+                  <div class="tp-cart-checkout-total d-flex align-items-center justify-content-between">
+                    <span><strong>Total</strong></span>
+                    <span><strong>{{ grandTotal }} {{ currency }}</strong></span>
+                  </div>
+                  <div class="tp-cart-checkout-proceed">
+                    <button
+                      class="tp-cart-checkout-btn w-100"
+                      [routerLink]="'/proceso-de-pago'"
+                      [disabled]="!selectedProvinceCode"
+                    >
+                      Ir al checkout
+                    </button>
+
+                    <div *ngIf="!selectedProvinceCode" class="text-danger text-center mt-2">
+                      Debes seleccionar una provincia antes de continuar.
                     </div>
-                 </div>
-                 <div class="tp-cart-checkout-total d-flex align-items-center justify-content-between">
-                    <span>Total</span>
-                    <span>${{totalCarts}} {{currency}}</span>
-                 </div>
-                 <div class="tp-cart-checkout-proceed">
-                    <a routerLink="/proceso-de-pago" class="tp-cart-checkout-btn w-100">Proceed to Checkout</a>
-                 </div>
-              </div>
-           </div>
-        </div>
-     </div>
-  </section>
+                  </div>
+
+
+                  </div>
+                  </div>
+                  </div>
+                  </div>
+                    </section>
   <!-- cart area end -->
 
 </main>

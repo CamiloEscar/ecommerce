@@ -35,8 +35,8 @@
                     <p>No tienes una cuenta? <span><a routerLink="/register" routerLinkActive="router-link-active" >Crea una cuenta gratis!</a></span></p>
                  </div>
                  <div class="tp-login-option">
-                    <!-- <div class="tp-login-social mb-10 d-flex flex-wrap align-items-center justify-content-center">
-                       <div class="tp-login-option-item has-google">
+                    <div class="tp-login-social mb-10 d-flex flex-wrap align-items-center justify-content-center">
+                       <!-- <div class="tp-login-option-item has-google">
                           <a href="#">
                              <img src="assets/img/icon/login/google.svg" alt="">
                              Sign in with google
@@ -51,8 +51,17 @@
                           <a href="#">
                              <img class="apple" src="assets/img/icon/login/apple.svg" alt="">
                           </a>
-                       </div>
-                    </div> -->
+                       </div> -->
+                       <button
+                          type="button"
+                          class="w-100 d-flex align-items-center justify-content-center gap-2 py-3 px-4 rounded-3 border-0 text-white"
+                          style="background-color: #1877F2; font-weight: 500; font-size: 16px;"
+                          (click)="loginWithFacebook()"
+                        >
+                          <img src="assets/img/login/facebook.svg" alt="Facebook" style="width: 20px; height: 20px;">
+                          <span>Iniciar sesion con Facebook</span>
+                        </button>
+                    </div>
                     <div class="tp-login-mail text-center mb-40">
                        <p>O ingresa con tu <a href="#">Email</a></p>
                     </div>

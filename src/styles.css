@@ -195,3 +195,12 @@ button.toast-close-button {
 .fa-start-gris {
   color: #9a9a9a !important;
 }
+
+.tp-color-variation-btn:disabled,
+.tp-size-variation-btn:disabled {
+  background-color: #eee !important;
+  color: #999 !important;
+  border: 1px solid #ccc !important;
+  cursor: not-allowed !important;
+  opacity: 0.6;
+}

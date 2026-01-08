@@ -33,10 +33,10 @@
                       <circle stroke="red" cx="190" cy="190" r="180" stroke-width="6" stroke-linecap="round"></circle>
                   </svg>
                 </div>
-                <img src="assets/img/logo/preloader/preloader-icon.svg" alt="">
+                <img src="assets/img/logo/logo.jpeg" style="width: 120px; height:80px;" alt="">
              </div>
-             <h3 class="tp-preloader-title">Shofy</h3>
-             <p class="tp-preloader-subtitle">Loading</p>
+             <h3 class="tp-preloader-title">Funko</h3>
+             <p class="tp-preloader-subtitle">Cargando</p>
           </div>
        </div>
     </div>
@@ -54,6 +54,24 @@
   <app-root></app-root>
 
   <!-- JS here -->
+   <script>
+  window.fbAsyncInit = function() {
+    FB.init({
+      appId      : '1124088342957116', // ⚠️ Poner el ID de tu app
+      cookie     : true,
+      xfbml      : true,
+      version    : 'v19.0'
+    });
+  };
+
+  (function(d, s, id){
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) {return;}
+    js = d.createElement(s); js.id = id;
+    js.src = "https://connect.facebook.net/es_ES/sdk.js";
+    fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));
+</script>
   <script src="assets/js/vendor/jquery.js"></script>
   <script src="assets/js/vendor/waypoints.js"></script>
   <script src="assets/js/bootstrap-bundle.js"></script>
