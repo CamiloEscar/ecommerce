@@ -69,7 +69,7 @@ export class CheckoutComponent {
     // });
     this.cartService.currentDataCart$.subscribe((resp:any)=>{
       this.listCarts = resp;
-      this.totalCarts = this.listCarts.reduce((sum:number, item:any) => sum + item.total, 0 ).toFixed(2);
+      this.totalCarts = Number(this.listCarts.reduce((sum:number, item:any) => sum + item.total, 0 ).toFixed(2));
     })
 
     paypal.Buttons({

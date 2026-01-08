@@ -34,9 +34,49 @@ ngOnInit(): void {
   this.cartService.currentDataCart$.subscribe((resp:any)=> {
     // console.log(resp)
     this.listCarts = resp;
-    this.totalCarts = this.listCarts.reduce((sum:number, item:any) => sum + item.total, 0 )  //el controlador esta escuchando todo el tiempo, asi que cuando se elimine el controlador actualiza
+    // actualizar total sin incluir el item SHIPMENT si existe
+    this.totalCarts = this.listCarts
+      .filter((i:any) => i.id !== 'SHIPPING')
+      .reduce((sum:number, item:any) => sum + item.total, 0 );
+
+    // sincronizar costo de envio desde el servicio si existe
+    if(this.cartService.shippingCost !== null && this.cartService.shippingCost !== undefined){
+      this.costoEnvio = this.cartService.shippingCost;
+    }
   })
 }
+
+  // subtotal original (sin descuentos, sin envio)
+  get subtotalOriginal(){
+    return this.listCarts
+      .filter((i:any) => i.id !== 'SHIPPING')
+      .reduce((sum:number, item:any) => sum + (item.subtotal * (item.quantity || 1)), 0 );
+  }
+
+  // subtotal después de aplicar cupones/descuentos (sin envio)
+  get subtotalAfterDiscount(){
+    return this.listCarts
+      .filter((i:any) => i.id !== 'SHIPPING')
+      .reduce((sum:number, item:any) => sum + (item.total || 0), 0 );
+  }
+
+  get discountTotal(){
+    const disc = this.subtotalOriginal - this.subtotalAfterDiscount;
+    return disc > 0 ? disc : 0;
+  }
+
+  get shippingCostValue(){
+    return this.costoEnvio ?? this.cartService.shippingCost ?? 0;
+  }
+
+  get grandTotal(){
+    return this.subtotalAfterDiscount + (this.shippingCostValue || 0);
+  }
+
+  get globalCouponCode(){
+    const found = this.listCarts.find((i:any) => i.code_cupon || i.code_discount);
+    return found ? (found.code_cupon || found.code_discount) : (this.code_cupon || null);
+  }
 
 
 deleteCart(CART:any){
@@ -99,6 +139,10 @@ deleteCart(CART:any){
           resp.carts.data.forEach((cart:any) => {
             this.cartService.changeCart(cart)
           });
+          // si hay un costo de envío aplicado en el servicio, reaplicarlo como ítem
+          if(this.cartService.shippingCost){
+            this.cartService.setShipping(this.cartService.shippingCost);
+          }
         })
       }
     })
@@ -148,6 +192,8 @@ deleteCart(CART:any){
       return;
     } else {
       this.costoEnvio = resp.costo ?? 0;
+      // persistir en el servicio para que sobreviva a recargas
+      this.cartService.setShipping(this.costoEnvio);
       this.cartService.resetCart();
       this.cartService.listCart().subscribe((resp: any) => {
         resp.carts.data.forEach((cart: any) => {
@@ -162,6 +208,7 @@ deleteCart(CART:any){
 removeProvincia() {
   this.selectedProvinceCode = null;
   this.costoEnvio = null;
+  this.cartService.setShipping(null);
 
 }
 
