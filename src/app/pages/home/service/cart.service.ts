@@ -11,6 +11,8 @@ export class CartService {
 
   public cart = new BehaviorSubject<Array<any>>([]); //necesitamos enviar datos a otros componentes, no tiene que ser solamente un observador
   public currentDataCart$ = this.cart.asObservable(); //observable que va a estar atento a todos los cambios de la variable cart
+  // costo de envio mantenido en el servicio para que sobreviva a recargas del carrito
+  public shippingCost: number | null = null;
 
 
   constructor(
@@ -29,6 +31,37 @@ export class CartService {
       listCart.unshift(DATA);
     }
     this.cart.next(listCart);
+  }
+
+  setShipping(cost: number | null){
+    this.shippingCost = cost;
+    if(cost === null){
+      // remove special shipping item if present
+      let list = this.cart.getValue();
+      let idx = list.findIndex((i:any) => i.id === 'SHIPPING');
+      if(idx !== -1){
+        list.splice(idx,1);
+        this.cart.next(list);
+      }
+      return;
+    }
+
+    // add/update special shipping item
+    let list = this.cart.getValue();
+    let idx = list.findIndex((i:any) => i.id === 'SHIPPING');
+    const shippingItem = {
+      id: 'SHIPPING',
+      quantity: 1,
+      subtotal: cost,
+      total: cost,
+      product: { title: 'Costo de envío' }
+    };
+    if(idx !== -1){
+      list[idx] = shippingItem;
+    } else {
+      list.push(shippingItem);
+    }
+    this.cart.next(list);
   }
 
   resetCart(){
@@ -82,6 +115,11 @@ export class CartService {
     let headers = new HttpHeaders({'Authorization': 'Bearer '+this.authService.token});
     let URL = URL_SERVICIOS+"/ecommerce/carts/apply_costo";
     return this.http.post(URL, data, {headers: headers});
+  }
+  removeCosto(){
+    let headers = new HttpHeaders({'Authorization': 'Bearer '+this.authService.token});
+    let URL = URL_SERVICIOS+"/ecommerce/carts/remove_costo";
+    return this.http.post(URL, {}, {headers: headers});
   }
 
   checkout(data:any){
