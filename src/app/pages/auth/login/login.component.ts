@@ -1,148 +1,112 @@
-import { afterNextRender, Component } from '@angular/core';
+import { afterNextRender, Component, OnInit } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { AuthService } from '../service/auth.service';
 import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+// Importaciones para Google
+import { SocialAuthService, GoogleLoginProvider, GoogleSigninButtonModule } from '@abacritt/angularx-social-login';
 
 declare function password_show_toggle(): any;
-declare const FB: any;
+
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [FormsModule, RouterModule],
+  imports: [FormsModule, RouterModule, GoogleSigninButtonModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css',
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
   email: string = '';
   password: string = '';
   code_user: string = '';
+
   constructor(
     private toastr: ToastrService,
     private authService: AuthService,
+    private socialAuthService: SocialAuthService, // Inyectamos el servicio de redes sociales
     public router: Router,
     public activatedRoute: ActivatedRoute
   ) {
     afterNextRender(() => {
-
       setTimeout(() => {
+        if (typeof password_show_toggle === 'function') {
           password_show_toggle();
-        }, 50);
-      })
+        }
+      }, 50);
+    });
   }
-  ngOnInit(): void {
-    //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
-    //Add 'implements OnInit' to the class.
-    // this.showSuccess();
-    this.csrfToken = this.getCsrfTokenFromMeta();
 
+  ngOnInit(): void {
+    // 1. Si ya hay sesión iniciada, redirigir al Home
     if (this.authService.token && this.authService.user) {
-      setTimeout(() => {
-        this.router.navigateByUrl('/');
-      }, 500);
+      this.router.navigateByUrl('/');
       return;
     }
+
+    // 2. Escuchar parámetros de la URL (para verificación de cuenta)
     this.activatedRoute.queryParams.subscribe((resp: any) => {
       this.code_user = resp.code;
-    });
-
-
-
-    if(this.code_user){
-      let data = {
-        code_user: this.code_user,
+      if (this.code_user) {
+        this.verificarUsuario(this.code_user);
       }
-      this.authService.verifiedAuth(data).subscribe((resp:any) => {
-        console.log(resp)
-        if(resp.message == 403){
-          this.toastr.error('Error', 'El codigo no pertenece a ningun usuario');
-        }
-        if(resp.message == 200){
-          this.toastr.success('Exito', 'El correo ha sido verificado, ingresa a la tienda');
-          setTimeout(() => {
-            this.router.navigateByUrl('/login');
-          }, 500);
-        }
-      })
-    }
-
-    // Inicializar Facebook SDK
-    (window as any).fbAsyncInit = () => {
-      FB.init({
-        appId      : '1124088342957116',
-        cookie     : true,
-        xfbml      : true,
-        version    : 'v19.0'
-      });
-    };
-
-    // Si llega token de query string, procesarlo
-    this.activatedRoute.queryParams.subscribe(params => {
-      // Aquí no hace falta, porque todo lo haremos desde el front
     });
   }
 
+  // --- LOGIN MANUAL ---
   login() {
     if (!this.email || !this.password) {
-      this.toastr.error(
-        'Validacion',
-        'Por favor ingresar todos los campos correctamente'
-      );
+      this.toastr.error('Validación', 'Por favor ingresar todos los campos');
       return;
     }
-    this.authService.login(this.email, this.password).subscribe(
-      (resp: any) => {
-        console.log(resp);
 
-        if (resp.error && resp.error.error == 'Unauthorized') {
-          this.toastr.error('Error', 'Usuario o contraseña incorrectos');
-          return;
-        }
-        if (resp == true) {
+    this.authService.login(this.email, this.password).subscribe({
+      next: (resp: any) => {
+        if (resp === true) {
           this.toastr.success('Login exitoso', 'Bienvenido');
-          setTimeout(() => {
-            this.router.navigateByUrl('/');
-          }, 500);
+          this.router.navigateByUrl('/');
+        } else {
+          // Si el servicio devuelve el error de Laravel (401)
+          this.toastr.error('Error', 'Credenciales incorrectas o cuenta no verificada');
         }
       },
-      (error) => {
-        console.log(error);
-        this.toastr.error('Error', 'Error en el login');
+      error: (err) => {
+        this.toastr.error('Error', 'Hubo un fallo en la conexión con el servidor');
       }
-    );
-  }
-  showSuccess() {
-    this.toastr.success('Hello world!', 'Toastr fun!');
+    });
   }
 
-  loginWithFacebook() {
-  // window.location.href = 'http://localhost:8000/auth/redirect';
-  FB.login((response: any) => {
-    if (response.authResponse) {
-      const accessToken = response.authResponse.accessToken;
-
-      // Aquí envías el token de Facebook a tu backend para validarlo
-      this.authService.loginWithFacebook(accessToken).subscribe(resp => {
-        if (resp == true) {
-          this.toastr.success('Login con Facebook exitoso', 'Bienvenido');
-          setTimeout(() => {
-            this.router.navigateByUrl('/');
-          }, 500);
-        }
+  // --- LOGIN CON GOOGLE ---
+  loginWithGoogle() {
+    this.socialAuthService.signIn(GoogleLoginProvider.PROVIDER_ID)
+      .then(user => {
+        // user.authToken es el access_token que Laravel Socialite espera 
+        this.authService.loginWithGoogle(user.authToken).subscribe({
+          next: (resp: any) => {
+            if (resp === true) {
+              this.toastr.success('Éxito', 'Sesión iniciada con Google');
+              this.router.navigateByUrl('/');
+            } else {
+              this.toastr.error('Error', 'No se pudo validar el acceso con Google');
+            }
+          },
+          error: (err) => {
+            this.toastr.error('Error', 'Fallo en la autenticación social');
+          }
+        });
+      })
+      .catch(err => {
+        console.log("Popup cerrado o error:", err);
       });
-    } else {
-      this.toastr.error('Error', 'No se pudo iniciar sesión con Facebook');
-    }
-  }, { scope: 'email,public_profile' });
-}
-csrfToken = '';
+  }
 
-// ngOnInit() {
-//   this.csrfToken = this.getCsrfTokenFromMeta();
-// }
-
-getCsrfTokenFromMeta(): string {
-  const el: HTMLMetaElement | null = document.querySelector('meta[name="csrf-token"]');
-  return el ? el.content : '';
-}
+  // --- VERIFICACIÓN DE EMAIL ---
+  verificarUsuario(code: string) {
+    this.authService.verifiedAuth({ code_user: code }).subscribe((resp: any) => {
+      if (resp.message == 200) {
+        this.toastr.success('Éxito', 'El correo ha sido verificado correctamente');
+      } else {
+        this.toastr.error('Error', 'El código de verificación no es válido');
+      }
+    });
+  }
 }

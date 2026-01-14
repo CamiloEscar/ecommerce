@@ -42,19 +42,9 @@
                              Sign up with google
                           </a>
                        </div> -->
-                       <div class="tp-login-option-item text-center mb-30">
-                        <button
-                          type="button"
-                          class="w-100 d-flex align-items-center justify-content-center gap-2 py-3 px-4 rounded-3 border-0 text-white"
-                          style="background-color: #1877F2; font-weight: 500; font-size: 16px;"
-                          (click)="loginWithFacebook()"
-                        >
-                          <img src="assets/img/login/facebook.svg" alt="Facebook" style="width: 20px; height: 20px;">
-                          <span>Registrarse con Facebook</span>
-                        </button>
-
-
-                      </div>
+                       <div class="tp-login-option-item d-flex justify-content-center mb-30">
+                          <asl-google-signin-button type="standard" size="large" text="signup_with"></asl-google-signin-button>
+                        </div>
                        <!-- <div class="tp-login-option-item">
                           <a href="#">
                              <img class="apple" src="assets/img/icon/login/apple.svg" alt="">

@@ -52,15 +52,10 @@
                              <img class="apple" src="assets/img/icon/login/apple.svg" alt="">
                           </a>
                        </div> -->
-                       <button
-                          type="button"
-                          class="w-100 d-flex align-items-center justify-content-center gap-2 py-3 px-4 rounded-3 border-0 text-white"
-                          style="background-color: #1877F2; font-weight: 500; font-size: 16px;"
-                          (click)="loginWithFacebook()"
-                        >
-                          <img src="assets/img/login/facebook.svg" alt="Facebook" style="width: 20px; height: 20px;">
-                          <span>Iniciar sesion con Facebook</span>
-                        </button>
+
+                     <div class="tp-login-option-item d-flex justify-content-center mb-30">
+                        <asl-google-signin-button type="standard" size="large" text="signup_with"></asl-google-signin-button>
+                      </div>
                     </div>
                     <div class="tp-login-mail text-center mb-40">
                        <p>O ingresa con tu <a href="#">Email</a></p>
