@@ -1,33 +1,42 @@
-import { inject, Injectable } from '@angular/core';
+import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 import { AuthService } from './auth.service';
 
-@Injectable()
-export class PermisionAuth {
+/**
+ *  Auth guard básico (login)
+ */
+export const authGuard: CanActivateFn = () => {
+  const auth = inject(AuthService);
+  const router = inject(Router);
 
-  constructor(
-    public authService: AuthService,
-    public router: Router
-  ){
-
+  if (!auth.user || !auth.token) {
+    router.navigate(['/login']);
+    return false;
   }
 
-  canActive(): boolean {
-    if(!this.authService.user || !this.authService.token){
-      this.router.navigateByUrl("/login");
-      return false;
-    }
-    let token = this.authService.token;
+  const token = auth.token;
+  const expiration = JSON.parse(atob(token.split('.')[1])).exp;
 
-    let expiration = (JSON.parse(atob(token.split(".")[1]))).exp;
-    if(Math.floor((new Date).getTime() / 1000) > expiration){
-      this.authService.logout;
-      return false
-    }
-    return true;
+  if (Date.now() / 1000 > expiration) {
+    auth.logout();
+    router.navigate(['/login']);
+    return false;
   }
-}
 
-export const authGuard: CanActivateFn = (route, state) => {
-  return inject(PermisionAuth).canActive();
+  return true;
+};
+
+/**
+ *  Bloquea si el usuario no completó email
+ */
+export const emailCompleteGuard: CanActivateFn = () => {
+  const auth = inject(AuthService);
+  const router = inject(Router);
+
+  if (auth.user && auth.user.email?.includes('@facebook.local')) {
+    router.navigate(['/complete-email']);
+    return false;
+  }
+
+  return true;
 };

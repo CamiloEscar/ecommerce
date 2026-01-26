@@ -1,0 +1,28 @@
+<div class="container mt-5" style="max-width: 400px">
+  <h3 class="mb-3 text-center">Completa tu email</h3>
+
+  <p class="text-muted text-center">
+    Necesitamos tu email para continuar
+  </p>
+
+  <form (ngSubmit)="submit()">
+    <div class="mb-3">
+      <input
+        type="email"
+        class="form-control"
+        placeholder="tu@email.com"
+        [(ngModel)]="email"
+        name="email"
+        required
+      />
+    </div>
+
+    <button
+      class="btn btn-primary w-100"
+      [disabled]="loading"
+      type="submit"
+    >
+      {{ loading ? 'Guardando...' : 'Guardar email' }}
+    </button>
+  </form>
+</div>

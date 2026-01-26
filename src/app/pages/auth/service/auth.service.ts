@@ -3,6 +3,8 @@ import { afterNextRender, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { catchError, map, of } from 'rxjs';
 import { URL_SERVICIOS } from '../../../config/config';
+import { environment } from '../../../../environments/environment';
+import { tap } from 'rxjs/operators';
 
 
 //instalacion de ssr colocar afternextrender para renderizarlo luego
@@ -88,10 +90,49 @@ export class AuthService {
     }, 500);
   }
 
-  loginWithFacebook(fbToken: string) {
+ loginWithFacebook(fbToken: string) {
   const URL = URL_SERVICIOS + '/auth/social/facebook';
+
   return this.http.post(URL, { access_token: fbToken }).pipe(
-    map((resp: any) => this.saveLocalStorage(resp))
+    map((resp: any) => {
+      if (!resp.needs_email) {
+        this.saveLocalStorage(resp);
+      }
+      return resp;
+    })
   );
+  }
+
+  loginWithGoogle(token: string) {
+  return this.http.post(
+    `${environment.API_URL}/auth/social/google`,
+    { access_token: token }
+  ).pipe(
+    tap((resp: any) => {
+      if (resp.access_token) {
+        this.saveLocalStorage(resp);
+      }
+    })
+  );
+  }
+
+
+  completeEmail(email: string) {
+  const URL = environment.API_URL + '/auth/complete-email';
+
+  return this.http.post(URL, { email }).pipe(
+    tap((resp: any) => {
+      // actualizar user en memoria y localStorage
+      const data = JSON.parse(localStorage.getItem('auth')!);
+      data.user.email = email;
+      localStorage.setItem('auth', JSON.stringify(data));
+      this.user.email = email;
+    })
+  );
+
+
+  
 }
+
+
 }
