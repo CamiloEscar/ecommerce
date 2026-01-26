@@ -1,11 +1,22 @@
-import { afterNextRender, Component } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { AuthService } from '../service/auth.service';
 import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { isPlatformBrowser } from '@angular/common';
+import {
+  Component,
+  Inject,
+  PLATFORM_ID,
+  afterNextRender,
+  OnInit
+} from '@angular/core';
+
+
 
 declare function password_show_toggle(): any;
 declare const FB: any;
+declare const google: any;
+
 @Component({
   selector: 'app-login',
   standalone: true,
@@ -13,73 +24,80 @@ declare const FB: any;
   templateUrl: './login.component.html',
   styleUrl: './login.component.css',
 })
+
+
 export class LoginComponent {
-  email: string = '';
-  password: string = '';
-  code_user: string = '';
-  constructor(
+  email = '';
+  password = '';
+  code_user = '';
+  csrfToken = '';
+
+
+constructor(
     private toastr: ToastrService,
     private authService: AuthService,
     public router: Router,
-    public activatedRoute: ActivatedRoute
+    public activatedRoute: ActivatedRoute,
+    @Inject(PLATFORM_ID) private platformId: Object
   ) {
     afterNextRender(() => {
-
-      setTimeout(() => {
+      if (isPlatformBrowser(this.platformId)) {
+        setTimeout(() => {
           password_show_toggle();
         }, 50);
-      })
+      }
+    });
   }
-  ngOnInit(): void {
-    //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
-    //Add 'implements OnInit' to the class.
-    // this.showSuccess();
-    this.csrfToken = this.getCsrfTokenFromMeta();
 
+  ngOnInit(): void {
+
+    /* ✅ PROTEGER document */
+    if (isPlatformBrowser(this.platformId)) {
+      this.csrfToken = this.getCsrfTokenFromMeta();
+    }
+
+    /* Usuario ya logueado */
     if (this.authService.token && this.authService.user) {
       setTimeout(() => {
         this.router.navigateByUrl('/');
       }, 500);
       return;
     }
+
+    /* Verificación por código */
     this.activatedRoute.queryParams.subscribe((resp: any) => {
       this.code_user = resp.code;
     });
 
-
-
-    if(this.code_user){
-      let data = {
-        code_user: this.code_user,
-      }
-      this.authService.verifiedAuth(data).subscribe((resp:any) => {
-        console.log(resp)
-        if(resp.message == 403){
-          this.toastr.error('Error', 'El codigo no pertenece a ningun usuario');
-        }
-        if(resp.message == 200){
-          this.toastr.success('Exito', 'El correo ha sido verificado, ingresa a la tienda');
-          setTimeout(() => {
-            this.router.navigateByUrl('/login');
-          }, 500);
-        }
-      })
+    if (this.code_user) {
+      this.authService.verifiedAuth({ code_user: this.code_user })
+        .subscribe((resp: any) => {
+          if (resp.message === 403) {
+            this.toastr.error('El codigo no pertenece a ningun usuario');
+          }
+          if (resp.message === 200) {
+            this.toastr.success('Correo verificado, ingresá a la tienda');
+            setTimeout(() => {
+              this.router.navigateByUrl('/login');
+            }, 500);
+          }
+        });
     }
 
-    // Inicializar Facebook SDK
-    (window as any).fbAsyncInit = () => {
-      FB.init({
-        appId      : '1124088342957116',
-        cookie     : true,
-        xfbml      : true,
-        version    : 'v19.0'
-      });
-    };
+    /* ✅ Facebook SDK */
+    if (isPlatformBrowser(this.platformId)) {
+      (window as any).fbAsyncInit = () => {
+        FB.init({
+          appId: '1124088342957116',
+          cookie: true,
+          xfbml: true,
+          version: 'v19.0',
+        });
+      };
 
-    // Si llega token de query string, procesarlo
-    this.activatedRoute.queryParams.subscribe(params => {
-      // Aquí no hace falta, porque todo lo haremos desde el front
-    });
+      /* Google init */
+      this.initGoogleLogin();
+    }
   }
 
   login() {
@@ -115,34 +133,92 @@ export class LoginComponent {
     this.toastr.success('Hello world!', 'Toastr fun!');
   }
 
-  loginWithFacebook() {
-  // window.location.href = 'http://localhost:8000/auth/redirect';
+ loginWithFacebook() {
   FB.login((response: any) => {
     if (response.authResponse) {
       const accessToken = response.authResponse.accessToken;
+      
 
-      // Aquí envías el token de Facebook a tu backend para validarlo
-      this.authService.loginWithFacebook(accessToken).subscribe(resp => {
-        if (resp == true) {
-          this.toastr.success('Login con Facebook exitoso', 'Bienvenido');
-          setTimeout(() => {
-            this.router.navigateByUrl('/');
-          }, 500);
+      this.authService.loginWithFacebook(accessToken).subscribe({
+        next: (resp: any) => {
+          if (resp.needs_email) {
+            this.toastr.info(
+              'Completa tu perfil',
+              'Necesitamos tu email para continuar'
+            );
+            this.router.navigate(['/complete-email']);
+          } else {
+            this.toastr.success(
+              'Login con Facebook exitoso',
+              'Bienvenido'
+            );
+            setTimeout(() => {
+              this.router.navigateByUrl('/');
+            }, 500);
+          }
+        },
+        error: (err) => {
+          console.error(err);
+          this.toastr.error(
+            'Error',
+            'No se pudo autenticar con Facebook'
+          );
         }
       });
+
     } else {
-      this.toastr.error('Error', 'No se pudo iniciar sesión con Facebook');
+      this.toastr.error(
+        'Error',
+        'El login con Facebook fue cancelado'
+      );
     }
   }, { scope: 'email,public_profile' });
 }
-csrfToken = '';
 
-// ngOnInit() {
-//   this.csrfToken = this.getCsrfTokenFromMeta();
-// }
+initGoogleLogin() {
+    google.accounts.id.initialize({
+      client_id: 'TU_GOOGLE_CLIENT_ID',
+      callback: (response: any) => {
+        console.log('GOOGLE TOKEN:', response.credential);
 
-getCsrfTokenFromMeta(): string {
-  const el: HTMLMetaElement | null = document.querySelector('meta[name="csrf-token"]');
-  return el ? el.content : '';
-}
+        this.authService.loginWithGoogle(response.credential)
+          .subscribe((resp: any) => {
+
+            if (resp.needs_email) {
+              this.router.navigate(['/complete-email'], {
+                state: {
+                  google_id: resp.google_id,
+                  name: resp.user?.name
+                }
+              });
+            } else {
+              this.toastr.success('Login exitoso', 'Bienvenido');
+              this.router.navigate(['/']);
+            }
+
+          }, () => {
+            this.toastr.error('No se pudo autenticar con Google');
+          });
+      }
+    });
+  }
+
+  loginWithGoogle() {
+    google.accounts.id.prompt();
+  }
+
+
+
+
+
+
+  getCsrfTokenFromMeta(): string {
+    if (!isPlatformBrowser(this.platformId)) {
+      return '';
+    }
+    const el = document.querySelector<HTMLMetaElement>(
+      'meta[name="csrf-token"]'
+    );
+    return el?.content ?? '';
+  }
 }
