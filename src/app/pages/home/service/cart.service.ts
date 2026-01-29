@@ -134,22 +134,42 @@ export class CartService {
     return this.http.get(URL, {headers: headers});
   }
 
-  mercadopago(price_total:number = 0){
-    let headers = new HttpHeaders({'Authorization': 'Bearer '+this.authService.token});
-    let URL = "";
-    if(PRODUCTION){
-      URL = URL_SERVICIOS+"/ecommerce/mercadopago";
-    } else {
-      URL = "https://apiecommerce-production-9896.up.railway.app/api/ecommerce/mercadopago?price_unit="+price_total;
-    }
-    return this.http.get(URL, {headers: headers});
-  }
+  // mercadopago(price_total:number = 0){
+  //   let headers = new HttpHeaders({'Authorization': 'Bearer '+this.authService.token});
+  //   let URL = "";
+  //   if(PRODUCTION){
+  //     URL = URL_SERVICIOS+"/ecommerce/mercadopago";
+  //   } else {
+  //     URL = "https://apiecommerce-production-9896.up.railway.app/api/ecommerce/mercadopago?price_unit="+price_total;
+  //   }
+  //   return this.http.get(URL, {headers: headers});
+  // }
 
-  checkoutMercadoPago(data:any){
-    let headers = new HttpHeaders({'Authorization': 'Bearer '+this.authService.token});
-    let URL = URL_SERVICIOS+"/ecommerce/checkout-mercadopago";
-    return this.http.post(URL, data, {headers: headers});
-  }
+  // checkoutMercadoPago(data:any){
+  //   let headers = new HttpHeaders({'Authorization': 'Bearer '+this.authService.token});
+  //   let URL = URL_SERVICIOS+"/ecommerce/checkout-mercadopago";
+  //   return this.http.post(URL, data, {headers: headers});
+  // }
+
+  mercadopago(price_total: number = 0) {
+    let headers = new HttpHeaders({'Authorization': 'Bearer ' + this.authService.token});
+    let URL = "";
+
+    if(PRODUCTION) {
+      URL = URL_SERVICIOS + "/ecommerce/mercadopago";
+    } else {
+      URL = "https://apiecommerce-production-9896.up.railway.app/api/ecommerce/mercadopago";
+    }
+
+    // Cambiar de GET a POST y enviar price_unit en el body
+    return this.http.post(URL, { price_unit: price_total }, { headers: headers });
+}
+
+checkoutMercadoPago(data: any) {
+    let headers = new HttpHeaders({'Authorization': 'Bearer ' + this.authService.token});
+    let URL = URL_SERVICIOS + "/ecommerce/checkout-mercadopago";
+    return this.http.post(URL, data, { headers: headers });
+}
 
   storeTemp(data:any){
     let headers = new HttpHeaders({'Authorization': 'Bearer '+this.authService.token});
