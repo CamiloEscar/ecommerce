@@ -1,4 +1,4 @@
-<div class="tp-product-modal-content d-lg-flex align-items-start">
+<div class="tp-product-modal-content d-lg-flex align-items-start" id="productModal">
   <button
     type="button"
     class="tp-product-modal-close-btn"
@@ -96,7 +96,13 @@
     <div class="tp-product-details-inventory d-flex align-items-center mb-10"
     >
       <div class="tp-product-details-stock mb-10">
-        <span>In Stock</span>
+        <span *ngIf="(sub_variation_selected?.stock || variation_selected?.stock || product_selected.stock) > 0">
+          Con Stock
+        </span>
+
+        <span *ngIf="(sub_variation_selected?.stock || variation_selected?.stock || product_selected.stock) === 0">
+          Sin Stock
+        </span>
       </div>
       <div
         class="tp-product-details-rating-wrapper d-flex align-items-center mb-10"
@@ -263,7 +269,7 @@
           </button>
         </div>
       </div>
-      <button class="tp-product-details-buy-now-btn w-100">
+      <button class="tp-product-details-buy-now-btn w-100" (click)="comprarAhora()">
         Comprar
       </button>
     </div>
@@ -309,7 +315,7 @@
             stroke-linejoin="round"
           />
         </svg>
-        Compare
+        Comparar
       </button>
       <button type="button" class="tp-product-details-action-sm-btn">
         <svg
@@ -341,9 +347,9 @@
             stroke-width="0.3"
           />
         </svg>
-        Add Wishlist
+        Añadir a favoritos
       </button>
-      <button type="button" class="tp-product-details-action-sm-btn">
+      <!-- <button type="button" class="tp-product-details-action-sm-btn">
         <svg
           width="17"
           height="16"
@@ -359,7 +365,7 @@
           />
         </svg>
         Ask a question
-      </button>
+      </button> -->
     </div>
   </div>
 </div>

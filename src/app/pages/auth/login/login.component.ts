@@ -102,6 +102,7 @@ export class LoginComponent {
           this.toastr.success('Login exitoso', 'Bienvenido');
           setTimeout(() => {
             this.router.navigateByUrl('/');
+            window.location.reload()
           }, 500);
         }
       },
@@ -127,6 +128,7 @@ export class LoginComponent {
           this.toastr.success('Login con Facebook exitoso', 'Bienvenido');
           setTimeout(() => {
             this.router.navigateByUrl('/');
+            window.location.reload()
           }, 500);
         }
       });

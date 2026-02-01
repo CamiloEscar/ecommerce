@@ -114,29 +114,53 @@
                  <div class="tp-header-main-right d-flex align-items-center justify-content-end">
                     <div class="tp-header-login d-none d-lg-block">
                        <div class="d-flex align-items-center">
-                          <div class="tp-header-login-icon" *ngIf="user">
-                             <span>
-                                <!-- <svg width="17" height="21" viewBox="0 0 17 21" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                   <circle cx="8.57894" cy="5.77803" r="4.77803" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                   <path fill-rule="evenodd" clip-rule="evenodd" d="M1.00002 17.2014C0.998732 16.8655 1.07385 16.5337 1.2197 16.2311C1.67736 15.3158 2.96798 14.8307 4.03892 14.611C4.81128 14.4462 5.59431 14.336 6.38217 14.2815C7.84084 14.1533 9.30793 14.1533 10.7666 14.2815C11.5544 14.3367 12.3374 14.4468 13.1099 14.611C14.1808 14.8307 15.4714 15.27 15.9291 16.2311C16.2224 16.8479 16.2224 17.564 15.9291 18.1808C15.4714 19.1419 14.1808 19.5812 13.1099 19.7918C12.3384 19.9634 11.5551 20.0766 10.7666 20.1304C9.57937 20.2311 8.38659 20.2494 7.19681 20.1854C6.92221 20.1854 6.65677 20.1854 6.38217 20.1304C5.59663 20.0773 4.81632 19.9641 4.04807 19.7918C2.96798 19.5812 1.68652 19.1419 1.2197 18.1808C1.0746 17.8747 0.999552 17.5401 1.00002 17.2014Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg> -->
-                                <!-- //quiero agregar la imagen del usuario -->
-                              <img [src]="user?.avatar" alt="usuario" class="user-image" style="width: 5px;">
-                             </span>
-                          </div>
-                          <div class="tp-header-login-content d-none d-xl-block" *ngIf="!user">
-                            <span>Hola!, Invitado</span>
-                            <h5 class="tp-header-login-title"><a routerLink="/login">Ingresar</a></h5>
-                          </div>
 
-                          <!-- Si HAY usuario -->
-                          <div class="tp-header-login-content d-none d-xl-block" *ngIf="user">
-                            <span>Hola!, {{ user.full_name || user.name }}</span>
-                            <h5 class="tp-header-login-title">
-                              <a routerLink="/perfil-del-cliente" target="_blank">Ir al perfil</a>
-                            </h5>
-                          </div>
-                       </div>
+                        <!-- AVATAR -->
+                        <div class="tp-header-login-icon">
+                          <span class="user-avatar">
+
+                            <!-- Avatar con imagen -->
+                            <img
+                              *ngIf="getUserAvatar(); else genericAvatar"
+                              [src]="getUserAvatar()"
+                              class="user-image"
+                            />
+
+                            <!-- Avatar genérico -->
+                            <ng-template #genericAvatar>
+                              <svg width="17" height="21" viewBox="0 0 17 21" fill="none"
+                                  xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="8.57894" cy="5.77803" r="4.77803"
+                                        stroke="currentColor" stroke-width="1.5"
+                                        stroke-linecap="round" stroke-linejoin="round"/>
+                                <path fill-rule="evenodd" clip-rule="evenodd"
+                                      d="M1.00002 17.2014C0.998732 16.8655 1.07385 16.5337 1.2197 16.2311C1.67736 15.3158 2.96798 14.8307 4.03892 14.611C4.81128 14.4462 5.59431 14.336 6.38217 14.2815C7.84084 14.1533 9.30793 14.1533 10.7666 14.2815C11.5544 14.3367 12.3374 14.4468 13.1099 14.611C14.1808 14.8307 15.4714 15.27 15.9291 16.2311C16.2224 16.8479 16.2224 17.564 15.9291 18.1808C15.4714 19.1419 14.1808 19.5812 13.1099 19.7918C12.3384 19.9634 11.5551 20.0766 10.7666 20.1304C9.57937 20.2311 8.38659 20.2494 7.19681 20.1854C6.92221 20.1854 6.65677 20.1854 6.38217 20.1304C5.59663 20.0773 4.81632 19.9641 4.04807 19.7918C2.96798 19.5812 1.68652 19.1419 1.2197 18.1808C1.0746 17.8747 0.999552 17.5401 1.00002 17.2014Z"
+                                      stroke="currentColor" stroke-width="1.5"
+                                      stroke-linecap="round" stroke-linejoin="round"/>
+                              </svg>
+                            </ng-template>
+
+                          </span>
+                        </div>
+
+                        <!-- TEXTO INVITADO -->
+                        <div class="tp-header-login-content d-none d-xl-block" *ngIf="!user">
+                          <span>Hola!, Invitado</span>
+                          <h5 class="tp-header-login-title">
+                            <a routerLink="/login">Ingresar</a>
+                          </h5>
+                        </div>
+
+                        <!-- TEXTO USUARIO -->
+                        <div class="tp-header-login-content d-none d-xl-block" *ngIf="user">
+                          <span>Hola!, {{ user.full_name || user.name }}</span>
+                          <h5 class="tp-header-login-title">
+                            <a routerLink="/perfil-del-cliente">Ir al perfil</a>
+                          </h5>
+                        </div>
+
+                      </div>
+
                     </div>
                     <div class="tp-header-action d-flex align-items-center ml-50">
                        <div class="tp-header-action-item d-none d-lg-block">
@@ -496,36 +520,29 @@
 <!-- mobile menu area start -->
 <div id="tp-bottom-menu-sticky" class="tp-mobile-menu d-lg-none">
   <div class="container">
-     <div class="row row-cols-5">
-        <div class="col">
-           <div class="tp-mobile-item text-center">
-              <a href="shop.html" class="tp-mobile-item-btn">
-                 <i class="flaticon-store"></i>
-                 <span>Store</span>
-              </a>
-           </div>
-        </div>
+     <div class="row row-cols-4">
         <div class="col">
            <div class="tp-mobile-item text-center">
               <button class="tp-mobile-item-btn tp-search-open-btn">
                  <i class="flaticon-search-1"></i>
-                 <span>Search</span>
+                 <span>Buscar</span>
               </button>
            </div>
         </div>
         <div class="col">
            <div class="tp-mobile-item text-center">
-              <a href="favoritos" class="tp-mobile-item-btn">
+              <a href="/favoritos" class="tp-mobile-item-btn">
                  <i class="flaticon-love"></i>
-                 <span>Wishlist</span>
+                 <span>Favoritos</span>
               </a>
            </div>
         </div>
         <div class="col">
            <div class="tp-mobile-item text-center">
-              <a href="profile.html" class="tp-mobile-item-btn">
+              <a [routerLink]="user ? '/perfil-del-cliente' : '/login'" class="tp-mobile-item-btn">
                  <i class="flaticon-user"></i>
-                 <span>Account</span>
+                 <span *ngIf="!user">Ingresar</span>
+                 <span *ngIf="user">Perfil</span>
               </a>
            </div>
         </div>
@@ -533,7 +550,7 @@
            <div class="tp-mobile-item text-center">
               <button class="tp-mobile-item-btn tp-offcanvas-open-btn">
                  <i class="flaticon-menu-1"></i>
-                 <span>Menu</span>
+                 <span>Menú</span>
               </button>
            </div>
         </div>
@@ -542,35 +559,170 @@
 </div>
 <!-- mobile menu area end -->
 
-<!-- search area start -->
-<section class="tp-search-area">
-  <div class="container">
-     <div class="row">
-        <div class="col-xl-12">
-           <div class="tp-search-form">
-              <div class="tp-search-close text-center mb-20">
-                 <button class="tp-search-close-btn tp-search-close-btn"></button>
-              </div>
-              <form action="#">
-                 <div class="tp-search-input mb-10">
-                    <input type="text" (keyup.enter)= "searchProduct()" [(ngModel)]="searchT" name="searchT" placeholder="Busca tus productos">
-                    <button type="submit"><i class="flaticon-search-1"></i></button>
-                 </div>
-                 <div class="tp-search-category">
-                    <span>Search by : </span>
-                    <a href="#">Men, </a>
-                    <a href="#">Women, </a>
-                    <a href="#">Children, </a>
-                    <a href="#">Shirt, </a>
-                    <a href="#">Demin</a>
-                 </div>
-              </form>
+<!-- offcanvas area start -->
+<div class="offcanvas__area offcanvas__radius">
+  <div class="offcanvas__wrapper">
+     <div class="offcanvas__close">
+        <button class="offcanvas__close-btn offcanvas-close-btn">
+           <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M11 1L1 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M1 1L11 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+     </div>
+     <div class="offcanvas__content">
+        <!-- Logo -->
+        <div class="offcanvas__top mb-40 d-flex justify-content-between align-items-center">
+           <div class="offcanvas__logo logo">
+              <a href="/">
+                 <img src="assets/img/logo/logo.jpeg" style="width: 150px; height: 60px;" alt="logo">
+              </a>
            </div>
         </div>
+
+        <!-- User Info -->
+        <div class="offcanvas__user mb-30" *ngIf="user">
+           <div class="d-flex align-items-center">
+              <div class="tp-header-login-icon mr-15">
+                 <span class="user-avatar">
+                    <img *ngIf="getUserAvatar(); else genericAvatarOffcanvas" [src]="getUserAvatar()" class="user-image" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
+                    <ng-template #genericAvatarOffcanvas>
+                       <svg width="17" height="21" viewBox="0 0 17 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <circle cx="8.57894" cy="5.77803" r="4.77803" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                          <path fill-rule="evenodd" clip-rule="evenodd" d="M1.00002 17.2014C0.998732 16.8655 1.07385 16.5337 1.2197 16.2311C1.67736 15.3158 2.96798 14.8307 4.03892 14.611C4.81128 14.4462 5.59431 14.336 6.38217 14.2815C7.84084 14.1533 9.30793 14.1533 10.7666 14.2815C11.5544 14.3367 12.3374 14.4468 13.1099 14.611C14.1808 14.8307 15.4714 15.27 15.9291 16.2311C16.2224 16.8479 16.2224 17.564 15.9291 18.1808C15.4714 19.1419 14.1808 19.5812 13.1099 19.7918C12.3384 19.9634 11.5551 20.0766 10.7666 20.1304C9.57937 20.2311 8.38659 20.2494 7.19681 20.1854C6.92221 20.1854 6.65677 20.1854 6.38217 20.1304C5.59663 20.0773 4.81632 19.9641 4.04807 19.7918C2.96798 19.5812 1.68652 19.1419 1.2197 18.1808C1.0746 17.8747 0.999552 17.5401 1.00002 17.2014Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                       </svg>
+                    </ng-template>
+                 </span>
+              </div>
+              <div>
+                 <span style="font-size: 12px; color: #55585B;">Hola!</span>
+                 <h5 style="margin: 0; font-size: 14px;">{{ user.full_name || user.name }}</h5>
+              </div>
+           </div>
+        </div>
+
+        <!-- Categories -->
+        <div class="offcanvas__category pb-30">
+           <button class="tp-offcanvas-category-toggle">
+              <i class="fa-solid fa-bars"></i>
+              Categorías
+           </button>
+           <div class="tp-category-mobile-menu">
+              <nav class="tp-category-menu-content">
+                 <ul>
+                    @for(MENU_CAT of categories_menus; track MENU_CAT.id) {
+                       @if(MENU_CAT.categories.length == 0){
+                          <li>
+                             <a href="#" onclick="return false;" (click)="buscarPorCategoria(MENU_CAT.name)">
+                                <span [id]="'icon-mobile-' + MENU_CAT.id" class="menu-icon">
+                                   {{getIconMenu(MENU_CAT)}}
+                                </span>
+                                {{MENU_CAT.name}}
+                             </a>
+                          </li>
+                       }
+                       @if(MENU_CAT.categories.length > 0){
+                          <li class="has-dropdown">
+                             <a href="#" onclick="return false;">
+                                <span [id]="'icon-mobile-' + MENU_CAT.id" class="menu-icon">
+                                   {{getIconMenu(MENU_CAT)}}
+                                </span>
+                                {{MENU_CAT.name}}
+                             </a>
+                             <ul class="tp-submenu">
+                                @for(categorie of MENU_CAT.categories; track categorie.id){
+                                   <li class="has-dropdown">
+                                      <a href="#" onclick="return false;" (click)="buscarPorCategoria(categorie.name)">{{categorie.name}}</a>
+                                      <ul class="tp-submenu" *ngIf="categorie.subcategories && categorie.subcategories.length > 0">
+                                         @for(subcategorie of categorie.subcategories; track subcategorie.id){
+                                            <li>
+                                               <a href="#" onclick="return false;" (click)="buscarPorCategoria(subcategorie.name)">{{subcategorie.name}}</a>
+                                            </li>
+                                         }
+                                      </ul>
+                                   </li>
+                                }
+                             </ul>
+                          </li>
+                       }
+                    }
+                 </ul>
+              </nav>
+           </div>
+        </div>
+
+        <!-- Main Menu -->
+        <div class="tp-main-menu-mobile fix mb-40">
+           <nav class="tp-main-menu-content">
+              <ul>
+                 <li><a href="/">Home</a></li>
+                 <li><a href="#trending-products">Populares</a></li>
+                 <li><a href="#flash">Flash</a></li>
+                 <li><a href="#new">Nuevos Ingresos</a></li>
+                 <li><a href="/compare-product">Comparar</a></li>
+              </ul>
+           </nav>
+        </div>
+
+        <!-- User Menu -->
+        <div class="offcanvas__user-menu mb-30" *ngIf="user">
+           <div class="tp-header-top-menu">
+              <div class="tp-header-top-menu-item tp-header-setting">
+                 <span class="tp-header-setting-toggle" style="cursor: pointer;">Mi Cuenta</span>
+                 <ul>
+                    <li><a href="/perfil-del-cliente">Mi Perfil</a></li>
+                    <li><a href="/favoritos">Favoritos</a></li>
+                    <li><a href="/carrito-de-compra">Carrito de compras</a></li>
+                    <li><a href="#" onclick="return false;" (click)="logout()">Cerrar Sesión</a></li>
+                 </ul>
+              </div>
+           </div>
+        </div>
+
+        <!-- Login Button (if not logged in) -->
+        <div class="offcanvas__btn mb-30" *ngIf="!user">
+           <a routerLink="/login" class="tp-btn w-100">Iniciar Sesión</a>
+        </div>
+
+        <!-- Currency Selector -->
+        <div class="offcanvas__currency mb-30" *ngIf="isLoading">
+           <div class="tp-header-top-menu-item tp-header-currency">
+              <span class="tp-header-currency-toggle" style="cursor: pointer;">Moneda: {{currency}}</span>
+              <ul>
+                 <li *ngIf="currency == 'ARS'">
+                    <a href="#" onclick="return false;" (click)="changeCurrency('USD')">Cambiar a USD</a>
+                 </li>
+                 <li *ngIf="currency == 'USD'">
+                    <a href="#" onclick="return false;" (click)="changeCurrency('ARS')">Cambiar a ARS</a>
+                 </li>
+              </ul>
+           </div>
+        </div>
+
+        <!-- Contact -->
+        <div class="offcanvas__contact mb-30">
+           <div class="tp-header-contact d-flex align-items-center">
+              <div class="tp-header-contact-icon mr-20">
+                 <span>
+                    <svg width="21" height="20" viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                       <path fill-rule="evenodd" clip-rule="evenodd" d="M1.96977 3.24859C2.26945 2.75144 3.92158 0.946726 5.09889 1.00121C5.45111 1.03137 5.76246 1.24346 6.01544 1.49057H6.01641C6.59631 2.05874 8.26011 4.203 8.35352 4.65442C8.58411 5.76158 7.26378 6.39979 7.66756 7.5157C8.69698 10.0345 10.4707 11.8081 12.9908 12.8365C14.1058 13.2412 14.7441 11.9219 15.8513 12.1515C16.3028 12.2459 18.4482 13.9086 19.0155 14.4894V14.4894C19.2616 14.7414 19.4757 15.0537 19.5049 15.4059C19.5487 16.6463 17.6319 18.3207 17.2583 18.5347C16.3767 19.1661 15.2267 19.1544 13.8246 18.5026C9.91224 16.8749 3.65985 10.7408 2.00188 6.68096C1.3675 5.2868 1.32469 4.12906 1.96977 3.24859Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                       <path d="M12.936 1.23685C16.4432 1.62622 19.2124 4.39253 19.6065 7.89874" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                       <path d="M12.936 4.59337C14.6129 4.92021 15.9231 6.23042 16.2499 7.90726" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                 </span>
+              </div>
+              <div class="tp-header-contact-content">
+                 <h5 style="margin: 0; font-size: 12px; color: #55585B;">WhatsApp:</h5>
+                 <p style="margin: 0;"><a href="https://wa.me/3442475466" target="_blank">+(54) 3442475466</a></p>
+              </div>
+           </div>
+        </div>
+
      </div>
   </div>
-</section>
-<!-- search area end -->
+</div>
+<div class="body-overlay"></div>
+<!-- offcanvas area end -->
 
 <!-- cart mini area start -->
 <div class="cartmini__area tp-all-font-roboto">
@@ -584,16 +736,10 @@
                   <button type="button" class="cartmini__close-btn cartmini-close-btn"><i class="fal fa-times"></i></button>
               </div>
           </div>
-          <!-- <div class="cartmini__shipping">
-           <p> Free Shipping for all orders over <span>$50</span></p>
-           <div class="progress">
-              <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" data-width="70%" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100"></div>
-            </div>
-          </div> -->
           <div class="cartmini__widget">
             @for(cart of listCarts; track cart.id){
               <div class="cartmini__widget-item">
-                  <div class="cartmini__thumb" style="display: flex; align-items: center">
+                  <div class="cartmini__thumb">
                     <a [routerLink]="['/producto/'+cart.product.slug]">
                        <img [src]="cart.product.imagen" alt="">
                     </a>
@@ -618,25 +764,21 @@
                   </div>
                   <a href="#" onclick="return false;" (click)="deleteCart(cart)" class="cartmini__del"><i class="fa-regular fa-xmark"></i></a>
               </div>
-
             }
           </div>
-          <!-- for wp -->
-          <!-- if no item in cart -->
-          <div class="cartmini__empty text-center d-none">
+          <div class="cartmini__empty text-center" *ngIf="listCarts.length === 0">
               <img src="assets/img/product/cartmini/empty-cart.png" alt="">
-              <p>El carrito esta vacio!</p>
+              <p>El carrito está vacío!</p>
               <a href="/" class="tp-btn">Ir al Shop</a>
           </div>
       </div>
-      <div class="cartmini__checkout">
+      <div class="cartmini__checkout" *ngIf="listCarts.length > 0">
           <div class="cartmini__checkout-title mb-30" *ngIf="isLoading">
               <h4>Subtotal:</h4>
               <span>$ {{totalCarts}} {{currency}}</span>
           </div>
           <div class="cartmini__checkout-btn">
-              <a routerLink="/carrito-de-compra" class="tp-btn mb-10 w-100"> Ver carrito</a>
-              <!-- <a routerLink="/proceso-de-pago" class="tp-btn tp-btn-border w-100"> checkout</a> -->
+              <a routerLink="/carrito-de-compra" class="tp-btn mb-10 w-100">Ver carrito</a>
           </div>
       </div>
   </div>

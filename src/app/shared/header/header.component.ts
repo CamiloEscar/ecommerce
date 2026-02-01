@@ -36,6 +36,7 @@ onClickOutside(event: MouseEvent): void {
   user:any;
   listCarts: any = [];
   totalCarts:number = 0;
+  imagen_previsualizacion: string = ''
 
   //TODO: AGREGAR LISTA DE FAVORITOS SIMILAR A LISTCARTS
 
@@ -131,4 +132,11 @@ onClickOutside(event: MouseEvent): void {
     queryParams: { search: nombreCategoria }
   });
 }
+getUserAvatar(): string | null {
+  return this.user?.avatar
+    || this.user?.photo_url
+    || this.imagen_previsualizacion
+    || null;
+}
+
 }
