@@ -433,4 +433,70 @@ export class CheckoutComponent {
     this.phone = '';
     this.email = '';
   }
+
+get subtotalOriginal(): number {
+  return Number(
+    this.listCarts
+      .reduce((sum: number, item: any) => sum + Number(item.total), 0)
+      .toFixed(2)
+  );
+}
+get subtotalAfterDiscount(): number {
+  // hoy no hay descuentos reales → es igual al subtotal
+  return this.subtotalOriginal;
+}
+
+get discountTotal(): number {
+  return Number(
+    (this.subtotalOriginal - this.subtotalAfterDiscount).toFixed(2)
+  );
+}
+
+get grandTotal(): number {
+  return Number(
+    (this.subtotalAfterDiscount + this.shippingCostValue).toFixed(2)
+  );
+}
+
+get hasFreeShipping(): boolean {
+  if (!this.listCarts || this.listCarts.length === 0) {
+    return false;
+  }
+
+  // PRIORIDAD ABSOLUTA:
+  // si el producto tiene cost = 1 → envío gratis
+  // NO importa categoría, marca ni reglas externas
+  return this.listCarts.every(
+    (item: any) => item.product && item.product.cost == 1
+  );
+}
+get shippingCostValue(): number {
+  // PRIORIDAD ABSOLUTA: si todos los productos son envío gratis
+  if (this.hasFreeShipping) {
+    return 0;
+  }
+
+  // Buscar si existe un item de envío en el carrito (si el backend lo agrega)
+  const shippingItem = this.listCarts.find(
+    (item: any) => item.id === 'SHIPPING'
+  );
+
+  if (shippingItem) {
+    return Number(shippingItem.total || 0);
+  }
+
+  // Fallback seguro
+  return 0;
+}
+get hasSomeFreeShipping(): boolean {
+  if (!this.listCarts || this.listCarts.length === 0) {
+    return false;
+  }
+
+  return this.listCarts.some(
+    (item: any) => item.product && Number(item.product.cost) === 1
+  );
+}
+
+
 }

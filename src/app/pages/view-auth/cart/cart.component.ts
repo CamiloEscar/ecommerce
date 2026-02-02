@@ -44,19 +44,19 @@ export class CartComponent {
     });
   }
 
-  // Verificar si TODOS los productos tienen envío gratis
+  // Verificar si TODOS los productos tienen envío gratis (cost = 1)
 get hasFreeShipping(): boolean {
   if (this.listCarts.length === 0) return false;
 
   return this.listCarts.every(
-    (item: any) => Number(item.product?.brand?.cost) === 1
+    (item: any) => item.product?.cost == 1
   );
 }
 
 
-  // Verificar si AL MENOS UN producto tiene envío gratis
+  // Verificar si AL MENOS UN producto tiene envío gratis (cost = 1)
   get hasSomeFreeShipping(): boolean {
-    return this.listCarts.some((item: any) => item.product && item.product.cost === 1);
+    return this.listCarts.some((item: any) => item.product && item.product.cost == 1);
   }
 
   // subtotal original (sin descuentos, sin envio)
@@ -160,7 +160,8 @@ get hasFreeShipping(): boolean {
   }
 
   applyCosto() {
-    // Verificar si todos los productos tienen envío gratis
+    // PRIORIDAD MÁXIMA: Verificar si TODOS los productos tienen envío gratis (cost = 1)
+    // Si es así, no se aplica ningún costo de envío
     if (this.hasFreeShipping) {
       this.costoEnvio = 0;
       this.cartService.setShipping(0);
