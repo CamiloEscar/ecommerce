@@ -52,7 +52,7 @@ onClickOutside(event: MouseEvent): void {
   ) {
     afterNextRender(() => {
       this.homeService.menus().subscribe((resp: any) => {
-        // console.log(resp);
+        // //console.log(resp);
         this.categories_menus = resp.categories_menus;
       });
       this.currency = this.cookieService.get("currency") ? this.cookieService.get("currency") : 'ARS';

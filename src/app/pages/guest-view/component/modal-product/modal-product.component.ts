@@ -361,7 +361,7 @@ export class ModalProductComponent {
     };
 
     this.cartService.registerCart(data).subscribe((resp: any) => {
-      console.log(resp);
+      //console.log(resp);
       if (resp.message == 403) {
         this.toastr.error('Error', resp.message_text);
       } else {

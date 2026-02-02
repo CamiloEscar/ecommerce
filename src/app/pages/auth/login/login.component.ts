@@ -92,7 +92,7 @@ export class LoginComponent {
     }
     this.authService.login(this.email, this.password).subscribe(
       (resp: any) => {
-        console.log(resp);
+        //console.log(resp);
 
         if (resp.error && resp.error.error == 'Unauthorized') {
           this.toastr.error('Error', 'Usuario o contraseña incorrectos');

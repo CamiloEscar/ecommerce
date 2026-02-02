@@ -92,7 +92,7 @@ export class EditProfileClientComponent {
 
 
     this.profileClient.updateProfile(formData).subscribe((resp:any) => {
-      console.log(resp);
+      //console.log(resp);
 
       if(resp.message == 403){
         this.toastr.error('Error', resp.message_text)

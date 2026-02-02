@@ -69,7 +69,7 @@ export class FilterAdvanceComponent {
     })
 
     this.homeService.filterAdvanceProduct({search: this.search,}).subscribe((resp:any) => {
-      console.log(resp);
+      //console.log(resp);
       this.PRODUCTS = resp.products.data;
     })
   }
@@ -182,7 +182,7 @@ export class FilterAdvanceComponent {
         search: this.search,
       }
       this.homeService.filterAdvanceProduct(data).subscribe((resp:any) => {
-        console.log(resp);
+        //console.log(resp);
         this.PRODUCTS = resp.products.data;
       })
     }

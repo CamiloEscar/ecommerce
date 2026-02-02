@@ -201,7 +201,7 @@ export class CheckoutComponent {
     //     return;
     //   }
     //   this.cartService.mercadopago(this.totalCarts).subscribe((resp:any) => {
-    //     console.log(resp);
+    //     //console.log(resp);
 
     //   this.PREFERENCE_ID = resp.preference.id;
     //   let data = {
@@ -360,7 +360,7 @@ export class CheckoutComponent {
       email: this.email,
     }
     this.addressService.registerAddress(data).subscribe((resp:any) => {
-      console.log(resp);
+      //console.log(resp);
       this.toastr.success("Validacion", "Registro exitoso");
       this.address_list.unshift(resp.addres);
     })
@@ -397,7 +397,7 @@ export class CheckoutComponent {
       email: this.email,
     }
     this.addressService.updateAddress(this.address_selected.id, data).subscribe((resp:any) => {
-      console.log(resp);
+      //console.log(resp);
       this.toastr.success("Validacion", "Edicion Realizada");
       let INDEX = this.address_list.findIndex((item:any) => item.id == resp.addres.id)
       if(INDEX != -1){
