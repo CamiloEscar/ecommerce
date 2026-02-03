@@ -1,9 +1,9 @@
 /*-----------------------------------------------------------------------------------
 
-    Template Name: Shofy - Multipurpose eCommerce HTML Template
+    Template Name: FunkosCdelU
     Author: Theme_Pure
     Support: basictheme400@gmail.com
-    Description: Shofy - Multipurpose eCommerce HTML Template
+    Description: FunkosCdelU
     Version: 1.0
 
 -----------------------------------------------------------------------------------
@@ -25,7 +25,7 @@
 		2.3 Buttons
 		2.4 Animations
 		2.5 Preloader
-		2.6 Background 
+		2.6 Background
 		2.7 Carousel
 		2.8 Nice Select
 		2.9 Pagination
@@ -283,7 +283,7 @@ li,
 }
 
 /*---------------------------------
-	typography css start 
+	typography css start
 ---------------------------------*/
 body {
   font-family: var(--tp-ff-body);
@@ -606,7 +606,7 @@ div.demo img {
 }
 
 /*----------------------------------------
-    Body Overlay 
+    Body Overlay
 -----------------------------------------*/
 .body-overlay {
   background-color: var(--tp-common-black);
@@ -16064,8 +16064,8 @@ div.tp-author-info-avater img {
   animation-duration: 1s;
 }
 
-/* ================= 
-product all slider 
+/* =================
+product all slider
 ==================*/
 /* arrival slider home electronics*/
 .tp-product-arrival-slider {
