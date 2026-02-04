@@ -63,7 +63,12 @@ export class CartService {
     }
     this.cart.next(list);
   }
-
+clearCart(){
+  this.cart.next([]);
+}
+  setCart(list: any[]) {
+  this.cart.next([...list]);
+}
   resetCart(){
     let listCart:any = [];
     this.cart.next(listCart);
@@ -121,7 +126,11 @@ export class CartService {
     let URL = URL_SERVICIOS+"/ecommerce/carts/remove_costo";
     return this.http.post(URL, {}, {headers: headers});
   }
-
+validateStock(){
+    let headers = new HttpHeaders({'Authorization': 'Bearer '+this.authService.token});
+    let URL = URL_SERVICIOS+"/ecommerce/carts/validate-stock";
+    return this.http.get(URL, {headers: headers});
+  }
   checkout(data:any){
     let headers = new HttpHeaders({'Authorization': 'Bearer '+this.authService.token});
     let URL = URL_SERVICIOS+"/ecommerce/checkout";

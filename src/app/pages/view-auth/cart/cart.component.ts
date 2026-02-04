@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { CartService } from '../../home/service/cart.service';
 import { CookieService } from 'ngx-cookie-service';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 
@@ -20,11 +20,13 @@ export class CartComponent {
   code_cupon: any;
   selectedProvinceCode: string | null = null;
   costoEnvio: number | null = null;
+  hasStockIssues: boolean = false;
 
   constructor(
     public cartService: CartService,
     private cookieService: CookieService,
     private toastr: ToastrService,
+    private router: Router,
   ) {}
 
   ngOnInit(): void {
@@ -37,9 +39,65 @@ export class CartComponent {
       // Actualizar total sin incluir el item SHIPMENT si existe
       this.totalCarts = this.listCarts.reduce((sum: number, item: any) => sum + item.total, 0);
 
+      // ✅ Verificar problemas de stock
+      this.checkStockIssues();
+
       // Sincronizar costo de envío desde el servicio si existe
       if (this.cartService.shippingCost !== null && this.cartService.shippingCost !== undefined) {
         this.costoEnvio = this.cartService.shippingCost;
+      }
+    });
+  }
+
+  // ✅ Verificar si hay productos sin stock suficiente
+checkStockIssues() {
+  this.hasStockIssues = this.listCarts.some(
+    (cart: any) => {
+      // Solo verificar si stock_suficiente existe y es explícitamente false
+      return cart.stock_suficiente !== null &&
+             cart.stock_suficiente !== undefined &&
+             cart.stock_suficiente === false;
+    }
+  );
+
+  console.log('Has stock issues:', this.hasStockIssues);
+  console.log('List carts:', this.listCarts);
+}
+
+  // ✅ Validar stock y proceder al checkout
+  proceedToCheckout() {
+    this.cartService.validateStock().subscribe((resp: any) => {
+      if (resp.message === 403) {
+        // Construir mensaje detallado
+        let mensaje = '';
+
+        if (resp.items_sin_stock && resp.items_sin_stock.length > 0) {
+          mensaje += 'PRODUCTOS SIN STOCK:\n';
+          resp.items_sin_stock.forEach((item: any) => {
+            mensaje += `• ${item.product_name}\n`;
+          });
+          mensaje += '\n';
+        }
+
+        if (resp.items_stock_insuficiente && resp.items_stock_insuficiente.length > 0) {
+          mensaje += 'STOCK INSUFICIENTE:\n';
+          resp.items_stock_insuficiente.forEach((item: any) => {
+            mensaje += `• ${item.product_name}: Solicitaste ${item.cantidad_solicitada}, disponible ${item.stock_disponible}\n`;
+          });
+        }
+
+        this.toastr.error(mensaje, 'Productos no disponibles', {
+          timeOut: 8000,
+          enableHtml: true
+        });
+
+        // Recargar carrito para actualizar info de stock
+        this.cartService.listCart().subscribe((resp: any) => {
+          this.cartService.setCart(resp.carts.data);
+        });
+      } else {
+        // Todo OK, proceder al checkout
+        this.router.navigate(['/checkout']);
       }
     });
   }
@@ -99,38 +157,45 @@ get hasFreeShipping(): boolean {
   }
 
   minusQuantity(cart: any) {
-    if (cart.quantity == 1) {
-      this.toastr.error('Validacion', "El valor no puede ser menor a 1");
-      return;
+  // 🚫 mínimo 1
+  if (cart.quantity <= 1) return;
+
+  const newQuantity = cart.quantity - 1;
+
+  this.cartService.updateCart(cart.id, {
+    quantity: newQuantity
+  }).subscribe({
+    next: (resp: any) => {
+      cart.quantity = newQuantity;
+      cart.total = resp.cart.total;
+    },
+    error: () => {
+      cart.quantity++;
     }
-    cart.quantity = cart.quantity - 1;
-    cart.total = cart.subtotal * cart.quantity;
-    this.cartService.updateCart(cart.id, cart).subscribe((resp: any) => {
-      console.log(resp);
-      if (resp.message == 403) {
-        this.toastr.error('Validacion', resp.message_text);
-      } else {
-        this.cartService.changeCart(resp.cart);
-        this.toastr.info("Exito", "Se actualizo el producto " + resp.cart.product.title);
-      }
-    });
+  });
   }
 
   plusQuantity(cart: any) {
-    let quantity_old = cart.quantity;
-    cart.quantity = cart.quantity + 1;
-    cart.total = cart.subtotal * cart.quantity;
-    this.cartService.updateCart(cart.id, cart).subscribe((resp: any) => {
-      console.log(resp);
-      if (resp.message == 403) {
-        cart.quantity = quantity_old;
-        cart.total = cart.subtotal * cart.quantity;
-        this.toastr.error('Validacion', resp.message_text);
-      } else {
-        this.cartService.changeCart(resp.cart);
-        this.toastr.info("Exito", "Se actualizo el producto " + resp.cart.product.title);
-      }
-    });
+// 🚫 no sumar si no hay stock suficiente
+  if (!cart.stock_suficiente) return;
+
+  // 🚫 no superar stock disponible
+  if (cart.quantity >= cart.stock_disponible) return;
+
+  const newQuantity = cart.quantity + 1;
+
+  this.cartService.updateCart(cart.id, {
+    quantity: newQuantity
+  }).subscribe({
+    next: (resp: any) => {
+      cart.quantity = newQuantity;
+      cart.total = resp.cart.total;
+    },
+    error: () => {
+      // fallback por seguridad
+      cart.quantity--;
+    }
+  });
   }
 
   applyCupon() {
@@ -150,9 +215,7 @@ get hasFreeShipping(): boolean {
       } else {
         this.cartService.resetCart();
         this.cartService.listCart().subscribe((resp: any) => {
-          resp.carts.data.forEach((cart: any) => {
-            this.cartService.changeCart(cart);
-          });
+          this.cartService.setCart(resp.carts.data);
           this.toastr.success("Éxito", "Se aplicó el cupón correctamente");
         });
       }

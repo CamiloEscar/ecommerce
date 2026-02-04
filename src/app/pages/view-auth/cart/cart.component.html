@@ -38,56 +38,91 @@
                       <tr *ngFor="let cart of listCarts">
                         <ng-container *ngIf="cart.id !== 'SHIPPING'">
                            <!-- img -->
-                           <td class="tp-cart-img"><a [routerLink]="['/producto/'+cart.product.slug]">
-                            <img [src]="cart.product.imagen" alt=""></a></td>
+                           <td class="tp-cart-img">
+                             <a [routerLink]="['/producto/'+cart.product.slug]">
+                               <img [src]="cart.product.imagen" alt="">
+                             </a>
+                           </td>
+
                            <!-- title -->
-                           <td class="tp-cart-title"><a [routerLink]="['/producto/'+cart.product.slug]">
-                            {{cart.product.title}}
-                          </a>
-                          <!-- Aviso de envío gratis por producto -->
-                          <ng-container *ngIf="cart.product && cart.product.cost == 1">
-                            <br>
-                            <span class="badge bg-success" style="font-size: 0.85rem; margin-top: 5px;">✓ Envío GRATIS</span>
-                          </ng-container>
-                          <div style="margin-left: 20px;">
-                            <ng-container *ngIf="cart.product_variation">
-                              <br>
-                              <span class="cartmini__quantity mx-2">• {{cart.product_variation.attribute.name}}: {{cart.product_variation.propertie?.name || cart.product_variation.value_add}}</span>
-                              <ng-container *ngIf="cart.product_variation.variation_father">
-                                <br>
-                                <span class="cartmini__quantity mx-2">• {{cart.product_variation.variation_father.attribute.name}}: {{cart.product_variation.variation_father.propertie?.name || cart.product_variation.variation_father.value_add}}
-                                </span>
-                              </ng-container>
-                            </ng-container>
-                            <ng-container *ngIf="cart.code_cupon">
-                              <br>
-                              <span class="cartmini__quantity mx-2">• Cupon: {{cart.code_cupon}}</span>
-                            </ng-container>
-                            <ng-container *ngIf="cart.code_discount">
-                              <br>
-                              <span class="cartmini__quantity mx-2">• Campaña: {{cart.code_discount}}</span>
-                            </ng-container>
-                            <ng-container *ngIf="cart.code_discount || cart.code_cupon">
-                              <br>
-                              <span class="text-primary mx-2">• Descuento:{{cart.discount}} {{cart.type_discount == 1 ? '%' : cart.currency}}</span>
-                              <br>
-                              <span class="text-danger mx-2">• Precio original: <del>{{cart.price_unit}}</del></span>
-                            </ng-container>
-                          </div>
-                        </td>
+                           <td class="tp-cart-title">
+                             <a [routerLink]="['/producto/'+cart.product.slug]">
+                               {{cart.product.title}}
+                             </a>
+
+                             <!-- Aviso de envío gratis por producto -->
+                             <ng-container *ngIf="cart.product && cart.product.cost == 1">
+                               <br>
+                               <span class="badge bg-success" style="font-size: 0.85rem; margin-top: 5px;">✓ Envío GRATIS</span>
+                             </ng-container>
+
+                             <!-- ✅ DEBUG: Mostrar valores de stock -->
+<!-- <div *ngIf="cart.stock_disponible !== null && cart.stock_disponible !== undefined">
+  <small class="text-muted">
+    Stock disponible: {{cart.stock_disponible}} |
+    Stock suficiente: {{cart.stock_suficiente}} |
+    Cantidad: {{cart.quantity}}
+  </small>
+</div> -->
+
+                             <!-- ✅ INDICADOR DE STOCK -->
+                             <ng-container *ngIf="!cart.stock_suficiente">
+                               <br>
+                               <div class="alert alert-warning stock-alert" style="margin-top: 8px; padding: 8px 12px; font-size: 0.9rem; max-width: 400px;">
+                                 <i class="fas fa-exclamation-triangle"></i>
+                                 <span *ngIf="cart.stock_disponible === 0">
+                                   <strong>Sin stock disponible</strong>
+                                 </span>
+                                 <span *ngIf="cart.stock_disponible > 0">
+                                   Solo quedan <strong>{{cart.stock_disponible}}</strong> unidades disponibles
+                                 </span>
+                               </div>
+                             </ng-container>
+
+                             <div style="margin-left: 20px;">
+                               <ng-container *ngIf="cart.product_variation">
+                                 <br>
+                                 <span class="cartmini__quantity mx-2">• {{cart.product_variation.attribute.name}}: {{cart.product_variation.propertie?.name || cart.product_variation.value_add}}</span>
+                                 <ng-container *ngIf="cart.product_variation.variation_father">
+                                   <br>
+                                   <span class="cartmini__quantity mx-2">• {{cart.product_variation.variation_father.attribute.name}}: {{cart.product_variation.variation_father.propertie?.name || cart.product_variation.variation_father.value_add}}
+                                   </span>
+                                 </ng-container>
+                               </ng-container>
+                               <ng-container *ngIf="cart.code_cupon">
+                                 <br>
+                                 <span class="cartmini__quantity mx-2">• Cupon: {{cart.code_cupon}}</span>
+                               </ng-container>
+                               <ng-container *ngIf="cart.code_discount">
+                                 <br>
+                                 <span class="cartmini__quantity mx-2">• Campaña: {{cart.code_discount}}</span>
+                               </ng-container>
+                               <ng-container *ngIf="cart.code_discount || cart.code_cupon">
+                                 <br>
+                                 <span class="text-primary mx-2">• Descuento:{{cart.discount}} {{cart.type_discount == 1 ? '%' : cart.currency}}</span>
+                                 <br>
+                                 <span class="text-danger mx-2">• Precio original: <del>{{cart.price_unit}}</del></span>
+                               </ng-container>
+                             </div>
+                           </td>
+
                            <!-- price -->
                            <td class="tp-cart-price"><span>{{cart.subtotal}} {{cart.currency}}</span></td>
 
                            <!-- quantity -->
                            <td class="tp-cart-quantity">
                               <div class="tp-product-quantity mt-10 mb-10">
-                                 <span class="tp-cart-minus" (click)="minusQuantity(cart)">
+                                 <span class="tp-cart-minus"
+                                       (click)="minusQuantity(cart)"
+                                       [class.disabled]="!cart.stock_suficiente">
                                     <svg width="10" height="2" viewBox="0 0 10 2" fill="none" xmlns="http://www.w3.org/2000/svg">
                                        <path d="M1 1H9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                                     </svg>
                                  </span>
-                                 <input class="tp-cart-input" type="text" [value]="cart.quantity">
-                                 <span class="tp-cart-plus" (click)="plusQuantity(cart)">
+                                 <input class="tp-cart-input" type="text" [value]="cart.quantity" readonly>
+                                 <span class="tp-cart-plus"
+                                       (click)="plusQuantity(cart)"
+                                       [class.disabled]="!cart.stock_suficiente || cart.quantity >= cart.stock_disponible">
                                     <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
                                        <path d="M5 1V9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                                        <path d="M1 5H9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -97,6 +132,7 @@
                            </td>
 
                            <td class="tp-cart-price"><span>{{cart.total}} {{cart.currency}}</span></td>
+
                            <!-- action -->
                            <td class="tp-cart-action">
                               <button class="tp-cart-action-btn" (click)="deleteCart(cart)">
@@ -108,10 +144,17 @@
                            </td>
                         </ng-container>
                       </tr>
-
                     </tbody>
                   </table>
               </div>
+
+              <!-- ✅ MENSAJE DE ADVERTENCIA GENERAL DE STOCK -->
+              <div *ngIf="hasStockIssues" class="alert alert-danger mb-4" style="padding: 15px; border-radius: 5px;">
+                <i class="fas fa-exclamation-circle"></i>
+                <strong>Atención:</strong> Algunos productos en tu carrito no tienen stock suficiente.
+                Por favor actualiza las cantidades o elimínalos para continuar con la compra.
+              </div>
+
               <!-- Detalle del cupón y resumen intermedio -->
               <div class="card p-3 mb-4">
                 <div *ngIf="globalCouponCode || discountTotal > 0" class="mb-2">
@@ -121,6 +164,7 @@
                 </div>
                 <div *ngIf="!globalCouponCode && discountTotal == 0" class="text-muted">No hay cupones aplicados</div>
               </div>
+
               <div class="tp-cart-bottom">
                  <div class="row align-items-end">
                     <div class="col-xl-6 col-md-8">
@@ -136,25 +180,23 @@
                           </form>
                        </div>
                     </div>
-                    <!-- <div class="col-xl-6 col-md-4">
-                       <div class="tp-cart-update text-md-end">
-                          <button type="button" class="tp-cart-update-btn">Update Cart</button>
-                       </div>
-                    </div> -->
                  </div>
               </div>
            </div>
+
            <div class="col-xl-3 col-lg-4 col-md-6">
               <div class="tp-cart-checkout-wrapper">
                   <div class="tp-cart-checkout-top d-flex align-items-center justify-content-between">
                     <span class="tp-cart-checkout-top-title">Subtotal: </span>
                     <span class="tp-cart-checkout-top-price">${{subtotalAfterDiscount}} {{currency}}</span>
                   </div>
+
                   <div *ngIf="globalCouponCode || discountTotal > 0" class="p-2">
                    <div>Cupon: <strong>{{ globalCouponCode }}</strong></div>
                    <div *ngIf="discountTotal > 0">Descuento: <strong>{{ discountTotal }} {{ currency }}</strong></div>
                    <div>Precio original: <del>{{ subtotalOriginal }} {{ currency }}</del></div>
                   </div>
+
                  <div class="tp-cart-checkout-shipping">
                   <h4 class="tp-cart-checkout-shipping-title">Envio</h4>
 
@@ -235,26 +277,34 @@
                   <span><strong>{{ grandTotal }} {{ currency }}</strong></span>
                 </div>
 
+                <!-- ✅ BOTÓN DE CHECKOUT CON VALIDACIÓN DE STOCK -->
                 <div class="tp-cart-checkout-proceed">
                   <button
                     class="tp-cart-checkout-btn w-100"
-                    [routerLink]="'/proceso-de-pago'"
-                    [disabled]="!hasFreeShipping && !selectedProvinceCode"
+                    (click)="proceedToCheckout()"
+                    [disabled]="hasStockIssues || (!hasFreeShipping && !selectedProvinceCode) || listCarts.length === 0"
+                    [ngClass]="{'disabled-btn': hasStockIssues || (!hasFreeShipping && !selectedProvinceCode) || listCarts.length === 0}"
                   >
-                    Ir al checkout
+                    <span *ngIf="!hasStockIssues">Ir al checkout</span>
+                    <span *ngIf="hasStockIssues">Stock insuficiente</span>
                   </button>
 
-                  <div *ngIf="!hasFreeShipping && !selectedProvinceCode" class="text-danger text-center mt-2">
+                  <!-- Mensajes de validación -->
+                  <div *ngIf="hasStockIssues" class="text-danger text-center mt-2">
+                    <i class="fas fa-exclamation-circle"></i>
+                    No puedes continuar debido a problemas de stock.
+                  </div>
+
+                  <div *ngIf="!hasStockIssues && !hasFreeShipping && !selectedProvinceCode" class="text-danger text-center mt-2">
                     Debes seleccionar una provincia antes de continuar.
                   </div>
                 </div>
 
-
-                  </div>
-                  </div>
-                  </div>
-                  </div>
-                    </section>
+              </div>
+           </div>
+        </div>
+     </div>
+  </section>
   <!-- cart area end -->
 
 </main>

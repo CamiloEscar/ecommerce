@@ -778,7 +778,12 @@
               <span>$ {{totalCarts}} {{currency}}</span>
           </div>
           <div class="cartmini__checkout-btn">
-              <a routerLink="/carrito-de-compra" class="tp-btn mb-10 w-100">Ver carrito</a>
+              <a
+  class="tp-btn mb-10 w-100"
+  (click)="goToCart()"
+>
+  Ver carrito
+</a>
           </div>
       </div>
   </div>
