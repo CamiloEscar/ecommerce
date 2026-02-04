@@ -377,4 +377,27 @@ export class LandingProductComponent {
       this.router.navigateByUrl('/compare-product')
     }
   }
+
+
+
+get totalReviews(): number {
+  return this.reviews.length;
+}
+
+get reviewsStats() {
+  const stats = [5, 4, 3, 2, 1].map(star => {
+    const count = this.reviews.filter((r:any) => r.rating === star).length;
+    const percent = this.totalReviews
+      ? Math.round((count / this.totalReviews) * 100)
+      : 0;
+
+    return {
+      star,
+      count,
+      percent
+    };
+  });
+
+  return stats;
+}
 }

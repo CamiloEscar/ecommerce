@@ -40,7 +40,7 @@ export class PasswordProfileClientComponent {
       password : this.password,
     }
     this.profileClient.updateProfile(data).subscribe((resp:any) => {
-      console.log(resp);
+      //console.log(resp);
 
       if(resp.message == 403){
         this.toastr.error('Error', resp.message_text)

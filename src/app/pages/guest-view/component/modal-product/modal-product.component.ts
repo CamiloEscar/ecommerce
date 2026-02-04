@@ -191,6 +191,102 @@ export class ModalProductComponent {
     }, 50);
   }
 
+  closeModal() {
+  const modalEl = document.getElementById('productModal');
+  if (!modalEl) return;
+
+  modalEl.classList.remove('show');
+  modalEl.setAttribute('aria-hidden', 'true');
+  modalEl.style.display = 'none';
+
+  document.body.classList.remove('modal-open');
+
+  const backdrop = document.querySelector('.modal-backdrop');
+  if (backdrop) backdrop.remove();
+}
+
+  comprarAhora() {
+  if (!this.cartService.authService.user) {
+    this.toastr.error('Error', 'Ingrese a la tienda');
+    this.router.navigateByUrl("/login");
+    return;
+  }
+
+  let product_variation_id = null;
+
+  // Validaciones de variaciones (igual que addCart)
+  if (this.product_selected.variations && this.product_selected.variations.length > 0) {
+    if (!this.variation_selected) {
+      this.toastr.error('Error', 'Necesitas seleccionar una variacion');
+      return;
+    }
+
+    if (
+      this.variation_selected.subvariations &&
+      this.variation_selected.subvariations.length > 0 &&
+      !this.sub_variation_selected
+    ) {
+      this.toastr.error('Error', 'Necesitas seleccionar una caracteristica');
+      return;
+    }
+  }
+
+  if (this.variation_selected) {
+    if (!this.variation_selected.subvariations?.length) {
+      product_variation_id = this.variation_selected.id;
+    } else if (this.sub_variation_selected) {
+      product_variation_id = this.sub_variation_selected.id;
+    }
+  }
+
+  const input = document.getElementById("tp-cart-input-val") as HTMLInputElement | null;
+  const quantity = input ? parseInt(input.value) || 1 : 1;
+
+  let discount_g = this.product_selected.discount_g ?? null;
+
+  const currentPrice = this.getBasePrice(this.product_selected);
+  const discountedTotal = discount_g
+    ? parseFloat(this.getNewTotal(this.product_selected, discount_g))
+    : currentPrice;
+
+  const data = {
+    product_id: this.product_selected.id,
+    type_discount: discount_g?.type_discount ?? null,
+    discount: discount_g?.discount ?? null,
+    type_campaing: discount_g?.type_campaing ?? null,
+    code_cupon: null,
+    code_discount: discount_g?.code ?? null,
+    product_variation_id,
+    quantity,
+    price_unit: currentPrice,
+    subtotal: discountedTotal,
+    total: discountedTotal * quantity,
+    currency: this.currency,
+  };
+
+  // 1️⃣ Vaciar carrito
+  this.cartService.deleteCartsAll().subscribe(() => {
+
+    // 2️⃣ Agregar producto
+    this.cartService.registerCart(data).subscribe((resp: any) => {
+      if (resp.message == 403) {
+        this.toastr.error('Error', resp.message_text);
+      } else {
+        this.cartService.changeCart(resp.cart);
+
+        // 3️⃣ Redirigir directo al carrito
+        this.closeModal();
+
+        this.router.navigateByUrl('/carrito-de-compra').then(() => {
+          window.location.reload();
+        });
+      }
+    });
+
+  });
+}
+
+
   selectedSubVariation(subvariation: any) {
     // Reset to just the main variation price
     this.plus = this.variation_selected ? this.variation_selected.add_price : 0;
@@ -265,7 +361,7 @@ export class ModalProductComponent {
     };
 
     this.cartService.registerCart(data).subscribe((resp: any) => {
-      console.log(resp);
+      //console.log(resp);
       if (resp.message == 403) {
         this.toastr.error('Error', resp.message_text);
       } else {

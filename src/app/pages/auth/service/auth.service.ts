@@ -30,7 +30,7 @@ export class AuthService {
     let URL = URL_SERVICIOS + '/auth/login_ecommerce';
     return this.http.post(URL, { email: email, password: password }).pipe(
       map((resp: any) => {
-        console.log(resp);
+        //console.log(resp);
         const result = this.saveLocalStorage(resp);
         return result;
       }),

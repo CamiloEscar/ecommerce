@@ -56,17 +56,17 @@ export const routes: Routes = [
         component: ThankYouOrderComponent
     },
     {
-      canActivate:[authGuard],
+      // canActivate:[authGuard],
         path: 'mercado-pago-success',
         component: CheckoutSuccessComponent
     },
     {
-      canActivate:[authGuard],
+      // canActivate:[authGuard],
         path: 'mercado-pago-failure',
         component: CheckoutFailureComponent
     },
     {
-      canActivate:[authGuard],
+      // canActivate:[authGuard],
         path: 'mercado-pago-pending',
         component: CheckoutPendingComponent
     },

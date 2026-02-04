@@ -174,82 +174,153 @@ export class CheckoutComponent {
       }
     }).render(this.paypalElement?.nativeElement);
     }
+    // openMercadoPago(){
+    //   if(this.totalCarts == 0){
+    //     this.toastr.error("Validacion", "No puedes procesar el pago con un monto de 0")
+    //     return;
+    //   }
+
+    //   if(this.listCarts.length == 0){
+    //     this.toastr.error("Validacion", "No puedes procesar el pago si no tienes nada cargado")
+    //     return;
+    //   }
+
+    //   if(
+    //     !this.name ||
+    //     !this.surname ||
+    //     !this.company ||
+    //     !this.country_region ||
+    //     !this.address ||
+    //     !this.street ||
+    //     !this.city ||
+    //     !this.postcode_zip ||
+    //     !this.phone ||
+    //     !this.email
+    //   ){
+    //     this.toastr.error("Validacion", "Todos los campos de la direccion son necesarios");
+    //     return;
+    //   }
+    //   this.cartService.mercadopago(this.totalCarts).subscribe((resp:any) => {
+    //     //console.log(resp);
+
+    //   this.PREFERENCE_ID = resp.preference.id;
+    //   let data = {
+    //     description: this.description,
+    //     sale_address: {
+    //       name: this.name,
+    //       surname: this.surname,
+    //       company: this.company,
+    //       country_region: this.country_region,
+    //       address: this.address,
+    //       street: this.street,
+    //       city: this.city,
+    //       postcode_zip: this.postcode_zip,
+    //       phone: this.phone,
+    //       email: this.email,
+    //     }
+    //   }
+
+    //   this.cartService.storeTemp(data).subscribe((resp:any)=> {
+
+    //     const mp = new MercadoPago('TEST-8d1841e1-ba74-4790-a451-60adea26788b')
+    //     const bricksBuilder = mp.bricks();
+
+    //     mp.bricks().create("wallet", "wallet_container", {
+    //       initialization: {
+    //           preferenceId: this.PREFERENCE_ID,
+    //       },
+    //     });
+    //     mp.checkout({
+    //       preference: {
+    //         id: this.PREFERENCE_ID,
+    //       },
+    //       render: {
+    //         container: "#wallet_container",
+    //         label: "Pagar",
+    //       },
+    //       callback: (response:any) => {
+    //         console.log(response);
+    //         if (response.status === 'approved') {
+    //           console.log('Pago aprobado. Detalles:', response);
+    //         } else {
+    //           console.log('Pago no aprobado o cancelado. Detalles:', response);
+    //         }
+    //       },
+    //     })
+    //     });
+    //   })
+    // }
     openMercadoPago(){
-      if(this.totalCarts == 0){
-        this.toastr.error("Validacion", "No puedes procesar el pago con un monto de 0")
-        return;
-      }
+  if(this.totalCarts == 0){
+    this.toastr.error("Validacion", "No puedes procesar el pago con un monto de 0")
+    return;
+  }
 
-      if(this.listCarts.length == 0){
-        this.toastr.error("Validacion", "No puedes procesar el pago si no tienes nada cargado")
-        return;
-      }
+  if(this.listCarts.length == 0){
+    this.toastr.error("Validacion", "No puedes procesar el pago si no tienes nada cargado")
+    return;
+  }
 
-      if(
-        !this.name ||
-        !this.surname ||
-        !this.company ||
-        !this.country_region ||
-        !this.address ||
-        !this.street ||
-        !this.city ||
-        !this.postcode_zip ||
-        !this.phone ||
-        !this.email
-      ){
-        this.toastr.error("Validacion", "Todos los campos de la direccion son necesarios");
-        return;
-      }
-      this.cartService.mercadopago(this.totalCarts).subscribe((resp:any) => {
-        console.log(resp);
+  if(
+    !this.name ||
+    !this.surname ||
+    !this.company ||
+    !this.country_region ||
+    !this.address ||
+    !this.street ||
+    !this.city ||
+    !this.postcode_zip ||
+    !this.phone ||
+    !this.email
+  ){
+    this.toastr.error("Validacion", "Todos los campos de la direccion son necesarios");
+    return;
+  }
 
-      this.PREFERENCE_ID = resp.preference.id;
-      let data = {
-        description: this.description,
-        sale_address: {
-          name: this.name,
-          surname: this.surname,
-          company: this.company,
-          country_region: this.country_region,
-          address: this.address,
-          street: this.street,
-          city: this.city,
-          postcode_zip: this.postcode_zip,
-          phone: this.phone,
-          email: this.email,
-        }
-      }
-
-      this.cartService.storeTemp(data).subscribe((resp:any)=> {
-
-        const mp = new MercadoPago('TEST-8d1841e1-ba74-4790-a451-60adea26788b')
-        const bricksBuilder = mp.bricks();
-
-        mp.bricks().create("wallet", "wallet_container", {
-          initialization: {
-              preferenceId: this.PREFERENCE_ID,
-          },
-        });
-        // mp.checkout({
-        //   preference: {
-        //     id: this.PREFERENCE_ID,
-        //   },
-        //   render: {
-        //     container: "#wallet_container",
-        //     label: "Pagar",
-        //   },
-        //   callback: (response:any) => {
-        //     console.log(response);
-        //     if (response.status === 'approved') {
-        //       console.log('Pago aprobado. Detalles:', response);
-        //     } else {
-        //       console.log('Pago no aprobado o cancelado. Detalles:', response);
-        //     }
-        //   },
-        // })
-        });
-      })
+  // Primero guardar datos temporales
+  let data = {
+    description: this.description,
+    sale_address: {
+      name: this.name,
+      surname: this.surname,
+      company: this.company,
+      country_region: this.country_region,
+      address: this.address,
+      street: this.street,
+      city: this.city,
+      postcode_zip: this.postcode_zip,
+      phone: this.phone,
+      email: this.email,
     }
+  }
+
+  this.cartService.storeTemp(data).subscribe((resp: any) => {
+    console.log("Datos temporales guardados");
+
+    // Ahora crear la preferencia de pago
+    this.cartService.mercadopago(this.totalCarts).subscribe((resp: any) => {
+      console.log("Respuesta de Mercado Pago:", resp);
+
+      if (resp && resp.preference) {
+        // 🔥 USAR SANDBOX PARA PRUEBAS
+        const checkoutUrl = resp.preference.sandbox_init_point || resp.preference.init_point;
+
+        console.log("Redirigiendo a:", checkoutUrl);
+
+        // Redirigir al usuario a Mercado Pago
+        window.location.href = checkoutUrl;
+      } else {
+        this.toastr.error("Error", "No se pudo generar la preferencia de pago");
+      }
+    }, (error) => {
+      console.error("Error al crear preferencia:", error);
+      this.toastr.error("Error", "No se pudo conectar con Mercado Pago");
+    });
+  }, (error) => {
+    console.error("Error al guardar datos temporales:", error);
+    this.toastr.error("Error", "No se pudieron guardar los datos");
+  });
+}
   totalPaypal(){
     if(this.currency == 'USD'){
       return this.totalCarts;
@@ -289,7 +360,7 @@ export class CheckoutComponent {
       email: this.email,
     }
     this.addressService.registerAddress(data).subscribe((resp:any) => {
-      console.log(resp);
+      //console.log(resp);
       this.toastr.success("Validacion", "Registro exitoso");
       this.address_list.unshift(resp.addres);
     })
@@ -326,7 +397,7 @@ export class CheckoutComponent {
       email: this.email,
     }
     this.addressService.updateAddress(this.address_selected.id, data).subscribe((resp:any) => {
-      console.log(resp);
+      //console.log(resp);
       this.toastr.success("Validacion", "Edicion Realizada");
       let INDEX = this.address_list.findIndex((item:any) => item.id == resp.addres.id)
       if(INDEX != -1){
@@ -362,4 +433,70 @@ export class CheckoutComponent {
     this.phone = '';
     this.email = '';
   }
+
+get subtotalOriginal(): number {
+  return Number(
+    this.listCarts
+      .reduce((sum: number, item: any) => sum + Number(item.total), 0)
+      .toFixed(2)
+  );
+}
+get subtotalAfterDiscount(): number {
+  // hoy no hay descuentos reales → es igual al subtotal
+  return this.subtotalOriginal;
+}
+
+get discountTotal(): number {
+  return Number(
+    (this.subtotalOriginal - this.subtotalAfterDiscount).toFixed(2)
+  );
+}
+
+get grandTotal(): number {
+  return Number(
+    (this.subtotalAfterDiscount + this.shippingCostValue).toFixed(2)
+  );
+}
+
+get hasFreeShipping(): boolean {
+  if (!this.listCarts || this.listCarts.length === 0) {
+    return false;
+  }
+
+  // PRIORIDAD ABSOLUTA:
+  // si el producto tiene cost = 1 → envío gratis
+  // NO importa categoría, marca ni reglas externas
+  return this.listCarts.every(
+    (item: any) => item.product && item.product.cost == 1
+  );
+}
+get shippingCostValue(): number {
+  // PRIORIDAD ABSOLUTA: si todos los productos son envío gratis
+  if (this.hasFreeShipping) {
+    return 0;
+  }
+
+  // Buscar si existe un item de envío en el carrito (si el backend lo agrega)
+  const shippingItem = this.listCarts.find(
+    (item: any) => item.id === 'SHIPPING'
+  );
+
+  if (shippingItem) {
+    return Number(shippingItem.total || 0);
+  }
+
+  // Fallback seguro
+  return 0;
+}
+get hasSomeFreeShipping(): boolean {
+  if (!this.listCarts || this.listCarts.length === 0) {
+    return false;
+  }
+
+  return this.listCarts.some(
+    (item: any) => item.product && Number(item.product.cost) === 1
+  );
+}
+
+
 }

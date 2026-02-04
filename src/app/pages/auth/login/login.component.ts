@@ -92,7 +92,7 @@ export class LoginComponent {
     }
     this.authService.login(this.email, this.password).subscribe(
       (resp: any) => {
-        console.log(resp);
+        //console.log(resp);
 
         if (resp.error && resp.error.error == 'Unauthorized') {
           this.toastr.error('Error', 'Usuario o contraseña incorrectos');
@@ -102,6 +102,7 @@ export class LoginComponent {
           this.toastr.success('Login exitoso', 'Bienvenido');
           setTimeout(() => {
             this.router.navigateByUrl('/');
+            window.location.reload()
           }, 500);
         }
       },
@@ -127,6 +128,7 @@ export class LoginComponent {
           this.toastr.success('Login con Facebook exitoso', 'Bienvenido');
           setTimeout(() => {
             this.router.navigateByUrl('/');
+            window.location.reload()
           }, 500);
         }
       });

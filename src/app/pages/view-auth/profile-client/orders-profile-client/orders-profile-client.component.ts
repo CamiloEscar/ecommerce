@@ -27,7 +27,7 @@ export class OrdersProfileClientComponent {
   ) {
 
     this.profileClient.showOrders().subscribe((resp:any) => {
-      console.log(resp);
+      //console.log(resp);
       this.sales = resp.sales.data;
     })
 

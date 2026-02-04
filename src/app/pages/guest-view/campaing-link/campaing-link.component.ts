@@ -69,7 +69,7 @@ Categories:any = [];
     })
 
     this.homeService.campaingDiscountLink({code_discount: this.CODE_DISCOUNT}).subscribe((resp:any) => {
-      console.log(resp);
+      //console.log(resp);
       if(resp.message == 403) {
         this.toastr.info('Validacion', resp.message_text);
         return;
@@ -186,7 +186,7 @@ Categories:any = [];
     //     options_aditional: this.options_aditional,
     //   }
     //   this.homeService.filterAdvanceProduct(data).subscribe((resp:any) => {
-    //     console.log(resp);
+    //     //console.log(resp);
     //     this.PRODUCTS = resp.products.data;
     //   })
     // }
