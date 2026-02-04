@@ -296,3 +296,17 @@
     margin-bottom: 1rem;
   }
 }
+.btn-sin-stock {
+  background-color: #b5b5b5 !important;
+  color: #ffffff !important;
+  cursor: not-allowed !important;
+  opacity: 0.6;
+  border-color: #b5b5b5 !important;
+}
+
+.tp-product-add-cart-btn:disabled {
+  background-color: #b5b5b5 !important;
+  color: #ffffff !important;
+  cursor: not-allowed !important;
+  opacity: 0.6;
+}

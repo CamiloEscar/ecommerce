@@ -56,16 +56,7 @@
                                <span class="badge bg-success" style="font-size: 0.85rem; margin-top: 5px;">✓ Envío GRATIS</span>
                              </ng-container>
 
-                             <!-- ✅ DEBUG: Mostrar valores de stock -->
-<!-- <div *ngIf="cart.stock_disponible !== null && cart.stock_disponible !== undefined">
-  <small class="text-muted">
-    Stock disponible: {{cart.stock_disponible}} |
-    Stock suficiente: {{cart.stock_suficiente}} |
-    Cantidad: {{cart.quantity}}
-  </small>
-</div> -->
-
-                             <!-- ✅ INDICADOR DE STOCK -->
+                             <!-- INDICADOR DE STOCK -->
                              <ng-container *ngIf="!cart.stock_suficiente">
                                <br>
                                <div class="alert alert-warning stock-alert" style="margin-top: 8px; padding: 8px 12px; font-size: 0.9rem; max-width: 400px;">
@@ -99,9 +90,9 @@
                                </ng-container>
                                <ng-container *ngIf="cart.code_discount || cart.code_cupon">
                                  <br>
-                                 <span class="text-primary mx-2">• Descuento:{{cart.discount}} {{cart.type_discount == 1 ? '%' : cart.currency}}</span>
+                                 <span class="text-primary mx-2">• Descuento: {{cart.discount}} {{cart.type_discount == 1 ? '%' : cart.currency}}</span>
                                  <br>
-                                 <span class="text-danger mx-2">• Precio original: <del>{{cart.price_unit}}</del></span>
+                                 <span class="text-danger mx-2">• Precio original: <del>{{cart.price_unit ?? cart.subtotal}} {{cart.currency}}</del></span>
                                </ng-container>
                              </div>
                            </td>
@@ -114,7 +105,7 @@
                               <div class="tp-product-quantity mt-10 mb-10">
                                  <span class="tp-cart-minus"
                                        (click)="minusQuantity(cart)"
-                                       [class.disabled]="!cart.stock_suficiente">
+                                       [class.disabled]="cart.quantity <= 1">
                                     <svg width="10" height="2" viewBox="0 0 10 2" fill="none" xmlns="http://www.w3.org/2000/svg">
                                        <path d="M1 1H9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                                     </svg>
@@ -148,21 +139,11 @@
                   </table>
               </div>
 
-              <!-- ✅ MENSAJE DE ADVERTENCIA GENERAL DE STOCK -->
+              <!-- MENSAJE DE ADVERTENCIA GENERAL DE STOCK -->
               <div *ngIf="hasStockIssues" class="alert alert-danger mb-4" style="padding: 15px; border-radius: 5px;">
                 <i class="fas fa-exclamation-circle"></i>
                 <strong>Atención:</strong> Algunos productos en tu carrito no tienen stock suficiente.
                 Por favor actualiza las cantidades o elimínalos para continuar con la compra.
-              </div>
-
-              <!-- Detalle del cupón y resumen intermedio -->
-              <div class="card p-3 mb-4">
-                <div *ngIf="globalCouponCode || discountTotal > 0" class="mb-2">
-                  <div><strong>Cupon:</strong> {{ globalCouponCode }}</div>
-                  <div *ngIf="discountTotal > 0">• <strong>Descuento:</strong> {{ discountTotal }} {{ currency }}</div>
-                  <div>• <strong>Precio original:</strong> <del>{{ subtotalOriginal }} {{ currency }}</del></div>
-                </div>
-                <div *ngIf="!globalCouponCode && discountTotal == 0" class="text-muted">No hay cupones aplicados</div>
               </div>
 
               <div class="tp-cart-bottom">
@@ -186,119 +167,146 @@
 
            <div class="col-xl-3 col-lg-4 col-md-6">
               <div class="tp-cart-checkout-wrapper">
-                  <div class="tp-cart-checkout-top d-flex align-items-center justify-content-between">
-                    <span class="tp-cart-checkout-top-title">Subtotal: </span>
-                    <span class="tp-cart-checkout-top-price">${{subtotalAfterDiscount}} {{currency}}</span>
+
+                  <!-- ========== RESUMEN DE COMPRA ========== -->
+
+                  <!-- Subtotal original -->
+                  <div class="tp-cart-checkout-total d-flex align-items-center justify-content-between">
+                    <span>Subtotal</span>
+                    <span>{{ subtotalOriginal | number:'1.2-2' }} {{ currency }}</span>
                   </div>
 
-                  <div *ngIf="globalCouponCode || discountTotal > 0" class="p-2">
-                   <div>Cupon: <strong>{{ globalCouponCode }}</strong></div>
-                   <div *ngIf="discountTotal > 0">Descuento: <strong>{{ discountTotal }} {{ currency }}</strong></div>
-                   <div>Precio original: <del>{{ subtotalOriginal }} {{ currency }}</del></div>
-                  </div>
+                  <!-- Descuentos aplicados -->
+                  <div *ngIf="discountTotal > 0" class="tp-cart-checkout-shipping">
+                    <h4 class="tp-cart-checkout-shipping-title text-success">Descuentos</h4>
 
-                 <div class="tp-cart-checkout-shipping">
-                  <h4 class="tp-cart-checkout-shipping-title">Envio</h4>
-
-                  <!-- Mensaje de envío gratis -->
-                  <div *ngIf="hasFreeShipping" class="alert alert-success mb-3">
-                    <strong>¡Envío GRATIS!</strong> Todos los productos en tu carrito tienen envío gratis.
-                  </div>
-
-                  <!-- Mensaje mixto (algunos productos con envío gratis) -->
-                  <div *ngIf="hasSomeFreeShipping && !hasFreeShipping" class="alert alert-info mb-3">
-                    <strong>Nota:</strong> Algunos productos tienen envío gratis, pero otros no.
-                  </div>
-
-                  <!-- Formulario de provincia (solo si NO todos tienen envío gratis) -->
-                  <form *ngIf="!hasFreeShipping" #provinciaForm="ngForm" (ngSubmit)="applyCosto()">
-                    <label for="provincia">Seleccionar provincia:</label>
-                    <div class="d-flex align-items-center">
-                      <select
-                        [(ngModel)]="selectedProvinceCode"
-                        name="provincia"
-                        id="provincia"
-                        required
-                        class="form-select"
-                        #provinciaControl="ngModel"
-                      >
-                        <option [ngValue]="null" disabled>-- SELECCIONAR --</option>
-                        <option *ngFor="let prov of provincias" [ngValue]="prov.code">
-                          {{ prov.name }}
-                        </option>
-                      </select>
-
-                      <button
-                        type="submit"
-                        class="btn btn-primary ms-2"
-                        [disabled]="provinciaForm.invalid"
-                      >
-                        Aplicar
-                      </button>
-
-                      <button
-                        *ngIf="selectedProvinceCode"
-                        type="button"
-                        (click)="removeProvincia()"
-                        class="btn btn-danger ms-2"
-                      >
-                        <span aria-hidden="true">×</span>
-                      </button>
+                    <div *ngIf="globalCouponCode" class="mb-2">
+                      <div class="d-flex justify-content-between">
+                        <span class="text-muted">Cupón: <strong>{{ globalCouponCode }}</strong></span>
+                      </div>
+                      <div *ngIf="discountType" class="text-muted small">
+                        ({{ discountType.value }}{{ discountType.isPercentage ? '%' : ' ' + currency }} de descuento)
+                      </div>
                     </div>
 
-                    <div *ngIf="provinciaControl.invalid && provinciaControl.touched" class="text-danger mt-1">
-                      La provincia es obligatoria.
+                    <div class="tp-cart-checkout-total d-flex align-items-center justify-content-between text-success">
+                      <span><strong>Total descontado:</strong></span>
+                      <span><strong>- {{ discountTotal | number:'1.2-2' }} {{ currency }}</strong></span>
                     </div>
 
-                    <div *ngIf="costoEnvio !== null && costoEnvio > 0" class="mt-2">
-                      <span class="cartmini__quantity mx-2">• Costo de envío: {{ costoEnvio }} {{ currency }}</span>
+                    <hr class="my-2">
+
+                    <div class="tp-cart-checkout-total d-flex align-items-center justify-content-between">
+                      <span>Subtotal con descuento:</span>
+                      <span>{{ subtotalAfterDiscount | number:'1.2-2' }} {{ currency }}</span>
                     </div>
-                  </form>
-                </div>
-
-                <div class="tp-cart-checkout-total d-flex align-items-center justify-content-between">
-                  <span>Subtotal</span>
-                  <span>{{ subtotalAfterDiscount }} {{ currency }}</span>
-                </div>
-
-                <div *ngIf="shippingCostValue > 0" class="tp-cart-checkout-total d-flex align-items-center justify-content-between">
-                  <span>Envío</span>
-                  <span>{{ shippingCostValue }} {{ currency }}</span>
-                </div>
-
-                <!-- Mostrar envío gratis si aplica -->
-                <div *ngIf="hasFreeShipping" class="tp-cart-checkout-total d-flex align-items-center justify-content-between text-success">
-                  <span>Envío</span>
-                  <span><strong>GRATIS</strong></span>
-                </div>
-
-                <div class="tp-cart-checkout-total d-flex align-items-center justify-content-between">
-                  <span><strong>Total</strong></span>
-                  <span><strong>{{ grandTotal }} {{ currency }}</strong></span>
-                </div>
-
-                <!-- ✅ BOTÓN DE CHECKOUT CON VALIDACIÓN DE STOCK -->
-                <div class="tp-cart-checkout-proceed">
-                  <button
-                    class="tp-cart-checkout-btn w-100"
-                    (click)="proceedToCheckout()"
-                    [disabled]="hasStockIssues || (!hasFreeShipping && !selectedProvinceCode) || listCarts.length === 0"
-                    [ngClass]="{'disabled-btn': hasStockIssues || (!hasFreeShipping && !selectedProvinceCode) || listCarts.length === 0}"
-                  >
-                    <span *ngIf="!hasStockIssues">Ir al checkout</span>
-                    <span *ngIf="hasStockIssues">Stock insuficiente</span>
-                  </button>
-
-                  <!-- Mensajes de validación -->
-                  <div *ngIf="hasStockIssues" class="text-danger text-center mt-2">
-                    <i class="fas fa-exclamation-circle"></i>
-                    No puedes continuar debido a problemas de stock.
                   </div>
 
-                  <div *ngIf="!hasStockIssues && !hasFreeShipping && !selectedProvinceCode" class="text-danger text-center mt-2">
-                    Debes seleccionar una provincia antes de continuar.
+                  <!-- Si no hay descuentos -->
+                  <div *ngIf="discountTotal === 0" class="text-muted text-center mb-3" style="font-size: 0.9rem;">
+                    No hay descuentos aplicados
                   </div>
-                </div>
+
+                  <hr>
+
+                  <!-- Sección de envío -->
+                  <div class="tp-cart-checkout-shipping">
+                    <h4 class="tp-cart-checkout-shipping-title">Envío</h4>
+
+                    <!-- Mensaje de envío gratis -->
+                    <div *ngIf="hasFreeShipping" class="alert alert-success mb-3">
+                      <strong>¡Envío GRATIS!</strong> Todos los productos en tu carrito tienen envío gratis.
+                    </div>
+
+                    <!-- Mensaje mixto (algunos productos con envío gratis) -->
+                    <div *ngIf="hasSomeFreeShipping && !hasFreeShipping" class="alert alert-info mb-3">
+                      <strong>Nota:</strong> Algunos productos tienen envío gratis, pero otros no.
+                    </div>
+
+                    <!-- Formulario de provincia (solo si NO todos tienen envío gratis) -->
+                    <form *ngIf="!hasFreeShipping" #provinciaForm="ngForm" (ngSubmit)="applyCosto()">
+                      <label for="provincia">Seleccionar provincia:</label>
+                      <div class="d-flex align-items-center">
+                        <select
+                          [(ngModel)]="selectedProvinceCode"
+                          name="provincia"
+                          id="provincia"
+                          required
+                          class="form-select"
+                          #provinciaControl="ngModel"
+                        >
+                          <option [ngValue]="null" disabled>-- SELECCIONAR --</option>
+                          <option *ngFor="let prov of provincias" [ngValue]="prov.code">
+                            {{ prov.name }}
+                          </option>
+                        </select>
+
+                        <button
+                          type="submit"
+                          class="btn btn-primary ms-2"
+                          [disabled]="provinciaForm.invalid"
+                        >
+                          Aplicar
+                        </button>
+
+                        <button
+                          *ngIf="selectedProvinceCode"
+                          type="button"
+                          (click)="removeProvincia()"
+                          class="btn btn-danger ms-2"
+                        >
+                          <span aria-hidden="true">×</span>
+                        </button>
+                      </div>
+
+                      <div *ngIf="provinciaControl.invalid && provinciaControl.touched" class="text-danger mt-1">
+                        La provincia es obligatoria.
+                      </div>
+                    </form>
+                  </div>
+
+                  <!-- Costo de envío -->
+                  <div *ngIf="!hasFreeShipping && shippingCostValue > 0" class="tp-cart-checkout-total d-flex align-items-center justify-content-between">
+                    <span>Costo de envío</span>
+                    <span>{{ shippingCostValue | number:'1.2-2' }} {{ currency }}</span>
+                  </div>
+
+                  <!-- Mostrar envío gratis si aplica -->
+                  <div *ngIf="hasFreeShipping" class="tp-cart-checkout-total d-flex align-items-center justify-content-between text-success">
+                    <span>Costo de envío</span>
+                    <span><strong>GRATIS</strong></span>
+                  </div>
+
+                  <hr>
+
+                  <!-- TOTAL FINAL -->
+                  <div class="tp-cart-checkout-total d-flex align-items-center justify-content-between" style="font-size: 1rem;">
+                    <span><strong>TOTAL A PAGAR</strong></span>
+                    <span><strong>{{ grandTotal | number:'1.2-2' }} {{ currency }}</strong></span>
+                  </div>
+
+                  <!-- BOTÓN DE CHECKOUT CON VALIDACIÓN DE STOCK -->
+                  <div class="tp-cart-checkout-proceed">
+                    <button
+                      class="tp-cart-checkout-btn w-100"
+                      (click)="proceedToCheckout()"
+                      [disabled]="hasStockIssues || (!hasFreeShipping && !selectedProvinceCode) || listCarts.length === 0"
+                      [ngClass]="{'disabled-btn': hasStockIssues || (!hasFreeShipping && !selectedProvinceCode) || listCarts.length === 0}"
+                    >
+                      <span *ngIf="!hasStockIssues">Ir al checkout</span>
+                      <span *ngIf="hasStockIssues">Stock insuficiente</span>
+                    </button>
+
+                    <!-- Mensajes de validación -->
+                    <div *ngIf="hasStockIssues" class="text-danger text-center mt-2">
+                      <i class="fas fa-exclamation-circle"></i>
+                      No puedes continuar debido a problemas de stock.
+                    </div>
+
+                    <div *ngIf="!hasStockIssues && !hasFreeShipping && !selectedProvinceCode" class="text-danger text-center mt-2">
+                      Debes seleccionar una provincia antes de continuar.
+                    </div>
+                  </div>
 
               </div>
            </div>

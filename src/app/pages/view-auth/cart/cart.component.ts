@@ -39,7 +39,7 @@ export class CartComponent {
       // Actualizar total sin incluir el item SHIPMENT si existe
       this.totalCarts = this.listCarts.reduce((sum: number, item: any) => sum + item.total, 0);
 
-      // ✅ Verificar problemas de stock
+      // Verificar problemas de stock
       this.checkStockIssues();
 
       // Sincronizar costo de envío desde el servicio si existe
@@ -49,89 +49,118 @@ export class CartComponent {
     });
   }
 
-  // ✅ Verificar si hay productos sin stock suficiente
-checkStockIssues() {
-  this.hasStockIssues = this.listCarts.some(
-    (cart: any) => {
-      // Solo verificar si stock_suficiente existe y es explícitamente false
-      return cart.stock_suficiente !== null &&
-             cart.stock_suficiente !== undefined &&
-             cart.stock_suficiente === false;
-    }
-  );
+  // Verificar si hay productos sin stock suficiente
+  checkStockIssues() {
+    this.hasStockIssues = this.listCarts.some(
+      (cart: any) => {
+        // Solo verificar si stock_suficiente existe y es explícitamente false
+        return cart.stock_suficiente !== null &&
+               cart.stock_suficiente !== undefined &&
+               cart.stock_suficiente === false;
+      }
+    );
 
-  console.log('Has stock issues:', this.hasStockIssues);
-  console.log('List carts:', this.listCarts);
-}
+    console.log('Has stock issues:', this.hasStockIssues);
+    console.log('List carts:', this.listCarts);
+  }
 
-  // ✅ Validar stock y proceder al checkout
+  // Validar stock y proceder al checkout
   proceedToCheckout() {
-    this.cartService.validateStock().subscribe((resp: any) => {
-      if (resp.message === 403) {
-        // Construir mensaje detallado
-        let mensaje = '';
+    this.cartService.validateStock().subscribe({
+      next: (resp: any) => {
+        console.log('Respuesta de validación de stock:', resp);
 
-        if (resp.items_sin_stock && resp.items_sin_stock.length > 0) {
-          mensaje += 'PRODUCTOS SIN STOCK:\n';
-          resp.items_sin_stock.forEach((item: any) => {
-            mensaje += `• ${item.product_name}\n`;
+        // Verificar si hay problemas de stock (message === 403)
+        if (resp.message === 403) {
+          // Construir mensaje detallado
+          let mensaje = '';
+
+          if (resp.items_sin_stock && resp.items_sin_stock.length > 0) {
+            mensaje += '<strong>PRODUCTOS SIN STOCK:</strong><br>';
+            resp.items_sin_stock.forEach((item: any) => {
+              mensaje += `• ${item.product_name}<br>`;
+            });
+            mensaje += '<br>';
+          }
+
+          if (resp.items_stock_insuficiente && resp.items_stock_insuficiente.length > 0) {
+            mensaje += '<strong>STOCK INSUFICIENTE:</strong><br>';
+            resp.items_stock_insuficiente.forEach((item: any) => {
+              mensaje += `• ${item.product_name}: Solicitaste ${item.cantidad_solicitada}, disponible ${item.stock_disponible}<br>`;
+            });
+          }
+
+          this.toastr.error(mensaje, 'Productos no disponibles', {
+            timeOut: 10000,
+            enableHtml: true,
+            closeButton: true
           });
-          mensaje += '\n';
+
+          // Recargar carrito para actualizar info de stock
+          this.cartService.listCart().subscribe((resp: any) => {
+            this.cartService.setCart(resp.carts.data);
+          });
+        } else {
+          // Todo OK, proceder al checkout
+          this.router.navigate(['/checkout']);
+        }
+      },
+      error: (error) => {
+        console.error('Error al validar stock:', error);
+
+        // Mostrar mensaje específico según el tipo de error
+        let mensaje = 'No se pudo validar el stock de los productos';
+
+        if (error.status === 401) {
+          mensaje = 'Tu sesión ha expirado. Por favor inicia sesión nuevamente';
+        } else if (error.status === 0) {
+          mensaje = 'No se pudo conectar con el servidor. Verifica tu conexión a internet';
         }
 
-        if (resp.items_stock_insuficiente && resp.items_stock_insuficiente.length > 0) {
-          mensaje += 'STOCK INSUFICIENTE:\n';
-          resp.items_stock_insuficiente.forEach((item: any) => {
-            mensaje += `• ${item.product_name}: Solicitaste ${item.cantidad_solicitada}, disponible ${item.stock_disponible}\n`;
-          });
-        }
-
-        this.toastr.error(mensaje, 'Productos no disponibles', {
-          timeOut: 8000,
-          enableHtml: true
-        });
-
-        // Recargar carrito para actualizar info de stock
-        this.cartService.listCart().subscribe((resp: any) => {
-          this.cartService.setCart(resp.carts.data);
-        });
-      } else {
-        // Todo OK, proceder al checkout
-        this.router.navigate(['/checkout']);
+        this.toastr.error(mensaje, 'Error de validación');
       }
     });
   }
 
   // Verificar si TODOS los productos tienen envío gratis (cost = 1)
-get hasFreeShipping(): boolean {
-  if (this.listCarts.length === 0) return false;
+  get hasFreeShipping(): boolean {
+    if (this.listCarts.length === 0) return false;
 
-  return this.listCarts.every(
-    (item: any) => item.product?.cost == 1
-  );
-}
-
+    return this.listCarts.every(
+      (item: any) => item.product?.cost == 1
+    );
+  }
 
   // Verificar si AL MENOS UN producto tiene envío gratis (cost = 1)
   get hasSomeFreeShipping(): boolean {
     return this.listCarts.some((item: any) => item.product && item.product.cost == 1);
   }
 
-  // subtotal original (sin descuentos, sin envio)
+  // ========== CÁLCULOS CORREGIDOS ==========
+
+  // Subtotal SIN descuentos (precio original * cantidad)
   get subtotalOriginal() {
-    return this.listCarts.reduce((sum: number, item: any) => sum + (item.subtotal * (item.quantity || 1)), 0);
+    return this.listCarts.reduce((sum: number, item: any) => {
+      // Usar price_unit si existe, sino subtotal
+      const precioUnitario = item.price_unit ?? item.subtotal;
+      return sum + (precioUnitario * item.quantity);
+    }, 0);
   }
 
-  // subtotal después de aplicar cupones/descuentos (sin envio)
+  // Subtotal CON descuentos aplicados (después de cupones/campañas)
   get subtotalAfterDiscount() {
-    return this.listCarts.reduce((sum: number, item: any) => sum + (item.total || 0), 0);
+    return this.listCarts.reduce((sum: number, item: any) => {
+      return sum + item.total;
+    }, 0);
   }
 
+  // Total de descuentos aplicados
   get discountTotal() {
     const disc = this.subtotalOriginal - this.subtotalAfterDiscount;
     return disc > 0 ? disc : 0;
   }
 
+  // Costo de envío
   get shippingCostValue() {
     // Si todos los productos tienen envío gratis, el costo es 0
     if (this.hasFreeShipping) {
@@ -140,62 +169,83 @@ get hasFreeShipping(): boolean {
     return this.costoEnvio ?? 0;
   }
 
+  // Total final (subtotal con descuento + envío)
   get grandTotal() {
     return this.subtotalAfterDiscount + this.shippingCostValue;
   }
 
+  // Obtener código de cupón global
   get globalCouponCode() {
     const found = this.listCarts.find((i: any) => i.code_cupon || i.code_discount);
-    return found ? (found.code_cupon || found.code_discount) : (this.code_cupon || null);
+    return found ? (found.code_cupon || found.code_discount) : null;
   }
+
+  // Obtener tipo de descuento
+  get discountType() {
+    const found = this.listCarts.find((i: any) => i.code_cupon || i.code_discount);
+    if (!found) return null;
+    return {
+      type: found.type_discount, // 1 = porcentaje, 2 = monto fijo
+      value: found.discount,
+      isPercentage: found.type_discount == 1
+    };
+  }
+
+  // ========== ACCIONES ==========
 
   deleteCart(CART: any) {
     this.cartService.deleteCart(CART.id).subscribe((resp: any) => {
-      this.toastr.info('Eliminacion', "Se elimino el producto: " + CART.product.title + " del carrito de compra");
+      this.toastr.info('Eliminacion', "Se eliminó el producto: " + CART.product.title + " del carrito de compra");
       this.cartService.removeCart(CART);
     });
   }
 
   minusQuantity(cart: any) {
-  // 🚫 mínimo 1
-  if (cart.quantity <= 1) return;
+    // Mínimo 1
+    if (cart.quantity <= 1) return;
 
-  const newQuantity = cart.quantity - 1;
+    const newQuantity = cart.quantity - 1;
 
-  this.cartService.updateCart(cart.id, {
-    quantity: newQuantity
-  }).subscribe({
-    next: (resp: any) => {
-      cart.quantity = newQuantity;
-      cart.total = resp.cart.total;
-    },
-    error: () => {
-      cart.quantity++;
-    }
-  });
+    this.cartService.updateCart(cart.id, {
+      quantity: newQuantity
+    }).subscribe({
+      next: (resp: any) => {
+        cart.quantity = newQuantity;
+        cart.total = resp.cart.total;
+        // Actualizar también subtotal y price_unit si vienen en la respuesta
+        if (resp.cart.subtotal) cart.subtotal = resp.cart.subtotal;
+        if (resp.cart.price_unit) cart.price_unit = resp.cart.price_unit;
+      },
+      error: () => {
+        cart.quantity++;
+      }
+    });
   }
 
   plusQuantity(cart: any) {
-// 🚫 no sumar si no hay stock suficiente
-  if (!cart.stock_suficiente) return;
+    // No sumar si no hay stock suficiente
+    if (!cart.stock_suficiente) return;
 
-  // 🚫 no superar stock disponible
-  if (cart.quantity >= cart.stock_disponible) return;
+    // No superar stock disponible
+    if (cart.quantity >= cart.stock_disponible) return;
 
-  const newQuantity = cart.quantity + 1;
+    const newQuantity = cart.quantity + 1;
 
-  this.cartService.updateCart(cart.id, {
-    quantity: newQuantity
-  }).subscribe({
-    next: (resp: any) => {
-      cart.quantity = newQuantity;
-      cart.total = resp.cart.total;
-    },
-    error: () => {
-      // fallback por seguridad
-      cart.quantity--;
-    }
-  });
+    this.cartService.updateCart(cart.id, {
+      quantity: newQuantity
+    }).subscribe({
+      next: (resp: any) => {
+        cart.quantity = newQuantity;
+        cart.total = resp.cart.total;
+        // Actualizar también subtotal y price_unit si vienen en la respuesta
+        if (resp.cart.subtotal) cart.subtotal = resp.cart.subtotal;
+        if (resp.cart.price_unit) cart.price_unit = resp.cart.price_unit;
+      },
+      error: () => {
+        // fallback por seguridad
+        cart.quantity--;
+      }
+    });
   }
 
   applyCupon() {
@@ -213,6 +263,10 @@ get hasFreeShipping(): boolean {
         this.toastr.error("Validacion", resp.message_text);
         return;
       } else {
+        // Limpiar el input del cupón
+        this.code_cupon = '';
+
+        // Recargar el carrito completo
         this.cartService.resetCart();
         this.cartService.listCart().subscribe((resp: any) => {
           this.cartService.setCart(resp.carts.data);
@@ -224,7 +278,6 @@ get hasFreeShipping(): boolean {
 
   applyCosto() {
     // PRIORIDAD MÁXIMA: Verificar si TODOS los productos tienen envío gratis (cost = 1)
-    // Si es así, no se aplica ningún costo de envío
     if (this.hasFreeShipping) {
       this.costoEnvio = 0;
       this.cartService.setShipping(0);

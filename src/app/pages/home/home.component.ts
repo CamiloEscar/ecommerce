@@ -294,6 +294,12 @@ export class HomeComponent implements OnInit, AfterViewInit {
       return;
     }
 
+      // VALIDACION DE STOCK
+    if (!PRODUCT.stock || PRODUCT.stock <= 0) {
+      this.toastr.error('Sin stock', 'Este producto no tiene stock disponible');
+      return;
+    }
+
     if (PRODUCT.variations && PRODUCT.variations.length > 0) {
       $("#producQuickViewModal").modal("show");
       this.openDetailProduct(PRODUCT);

@@ -534,7 +534,9 @@
 
                                 <span class="product-hot">- {{TRENDING_PRODUCT.discount_g.discount}} {{currency}}</span>
                               }
-
+                              @if(!TRENDING_PRODUCT.stock || TRENDING_PRODUCT.stock <= 0){
+                                <span class="product-hot bg-danger">Sin Stock</span>
+                              }
                              </div>
 
                            }
@@ -548,6 +550,10 @@
                                 type="button"
                                 class="tp-product-action-btn tp-product-add-cart-btn"
                                 (click)="addCart(TRENDING_PRODUCT)"
+                                [disabled]="!TRENDING_PRODUCT.stock || TRENDING_PRODUCT.stock <= 0"
+                                [ngClass]="{
+                                  'btn-sin-stock': !TRENDING_PRODUCT.stock || TRENDING_PRODUCT.stock <= 0
+                                }"
                               >
                                 <svg
                                   width="20"
@@ -596,9 +602,11 @@
                                   />
                                 </svg>
 
-                                <span class="tp-product-tooltip"
-                                  >Añadir al carrito</span
-                                >
+                                <span class="tp-product-tooltip">
+                                  {{ (!TRENDING_PRODUCT.stock || TRENDING_PRODUCT.stock <= 0)
+                                      ? 'Sin stock'
+                                      : 'Añadir al carrito' }}
+                                </span>
                               </button>
                               <button
                                 type="button"
