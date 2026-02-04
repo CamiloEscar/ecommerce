@@ -102,7 +102,7 @@ export class CartComponent {
           });
         } else {
           // Todo OK, proceder al checkout
-          this.router.navigate(['/checkout']);
+          this.router.navigate(['/proceso-de-pago']);
         }
       },
       error: (error) => {

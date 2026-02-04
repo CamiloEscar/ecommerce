@@ -44,7 +44,7 @@
                      </span>
                   </div>
                   <div class="profile__address-content">
-                     <h3 class="profile__address-title"><a href="" onclick="return false;" (click)="selectedAddress(addres)">Shipping Address</a></h3>
+                     <h3 class="profile__address-title"><a href="" onclick="return false;" (click)="selectedAddress(addres)">Direccion de envio</a></h3>
                      <p><span>Nombre Completo:</span>{{addres.name + ' '+ addres.surname}}</p>
                      <p><span>Calle:</span>{{addres.street}}</p>
                      <p><span>Ciudad:</span>{{addres.city}}</p>
@@ -160,95 +160,160 @@
            <div class="col-lg-5">
               <!-- checkout place order -->
               <div class="tp-checkout-place white-bg">
-                 <h3 class="tp-checkout-place-title">Tu orden</h3>
+                 <h3 class="tp-checkout-place-title">Resumen de tu pedido</h3>
+
                  <div class="tp-order-info-list">
+                    <!-- ========== LISTA DE PRODUCTOS ========== -->
                     <ul>
-      <li class="tp-order-info-list-header">
-        <h4>Producto</h4>
-        <h4>Total</h4>
-      </li>
+                      <li class="tp-order-info-list-header">
+                        <h4>Producto</h4>
+                        <h4>Total</h4>
+                      </li>
 
-      @for(cart of listCarts; track cart.id){
-        <li class="tp-order-info-list-desc">
-          <div>
-            <p class="mb-0 fw-semibold">
-              {{ cart.product.title }}
-            </p>
-            <small class="text-muted">
-              Cantidad: {{ cart.quantity }}
-              <span *ngIf="cart.product.cost == 1" class="badge bg-success ms-2">
-                Envío gratis
-              </span>
-            </small>
-          </div>
-          <span class="fw-semibold">
-            {{ cart.total }} {{ currency }}
-          </span>
-        </li>
-      }
-    </ul>
-     <hr />
-       <!-- Subtotales -->
-  <ul class="list-unstyled mb-3">
-    <li class="d-flex justify-content-between">
-      <span>Subtotal</span>
-      <span>{{ subtotalOriginal }} {{ currency }}</span>
-    </li>
+                      @for(cart of listCarts; track cart.id){
+                        <ng-container *ngIf="cart.id !== 'SHIPPING'">
+                          <li class="tp-order-info-list-desc">
+                            <div>
+                              <p class="mb-0 fw-semibold">
+                                {{ cart.product.title }}
+                              </p>
+                              <small class="text-muted d-block mt-1">
+                                Cantidad: {{ cart.quantity }} × {{ cart.subtotal }} {{ currency }}
+                              </small>
 
-    <li
-      class="d-flex justify-content-between text-success"
-      *ngIf="discountTotal > 0"
-    >
-      <span>Descuento</span>
-      <span>-{{ discountTotal }} {{ currency }}</span>
-    </li>
+                              <!-- Badge de envío gratis -->
+                              <span *ngIf="cart.product.cost == 1" class="badge bg-success mt-1">
+                                <i class="fas fa-truck"></i> Envío gratis
+                              </span>
 
-    <li class="d-flex justify-content-between fw-semibold">
-      <span>Subtotal con descuento</span>
-      <span>{{ subtotalAfterDiscount }} {{ currency }}</span>
-    </li>
-  </ul>
+                              <!-- Mostrar descuento si existe -->
+                              <div *ngIf="cart.code_cupon || cart.code_discount" class="mt-1">
+                                <small class="text-success">
+                                  <i class="fas fa-tag"></i>
+                                  {{ cart.code_cupon || cart.code_discount }}
+                                  ({{ cart.discount }}{{ cart.type_discount == 1 ? '%' : ' ' + currency }})
+                                </small>
+                                <br>
+                                <small class="text-muted">
+                                  <del>Precio original: {{ cart.price_unit }} {{ currency }}</del>
+                                </small>
+                              </div>
+                            </div>
+                            <span class="fw-semibold">
+                              {{ cart.total }} {{ currency }}
+                            </span>
+                          </li>
+                        </ng-container>
+                      }
+                    </ul>
 
-  <hr />
+                    <hr class="my-3" />
 
-  <!-- Envío -->
-  <div class="mb-3">
-    <div class="d-flex justify-content-between">
-      <span>Envío</span>
+                    <!-- ========== RESUMEN DE TOTALES ========== -->
+                    <div class="tp-order-info-list-subtotal">
 
-      <span *ngIf="hasFreeShipping" class="text-success fw-semibold">
-        Gratis
-      </span>
+                      <!-- Subtotal Original -->
+                      <div class="d-flex justify-content-between mb-2">
+                        <span>Subtotal</span>
+                        <span>{{ subtotalOriginal | number:'1.2-2' }} {{ currency }}</span>
+                      </div>
 
-      <span *ngIf="!hasFreeShipping">
-        {{ shippingCostValue }} {{ currency }}
-      </span>
-    </div>
+                      <!-- Descuentos aplicados -->
+                      <div *ngIf="discountTotal > 0" class="mb-3">
+                        <div class="alert alert-success py-2 px-3 mb-2">
+                          <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                              <i class="fas fa-tag"></i>
+                              <strong class="ms-1">Cupón aplicado:</strong>
+                              <span class="ms-1">{{ globalCouponCode }}</span>
+                            </div>
+                          </div>
+                          <small class="d-block mt-1" *ngIf="discountType">
+                            Descuento: {{ discountType.value }}{{ discountType.isPercentage ? '%' : ' ' + currency }}
+                          </small>
+                        </div>
 
-    <small class="text-muted" *ngIf="hasSomeFreeShipping && !hasFreeShipping">
-      Algunos productos tienen envío gratis
-    </small>
-  </div>
+                        <div class="d-flex justify-content-between text-success mb-2">
+                          <span><strong>Total descontado:</strong></span>
+                          <span><strong>- {{ discountTotal | number:'1.2-2' }} {{ currency }}</strong></span>
+                        </div>
 
-  <hr />
+                        <div class="d-flex justify-content-between mb-2">
+                          <span>Subtotal con descuento:</span>
+                          <span>{{ subtotalAfterDiscount | number:'1.2-2' }} {{ currency }}</span>
+                        </div>
+                      </div>
 
-  <!-- Total -->
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <h4 class="mb-0">Total a pagar</h4>
-    <h4 class="mb-0 text-primary">
-      {{ grandTotal }} {{ currency }}
-    </h4>
-  </div>
+                      <hr />
 
+                      <!-- Envío -->
+                      <div class="mb-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                          <span><strong>Envío</strong></span>
+
+                          <span *ngIf="hasFreeShipping" class="text-success fw-semibold">
+                            <i class="fas fa-truck"></i> GRATIS
+                          </span>
+
+                          <span *ngIf="!hasFreeShipping && shippingCostValue > 0">
+                            {{ shippingCostValue | number:'1.2-2' }} {{ currency }}
+                          </span>
+
+                          <span *ngIf="!hasFreeShipping && shippingCostValue === 0" class="text-muted">
+                            A calcular
+                          </span>
+                        </div>
+
+                        <!-- Mensaje informativo -->
+                        <div *ngIf="hasFreeShipping" class="alert alert-success py-2 px-3 mt-2 mb-0">
+                          <small>
+                            <i class="fas fa-check-circle"></i>
+                            ¡Todos tus productos tienen envío gratis!
+                          </small>
+                        </div>
+
+                        <div *ngIf="hasSomeFreeShipping && !hasFreeShipping" class="alert alert-info py-2 px-3 mt-2 mb-0">
+                          <small>
+                            <i class="fas fa-info-circle"></i>
+                            Algunos productos tienen envío gratis
+                          </small>
+                        </div>
+                      </div>
+
+                      <hr />
+
+                      <!-- Total Final -->
+                      <div class="tp-order-info-list-total d-flex justify-content-between align-items-center mb-3">
+                        <h4 class="mb-0">TOTAL A PAGAR</h4>
+                        <h4 class="mb-0 text-primary">
+                          {{ grandTotal | number:'1.2-2' }} {{ currency }}
+                        </h4>
+                      </div>
+
+                    </div>
                  </div>
+
+
                  <div class="tp-checkout-payment">
-                  <!-- <div class="tp-checkout-payment-item">
-                     <input type="radio" id="back_transfer" name="payment">
-                     <label for="back_transfer" data-bs-toggle="direct-bank-transfer">Transferencia bancaria</label>
-                     <div class="tp-checkout-payment-desc direct-bank-transfer">
-                        <p>Realiza tu pago directamente en nuestra cuenta bancaria. Por favor, usa tu ID de pedido como referencia de pago. Tu pedido no será enviado hasta que los fondos hayan sido confirmados en nuestra cuenta.</p>
-                     </div>
-                  </div> -->
+                  <div class="tp-checkout-payment-item">
+                    <input type="radio" id="back_transfer" name="payment">
+                    <label for="back_transfer">
+                        Transferencia bancaria
+                        <small class="d-block text-muted">
+                          Paga desde tu home banking o billetera virtual
+                        </small>
+                      </label>
+
+                      <div class="tp-checkout-payment-desc direct-bank-transfer">
+                        <p>
+                          <strong>{{ paymentAlias }}</strong>
+                          <br>
+                          Realiza tu pago directamente en nuestra cuenta bancaria.
+                          Usa tu ID de pedido como referencia. El pedido se procesará
+                          cuando se confirme el pago.
+                        </p>
+                    </div>
+                  </div>
                   <div class="tp-checkout-payment-item">
                      <input type="radio" id="cod" name="payment">
                      <button (click)="openMercadoPago()" class="btn btn-primary">
