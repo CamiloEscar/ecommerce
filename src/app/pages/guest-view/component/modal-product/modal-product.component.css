@@ -1,0 +1,28 @@
+.product-disabled {
+  opacity: 0.5;
+  pointer-events: none;
+  filter: grayscale(40%);
+  transition: all 0.3s ease;
+}
+
+.tp-cart-minus.disabled,
+.tp-cart-plus.disabled {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.btn-sin-stock {
+  background: #ccc !important;
+  border-color: #ccc !important;
+  color: #666 !important;
+  cursor: not-allowed !important;
+}
+.stock-warning {
+  background: #fff3cd;
+  color: #856404;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-weight: 600;
+  margin-top: 10px;
+  font-size: 14px;
+}

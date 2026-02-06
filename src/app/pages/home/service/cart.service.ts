@@ -20,63 +20,42 @@ export class CartService {
     public http: HttpClient
   ) { }
 
-
-  //componente de sincronizacion entre el proceso de agregar al carrito sin necesidad de recargar la pagina
-  changeCart(DATA:any){
-    let listCart = this.cart.getValue();
-    let INDEX = listCart.findIndex((item:any) => item.id == DATA.id);
-    if(INDEX != -1){
-      listCart[INDEX] = DATA;
+// ===== changeCart: COPIA del array =====
+changeCart(DATA: any) {
+    let listCart = [...this.cart.getValue()];
+    let INDEX = listCart.findIndex((item: any) => item.id == DATA.id);
+    if (INDEX != -1) {
+      listCart[INDEX] = { ...DATA };
     } else {
-      listCart.unshift(DATA);
+      listCart.unshift({ ...DATA });
     }
     this.cart.next(listCart);
-  }
+}
 
-  setShipping(cost: number | null){
+// ===== setShipping: Solo guardar el valor, NO agregar item al BehaviorSubject =====
+setShipping(cost: number | null) {
     this.shippingCost = cost;
-    if(cost === null){
-      // remove special shipping item if present
-      let list = this.cart.getValue();
-      let idx = list.findIndex((i:any) => i.id === 'SHIPPING');
-      if(idx !== -1){
-        list.splice(idx,1);
-        this.cart.next(list);
-      }
-      return;
-    }
+}
 
-    // add/update special shipping item
-    let list = this.cart.getValue();
-    let idx = list.findIndex((i:any) => i.id === 'SHIPPING');
-    const shippingItem = {
-      id: 'SHIPPING',
-      quantity: 1,
-      subtotal: cost,
-      total: cost,
-      product: { title: 'Costo de envío' }
-    };
-    if(idx !== -1){
-      list[idx] = shippingItem;
-    } else {
-      list.push(shippingItem);
-    }
-    this.cart.next(list);
-  }
+// ===== setCart: Deep copy =====
+setCart(list: any[]) {
+    this.cart.next(list.map((item: any) => ({ ...item })));
+}
 
-  resetCart(){
-    let listCart:any = [];
+// ===== removeCart: COPIA (filter crea nuevo array) =====
+removeCart(DATA: any) {
+    let listCart = this.cart.getValue().filter((item: any) => item.id != DATA.id);
     this.cart.next(listCart);
-  }
+}
 
-  removeCart(DATA:any){
-    let listCart = this.cart.getValue();
-    let INDEX = listCart.findIndex((item:any) => item.id == DATA.id);
-    if(INDEX != -1){
-      listCart.splice(INDEX,1)
-    }
-    this.cart.next(listCart);
-  }
+// ===== resetCart =====
+resetCart() {
+    this.cart.next([]);
+    // NO limpiar shippingCost aqui, se maneja aparte
+}
+clearCart(){
+  this.cart.next([]);
+}
 
   //FUNCIONES A NIVEL DE BACKEND
 
@@ -121,7 +100,11 @@ export class CartService {
     let URL = URL_SERVICIOS+"/ecommerce/carts/remove_costo";
     return this.http.post(URL, {}, {headers: headers});
   }
-
+validateStock(){
+    let headers = new HttpHeaders({'Authorization': 'Bearer '+this.authService.token});
+    let URL = URL_SERVICIOS+"/ecommerce/carts/validate-stock";
+    return this.http.get(URL, {headers: headers});
+  }
   checkout(data:any){
     let headers = new HttpHeaders({'Authorization': 'Bearer '+this.authService.token});
     let URL = URL_SERVICIOS+"/ecommerce/checkout";

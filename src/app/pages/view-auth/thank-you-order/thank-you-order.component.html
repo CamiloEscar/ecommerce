@@ -65,7 +65,14 @@
                           <div class="col-sm-6">
                              <div class="tp-order-details-item">
                                 <h4>Metodo de pago:</h4>
-                                <p>{{ORDER_SELECTED.method_payment}}</p>
+                                <p>
+                                  @if(ORDER_SELECTED.method_payment == 'MERCADOPAGO'){
+                                    Mercado Pago
+                                  }
+                                  @if(ORDER_SELECTED.method_payment == 'TRANSFERENCIA'){
+                                    Transferencia bancaria
+                                  }
+                                </p>
                              </div>
                           </div>
                        </div>
@@ -76,50 +83,98 @@
                  <div class="tp-order-info-wrapper">
                     <h4 class="tp-order-info-title">Detalle de orden</h4>
 
-                    <div class="tp-order-info-list">
-                       <ul>
-
-                          <!-- header -->
-                          <li class="tp-order-info-list-header">
-                             <h4>Product</h4>
-                             <h4>Total</h4>
-                          </li>
-
-                          <!-- item list -->
-                           @for(sale_detail of ORDER_SELECTED.sale_details; track sale_detail.id){
-
-                             <li class="tp-order-info-list-desc">
-                               <p><small>{{sale_detail.product.title}}<span> x {{sale_detail.quantity}}</span></small></p>
-                               <span style="display: flex; white-space: nowrap;"> <small>{{sale_detail.total}} {{sale_detail.currency}}</small></span>
-                              </li>
-                            }
-
-                          <!-- subtotal -->
-                          <li class="tp-order-info-list-subtotal">
-                             <span>Subtotal</span>
-                             <span>{{ORDER_SELECTED.total}} {{ORDER_SELECTED.currency_payment}}</span>
-                          </li>
-
-                          <!-- shipping -->
-                       <!-- shipping -->
-                       <li class="tp-order-info-list-shipping">
-                          <span>Envio</span>
-                          <div class="tp-order-info-list-shipping-item d-flex flex-column align-items-end">
-                             <span>
-                                <input id="shipping_info" type="checkbox">
-                                <label for="shipping_info">Flete: <span>$00.00</span></label>
-                             </span>
-                          </div>
-                       </li>
-
-                          <!-- total -->
-                          <li class="tp-order-info-list-total">
-                             <span>Total</span>
-                             <span>${{ORDER_SELECTED.total}} {{ORDER_SELECTED.currency_payment}}</span>
-                          </li>
-                       </ul>
+                    <!-- datos del cliente -->
+                    <div class="mb-4">
+                      <h5 class="fw-bold">Datos del cliente</h5>
+                      <p class="mb-1">
+                        {{ORDER_SELECTED.sale_address.name}}
+                        {{ORDER_SELECTED.sale_address.surname}}
+                      </p>
+                      <p class="mb-1">{{ORDER_SELECTED.sale_address.email}}</p>
+                      <p class="mb-1">{{ORDER_SELECTED.sale_address.phone}}</p>
                     </div>
-                 </div>
+
+                    <!-- direccion -->
+                    <div class="mb-4">
+                      <h5 class="fw-bold">Dirección de envío</h5>
+                      <p class="mb-1">{{ORDER_SELECTED.sale_address.address}}</p>
+                      <p class="mb-1">
+                        {{ORDER_SELECTED.sale_address.city}},
+                        {{ORDER_SELECTED.sale_address.country_region}}
+                      </p>
+                      <p class="mb-1">
+                        CP: {{ORDER_SELECTED.sale_address.postcode_zip}}
+                      </p>
+                    </div>
+
+                    <div class="tp-order-info-list">
+                      <ul>
+
+                        <!-- header -->
+                        <li class="tp-order-info-list-header">
+                          <h4>Producto</h4>
+                          <h4>Total</h4>
+                        </li>
+
+                        <!-- item list -->
+                        @for(sale_detail of ORDER_SELECTED.sale_details; track sale_detail.id){
+                          <li class="tp-order-info-list-desc d-flex align-items-center justify-content-between">
+
+                            <div class="d-flex align-items-center gap-2">
+                              <img
+                                [src]="sale_detail.product.imagen"
+                                style="width:40px; height:40px; object-fit:cover; border-radius:6px;"
+                              />
+                              <div>
+                                <small class="d-block">{{sale_detail.product.title}}</small>
+                                <small class="text-muted">
+                                  {{sale_detail.quantity}} x {{sale_detail.price_unit}} {{sale_detail.currency}}
+                                </small>
+
+                                @if(sale_detail.discount > 0){
+                                  <small class="text-success d-block">
+                                    -{{sale_detail.discount}}% aplicado
+                                  </small>
+                                }
+                              </div>
+                            </div>
+
+                            <span>
+                              <small>
+                                {{sale_detail.total}} {{sale_detail.currency}}
+                              </small>
+                            </span>
+                          </li>
+                        }
+
+                        <!-- subtotal -->
+                        <li class="tp-order-info-list-subtotal">
+                          <span>Subtotal</span>
+                          <span>
+                            {{ORDER_SELECTED.subtotal}} {{ORDER_SELECTED.currency_payment}}
+                          </span>
+                        </li>
+
+                        <!-- descuento -->
+                        @if(ORDER_SELECTED.discount > 0){
+                          <li class="tp-order-info-list-subtotal text-success">
+                            <span>Descuento</span>
+                            <span>
+                              -{{ORDER_SELECTED.discount}} {{ORDER_SELECTED.currency_payment}}
+                            </span>
+                          </li>
+                        }
+
+                        <!-- total -->
+                        <li class="tp-order-info-list-total">
+                          <span>Total pagado</span>
+                          <span>
+                            {{ORDER_SELECTED.total}} {{ORDER_SELECTED.currency_payment}}
+                          </span>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
               </div>
            </div>
         </div>

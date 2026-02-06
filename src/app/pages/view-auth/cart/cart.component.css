@@ -1,0 +1,65 @@
+/* Alerta de stock */
+.stock-alert {
+  background-color: #fff3cd;
+  border: 1px solid #ffc107;
+  border-radius: 4px;
+  color: #856404;
+  display: inline-block;
+  max-width: 100%;
+}
+
+.stock-alert i {
+  margin-right: 5px;
+}
+
+/* Botones deshabilitados cuando no hay stock */
+.tp-cart-minus.disabled,
+.tp-cart-plus.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Botón de checkout deshabilitado */
+.tp-cart-checkout-btn.disabled-btn {
+  background-color: #6c757d !important;
+  border-color: #6c757d !important;
+  cursor: not-allowed !important;
+  opacity: 0.6;
+}
+
+.tp-cart-checkout-btn.disabled-btn:hover {
+  background-color: #6c757d !important;
+  border-color: #6c757d !important;
+}
+
+/* Alertas personalizadas */
+.alert {
+  padding: 12px 15px;
+  border-radius: 5px;
+  margin-bottom: 15px;
+}
+
+.alert-danger {
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+  color: #721c24;
+}
+
+.alert-warning {
+  background-color: #fff3cd;
+  border: 1px solid #ffc107;
+  color: #856404;
+}
+
+.alert-success {
+  background-color: #d4edda;
+  border: 1px solid #c3e6cb;
+  color: #155724;
+}
+
+.alert-info {
+  background-color: #d1ecf1;
+  border: 1px solid #bee5eb;
+  color: #0c5460;
+}
