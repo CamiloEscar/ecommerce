@@ -53,7 +53,7 @@
                              <!-- Aviso de envío gratis por producto -->
                              <ng-container *ngIf="cart.product && cart.product.cost == 1">
                                <br>
-                               <span class="badge bg-success" style="font-size: 0.85rem; margin-top: 5px;">✓ Envío GRATIS</span>
+                               <span class="badge bg-success" style="font-size: 0.85rem; margin-top: 5px;">  ✓ Envío GRATIS</span>
                              </ng-container>
 
                              <!-- INDICADOR DE STOCK -->
@@ -82,7 +82,7 @@
                                </ng-container>
                                <ng-container *ngIf="cart.code_cupon">
                                  <br>
-                                 <span class="cartmini__quantity mx-2">• Cupon: {{cart.code_cupon}}</span>
+                                 <span class="cartmini__quantity mx-2">• Cupón: {{cart.code_cupon}}</span>
                                </ng-container>
                                <ng-container *ngIf="cart.code_discount">
                                  <br>
@@ -152,7 +152,7 @@
                        <div class="tp-cart-coupon">
                           <form action="#">
                              <div class="tp-cart-coupon-input-box">
-                                <label>Cupon:</label>
+                                <label>Cupón:</label>
                                 <div class="tp-cart-coupon-input d-flex align-items-center">
                                    <input type="text" name="code_cupon" [(ngModel)]="code_cupon" placeholder="Colocar codigo del cupon">
                                    <button type="button" (click)="applyCupon()">Aplicar</button>
