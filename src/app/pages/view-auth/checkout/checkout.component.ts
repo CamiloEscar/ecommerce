@@ -8,7 +8,7 @@ import { Router, RouterModule } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { DolarService } from '../service/dolar.service';
 
-declare var paypal:any;
+// declare var paypal:any;
 declare var MercadoPago:any;
 @Component({
   selector: 'app-checkout',
@@ -42,6 +42,22 @@ export class CheckoutComponent {
   PREFERENCE_ID:string = '';
 
   price_dolar:number = 1500;
+
+  paymentAliasList = [
+  'FUNKO.PAGO.OFICIAL',
+  'POPFUN.TRANSFER',
+  'FUNKO.STORE.PAY',
+  'POP.COLLECTOR.AR',
+  'FUNKO.VERSE.PAGO',
+  'POP.MANIA.CBU',
+  'FUNKO.LAND.PAY',
+  'POP.HEROES.TRANSFER',
+  'FUNKO.POP.SHOP',
+  'POP.UNIVERSE.AR'
+];
+
+paymentAlias: string = '';
+
   constructor(
     public cartService: CartService,
     public cookieService: CookieService,
@@ -70,186 +86,116 @@ export class CheckoutComponent {
     this.cartService.currentDataCart$.subscribe((resp:any)=>{
       this.listCarts = resp;
       this.totalCarts = Number(this.listCarts.reduce((sum:number, item:any) => sum + item.total, 0 ).toFixed(2));
+      this.generatePaymentAlias();
     })
 
-    paypal.Buttons({
-      // optional styling for buttons
-      // https://developer.paypal.com/docs/checkout/standard/customize/buttons-style-guide/
-      style: {
-        color: "gold",
-        shape: "rect",
-        layout: "vertical"
-      },
+    // paypal.Buttons({
+    //   // optional styling for buttons
+    //   // https://developer.paypal.com/docs/checkout/standard/customize/buttons-style-guide/
+    //   style: {
+    //     color: "gold",
+    //     shape: "rect",
+    //     layout: "vertical"
+    //   },
 
-      // set up the transaction
-      createOrder: (data:any, actions:any) => {
-          // pass in any options from the v2 orders create call:
-          // https://developer.paypal.com/api/orders/v2/#orders-create-request-body
-        console.log(this.totalPaypal())
-          if(this.totalCarts == 0){
-            this.toastr.error("Validacion", "No puedes procesar el pago con un monto de 0")
-            return;
-          }
+    //   // set up the transaction
+    //   createOrder: (data:any, actions:any) => {
+    //       // pass in any options from the v2 orders create call:
+    //       // https://developer.paypal.com/api/orders/v2/#orders-create-request-body
+    //     console.log(this.totalPaypal())
+    //       if(this.totalCarts == 0){
+    //         this.toastr.error("Validacion", "No puedes procesar el pago con un monto de 0")
+    //         return;
+    //       }
 
-          if(this.listCarts.length == 0){
-            this.toastr.error("Validacion", "No puedes procesar el pago si no tienes nada cargado")
-            return;
-          }
+    //       if(this.listCarts.length == 0){
+    //         this.toastr.error("Validacion", "No puedes procesar el pago si no tienes nada cargado")
+    //         return;
+    //       }
 
-          if(
-            !this.name ||
-            !this.surname ||
-            !this.company ||
-            !this.country_region ||
-            !this.address ||
-            !this.street ||
-            !this.city ||
-            !this.postcode_zip ||
-            !this.phone ||
-            !this.email
-          ){
-            this.toastr.error("Validacion", "Todos los campos de la direccion son necesarios");
-            return;
-          }
+    //       if(
+    //         !this.name ||
+    //         !this.surname ||
+    //         !this.company ||
+    //         !this.country_region ||
+    //         !this.address ||
+    //         !this.street ||
+    //         !this.city ||
+    //         !this.postcode_zip ||
+    //         !this.phone ||
+    //         !this.email
+    //       ){
+    //         this.toastr.error("Validacion", "Todos los campos de la direccion son necesarios");
+    //         return;
+    //       }
 
-          const createOrderPayload = {
-            purchase_units: [
-              {
-                amount: {
-                    description: "COMPRAR POR EL FUNKO ECOMMERCE",
-                    value: this.totalPaypal(),
-                }
-              }
-            ]
-          };
+    //       const createOrderPayload = {
+    //         purchase_units: [
+    //           {
+    //             amount: {
+    //                 description: "COMPRAR POR EL FUNKO ECOMMERCE",
+    //                 value: this.totalPaypal(),
+    //             }
+    //           }
+    //         ]
+    //       };
 
-          return actions.order.create(createOrderPayload);
-      },
+    //       return actions.order.create(createOrderPayload);
+    //   },
 
-      // finalize the transaction
-      onApprove: async (data:any, actions:any) => {
+    //   // finalize the transaction
+    //   onApprove: async (data:any, actions:any) => {
 
-          let Order = await actions.order.capture();
-          // Order.purchase_units[0].payments.captures[0].id
+    //       let Order = await actions.order.capture();
+    //       // Order.purchase_units[0].payments.captures[0].id
 
-          let dataSale = {
-            method_payment: 'PAYPAL',
-            currency_total: this.currency,
-            currency_payment: 'USD',
-            discount: 0,
-            subtotal: this.totalPaypal(),
-            total: this.totalPaypal(),
-            price_dolar: 0,
-            n_transaccion: Order.purchase_units[0].payments.captures[0].id,
-            description: this.description,
-            sale_address: {
-              name: this.name,
-              surname: this.surname,
-              company: this.company,
-              country_region: this.country_region,
-              address: this.address,
-              street: this.street,
-              city: this.city,
-              postcode_zip: this.postcode_zip,
-              phone: this.phone,
-              email: this.email,
-            }
-          }
-          this.cartService.checkout(dataSale).subscribe((resp:any) =>{
-            console.log(resp)
-            this.toastr.success("Exito", "Compra realizada");
-            this.cartService.resetCart();
-            setTimeout(() => {
-              this.router.navigateByUrl("/gracias-por-tu-compra/"+Order.purchase_units[0].payments.captures[0].id)
-            }, 50);
-            //TODO: redireccion a la pagina de gracias
-          })
-
-          // return actions.order.capture().then(captureOrderHandler);
-      },
-
-      // handle unrecoverable errors
-      onError: (err:any) => {
-          console.error('An error prevented the buyer from checking out with PayPal');
-      }
-    }).render(this.paypalElement?.nativeElement);
-    }
-    // openMercadoPago(){
-    //   if(this.totalCarts == 0){
-    //     this.toastr.error("Validacion", "No puedes procesar el pago con un monto de 0")
-    //     return;
-    //   }
-
-    //   if(this.listCarts.length == 0){
-    //     this.toastr.error("Validacion", "No puedes procesar el pago si no tienes nada cargado")
-    //     return;
-    //   }
-
-    //   if(
-    //     !this.name ||
-    //     !this.surname ||
-    //     !this.company ||
-    //     !this.country_region ||
-    //     !this.address ||
-    //     !this.street ||
-    //     !this.city ||
-    //     !this.postcode_zip ||
-    //     !this.phone ||
-    //     !this.email
-    //   ){
-    //     this.toastr.error("Validacion", "Todos los campos de la direccion son necesarios");
-    //     return;
-    //   }
-    //   this.cartService.mercadopago(this.totalCarts).subscribe((resp:any) => {
-    //     //console.log(resp);
-
-    //   this.PREFERENCE_ID = resp.preference.id;
-    //   let data = {
-    //     description: this.description,
-    //     sale_address: {
-    //       name: this.name,
-    //       surname: this.surname,
-    //       company: this.company,
-    //       country_region: this.country_region,
-    //       address: this.address,
-    //       street: this.street,
-    //       city: this.city,
-    //       postcode_zip: this.postcode_zip,
-    //       phone: this.phone,
-    //       email: this.email,
-    //     }
-    //   }
-
-    //   this.cartService.storeTemp(data).subscribe((resp:any)=> {
-
-    //     const mp = new MercadoPago('TEST-8d1841e1-ba74-4790-a451-60adea26788b')
-    //     const bricksBuilder = mp.bricks();
-
-    //     mp.bricks().create("wallet", "wallet_container", {
-    //       initialization: {
-    //           preferenceId: this.PREFERENCE_ID,
-    //       },
-    //     });
-    //     mp.checkout({
-    //       preference: {
-    //         id: this.PREFERENCE_ID,
-    //       },
-    //       render: {
-    //         container: "#wallet_container",
-    //         label: "Pagar",
-    //       },
-    //       callback: (response:any) => {
-    //         console.log(response);
-    //         if (response.status === 'approved') {
-    //           console.log('Pago aprobado. Detalles:', response);
-    //         } else {
-    //           console.log('Pago no aprobado o cancelado. Detalles:', response);
+    //       let dataSale = {
+    //         method_payment: 'PAYPAL',
+    //         currency_total: this.currency,
+    //         currency_payment: 'USD',
+    //         discount: 0,
+    //         subtotal: this.totalPaypal(),
+    //         total: this.totalPaypal(),
+    //         price_dolar: 0,
+    //         n_transaccion: Order.purchase_units[0].payments.captures[0].id,
+    //         description: this.description,
+    //         sale_address: {
+    //           name: this.name,
+    //           surname: this.surname,
+    //           company: this.company,
+    //           country_region: this.country_region,
+    //           address: this.address,
+    //           street: this.street,
+    //           city: this.city,
+    //           postcode_zip: this.postcode_zip,
+    //           phone: this.phone,
+    //           email: this.email,
     //         }
-    //       },
-    //     })
-    //     });
-    //   })
-    // }
+    //       }
+    //       this.cartService.checkout(dataSale).subscribe((resp:any) =>{
+    //         console.log(resp)
+    //         this.toastr.success("Exito", "Compra realizada");
+    //         this.cartService.resetCart();
+    //         setTimeout(() => {
+    //           this.router.navigateByUrl("/gracias-por-tu-compra/"+Order.purchase_units[0].payments.captures[0].id)
+    //         }, 50);
+    //         //TODO: redireccion a la pagina de gracias
+    //       })
+
+    //       // return actions.order.capture().then(captureOrderHandler);
+    //   },
+
+    //   // handle unrecoverable errors
+    //   onError: (err:any) => {
+    //       console.error('An error prevented the buyer from checking out with PayPal');
+    //   }
+    // }).render(this.paypalElement?.nativeElement);
+    }
+    generatePaymentAlias() {
+  const index = Math.floor(Math.random() * this.paymentAliasList.length);
+  this.paymentAlias = this.paymentAliasList[index];
+}
+
     openMercadoPago(){
   if(this.totalCarts == 0){
     this.toastr.error("Validacion", "No puedes procesar el pago con un monto de 0")
@@ -321,13 +267,13 @@ export class CheckoutComponent {
     this.toastr.error("Error", "No se pudieron guardar los datos");
   });
 }
-  totalPaypal(){
-    if(this.currency == 'USD'){
-      return this.totalCarts;
-    } else {
-      return (this.totalCarts / this.price_dolar).toFixed(2);
-    }
-  }
+  // totalPaypal(){
+  //   if(this.currency == 'USD'){
+  //     return this.totalCarts;
+  //   } else {
+  //     return (this.totalCarts / this.price_dolar).toFixed(2);
+  //   }
+  // }
 
 
   registerAddress(){
@@ -434,69 +380,105 @@ export class CheckoutComponent {
     this.email = '';
   }
 
-get subtotalOriginal(): number {
-  return Number(
-    this.listCarts
-      .reduce((sum: number, item: any) => sum + Number(item.total), 0)
-      .toFixed(2)
-  );
-}
-get subtotalAfterDiscount(): number {
-  // hoy no hay descuentos reales → es igual al subtotal
-  return this.subtotalOriginal;
-}
+  // ========== CÁLCULOS MEJORADOS Y DETALLADOS ==========
 
-get discountTotal(): number {
-  return Number(
-    (this.subtotalOriginal - this.subtotalAfterDiscount).toFixed(2)
-  );
-}
-
-get grandTotal(): number {
-  return Number(
-    (this.subtotalAfterDiscount + this.shippingCostValue).toFixed(2)
-  );
-}
-
-get hasFreeShipping(): boolean {
-  if (!this.listCarts || this.listCarts.length === 0) {
-    return false;
+  // Subtotal SIN descuentos (precio original * cantidad)
+  get subtotalOriginal(): number {
+    return Number(
+      this.listCarts
+        .filter((item: any) => item.id !== 'SHIPPING') // Excluir item de envío si existe
+        .reduce((sum: number, item: any) => {
+          // Usar price_unit si existe (precio original), sino usar subtotal
+          const precioUnitario = item.price_unit ?? item.subtotal;
+          return sum + (precioUnitario * item.quantity);
+        }, 0)
+        .toFixed(2)
+    );
   }
 
-  // PRIORIDAD ABSOLUTA:
-  // si el producto tiene cost = 1 → envío gratis
-  // NO importa categoría, marca ni reglas externas
-  return this.listCarts.every(
-    (item: any) => item.product && item.product.cost == 1
-  );
-}
-get shippingCostValue(): number {
-  // PRIORIDAD ABSOLUTA: si todos los productos son envío gratis
-  if (this.hasFreeShipping) {
+  // Subtotal CON descuentos aplicados (después de cupones/campañas)
+  get subtotalAfterDiscount(): number {
+    return Number(
+      this.listCarts
+        .filter((item: any) => item.id !== 'SHIPPING') // Excluir item de envío si existe
+        .reduce((sum: number, item: any) => sum + Number(item.total || 0), 0)
+        .toFixed(2)
+    );
+  }
+
+  // Total de descuentos aplicados
+  get discountTotal(): number {
+    const disc = this.subtotalOriginal - this.subtotalAfterDiscount;
+    return Number((disc > 0 ? disc : 0).toFixed(2));
+  }
+
+  // Obtener código de cupón/campaña global si existe
+  get globalCouponCode(): string | null {
+    const found = this.listCarts.find((i: any) => i.code_cupon || i.code_discount);
+    return found ? (found.code_cupon || found.code_discount) : null;
+  }
+
+  // Obtener tipo de descuento
+  get discountType() {
+    const found = this.listCarts.find((i: any) => i.code_cupon || i.code_discount);
+    if (!found) return null;
+    return {
+      type: found.type_discount, // 1 = porcentaje, 2 = monto fijo
+      value: found.discount,
+      isPercentage: found.type_discount == 1
+    };
+  }
+
+  // Verificar si TODOS los productos tienen envío gratis (cost = 1)
+  get hasFreeShipping(): boolean {
+    if (!this.listCarts || this.listCarts.length === 0) {
+      return false;
+    }
+
+    return this.listCarts
+      .filter((item: any) => item.id !== 'SHIPPING')
+      .every((item: any) => item.product && item.product.cost == 1);
+  }
+
+  // Costo de envío
+  get shippingCostValue(): number {
+    // Si todos los productos tienen envío gratis, el costo es 0
+    if (this.hasFreeShipping) {
+      return 0;
+    }
+
+    // Buscar si existe un item de envío en el carrito
+    const shippingItem = this.listCarts.find(
+      (item: any) => item.id === 'SHIPPING'
+    );
+
+    if (shippingItem) {
+      return Number(shippingItem.total || 0);
+    }
+
+    // Si hay costo de envío en el servicio
+    if (this.cartService.shippingCost !== null && this.cartService.shippingCost !== undefined) {
+      return Number(this.cartService.shippingCost);
+    }
+
     return 0;
   }
 
-  // Buscar si existe un item de envío en el carrito (si el backend lo agrega)
-  const shippingItem = this.listCarts.find(
-    (item: any) => item.id === 'SHIPPING'
-  );
-
-  if (shippingItem) {
-    return Number(shippingItem.total || 0);
+  // Total final (subtotal con descuento + envío)
+  get grandTotal(): number {
+    return Number(
+      (this.subtotalAfterDiscount + this.shippingCostValue).toFixed(2)
+    );
   }
 
-  // Fallback seguro
-  return 0;
-}
-get hasSomeFreeShipping(): boolean {
-  if (!this.listCarts || this.listCarts.length === 0) {
-    return false;
+  // Verificar si AL MENOS UN producto tiene envío gratis
+  get hasSomeFreeShipping(): boolean {
+    if (!this.listCarts || this.listCarts.length === 0) {
+      return false;
+    }
+
+    return this.listCarts
+      .filter((item: any) => item.id !== 'SHIPPING')
+      .some((item: any) => item.product && Number(item.product.cost) === 1);
   }
-
-  return this.listCarts.some(
-    (item: any) => item.product && Number(item.product.cost) === 1
-  );
-}
-
-
 }

@@ -138,5 +138,30 @@ getUserAvatar(): string | null {
     || this.imagen_previsualizacion
     || null;
 }
+goToCart(){
+  this.cartService.listCart().subscribe({
+    next: (resp:any) => {
+
+      // 🔥 limpiar carrito actual
+      this.cartService.clearCart();
+
+      // 🔥 volver a cargar desde backend
+      resp.carts.data.forEach((cart:any) => {
+        this.cartService.changeCart(cart);
+      });
+
+      // 👉 ahora sí navegamos
+      this.router.navigate(['/carrito-de-compra']);
+    },
+    error: () => {
+      this.router.navigate(['/carrito-de-compra']);
+    }
+  });
+}
+buscarPorCategorias(name: string) {
+  this.router.navigate(['/productos-busqueda'], {
+    queryParams: { search: name }
+  });
+}
 
 }
