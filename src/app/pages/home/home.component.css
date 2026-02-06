@@ -310,3 +310,481 @@
   cursor: not-allowed !important;
   opacity: 0.6;
 }
+/* Estilos para productos sin stock */
+.tp-product-item.no-stock {
+  opacity: 0.6;
+}
+
+.tp-product-item.no-stock .tp-product-thumb img {
+  filter: grayscale(100%);
+}
+
+.tp-product-badge {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.tp-product-badge .product-out-of-stock {
+  background-color: #dc3545;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  display: inline-block;
+}
+
+.tp-product-badge .product-free-shipping {
+  background-color: #28a745;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  display: inline-block;
+}
+
+.btn-sin-stock {
+  opacity: 0.5;
+  cursor: not-allowed !important;
+}
+
+.btn-sin-stock:hover {
+  background-color: inherit !important;
+}
+.tp-product-badge.badge-left {
+  left: 20px;
+  right: auto;
+}
+
+.tp-product-badge.badge-right {
+  right: 20px;
+  left: auto;
+}
+
+/* opcional: apilar varios badges */
+.tp-product-badge {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+/* Primer badge */
+.tp-product-badge.badge-top {
+  top: 16px;
+}
+
+.tp-product-badge.badge-bottom {
+  bottom: 16px;
+  top: auto;
+}
+
+/* Segundo badge, un poco más abajo */
+.tp-product-badge.badge-below {
+  top: 48px; /* ajusta este valor a tu gusto */
+}
+
+/* Opcional: ordenar los spans */
+.tp-product-badge {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* overlay oscuro para legibilidad */
+.tp-banner-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to right,
+    rgba(0, 0, 0, 0.55),
+    rgba(0, 0, 0, 0.15)
+  );
+  z-index: 1;
+}
+
+/* contenido arriba del overlay */
+.tp-banner-content-modern {
+  position: relative;
+  z-index: 2;
+  max-width: 420px;
+}
+
+/* subtítulo */
+.tp-banner-subtitle {
+  display: inline-block;
+  background: rgba(255, 255, 255, 0.15);
+  padding: 6px 12px;
+  border-radius: 20px;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+/* título */
+.tp-banner-title {
+  color: #fff;
+  font-size: 34px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.tp-banner-title a {
+  color: #fff;
+}
+
+/* botón moderno */
+.tp-btn-modern {
+  display: inline-block;
+  background: #ff497c;
+  color: #fff;
+  padding: 12px 22px;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: 0.3s;
+  text-decoration: none;
+}
+
+.tp-btn-modern:hover {
+  background: #e13a68;
+  transform: translateY(-2px);
+}
+.promo-badge {
+  top: 30px;
+  left: 30px;
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.25);
+  animation: promoPulse 2s infinite;
+  z-index: 5;
+}
+
+.promo-badge-sm {
+  width: 90px;
+  height: 90px;
+  top: 20px;
+  left: 20px;
+}
+
+.promo-text {
+  font-size: 11px;
+  letter-spacing: 1px;
+  font-weight: 600;
+  opacity: 0.9;
+}
+
+.promo-percent {
+  font-size: 28px;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.promo-badge-sm .promo-percent {
+  font-size: 22px;
+}
+
+@keyframes promoPulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.25);
+  }
+  50% {
+    transform: scale(1.08);
+    box-shadow: 0 12px 35px rgba(0,0,0,0.35);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.25);
+  }
+}
+/* Banner general */
+.promo-banner {
+  border-radius: 14px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.promo-banner:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 18px 40px rgba(0,0,0,0.25);
+}
+
+.promo-banner:hover .tp-banner-thumb {
+  transform: scale(1.05);
+}
+
+/* Overlay degradado */
+.promo-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    120deg,
+    rgba(0,0,0,0.55) 0%,
+    rgba(0,0,0,0.25) 40%,
+    rgba(0,0,0,0.05) 100%
+  );
+  z-index: 1;
+}
+
+/* Contenido encima */
+.tp-banner-content {
+  position: relative;
+  z-index: 2;
+}
+
+/* Badge promocional */
+.promo-badge {
+  top: 25px;
+  left: 25px;
+  width: 115px;
+  height: 115px;
+  border-radius: 50%;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border: 4px solid rgba(255,255,255,0.35);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+  animation: promoPulse 2s infinite;
+  z-index: 5;
+}
+
+.promo-badge-sm {
+  width: 90px;
+  height: 90px;
+}
+
+.promo-text {
+  font-size: 11px;
+  letter-spacing: 1px;
+  font-weight: 600;
+}
+
+.promo-percent {
+  font-size: 30px;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.promo-badge-sm .promo-percent {
+  font-size: 22px;
+}
+
+/* Botón moderno */
+.promo-btn {
+  background: #fff;
+  color: #000;
+  font-weight: 600;
+  padding: 10px 22px;
+  border-radius: 30px;
+  transition: all 0.25s ease;
+}
+
+.promo-btn:hover {
+  background: #000;
+  color: #fff;
+}
+
+/* Animación */
+@keyframes promoPulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.08); }
+  100% { transform: scale(1); }
+}
+.tp-banner-title a {
+  text-shadow: 0 4px 14px rgba(0,0,0,0.5);
+}
+
+.tp-banner-title-bg {
+  display: inline-block;
+  padding: 10px 18px;
+  border-radius: 10px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+  animation: bannerPulse 2.5s infinite;
+}
+
+.tp-banner-title-bg a {
+  color: #000 !important;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* animación sutil de promo */
+@keyframes bannerPulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.03);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+.tp-banner-badge {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  background: #000;
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+}
+/* subtitulo tipo etiqueta */
+.tp-banner-label {
+  background: rgba(0,0,0,0.6);
+  color: #fff;
+  padding: 6px 14px;
+  border-radius: 30px;
+  font-size: 13px;
+  display: inline-block;
+  margin-bottom: 12px;
+  backdrop-filter: blur(6px);
+}
+
+/* caja del titulo */
+.tp-banner-title-box {
+  display: inline-block;
+  background: rgba(255,255,255,0.85);
+  padding: 10px 18px;
+  border-radius: 14px;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+}
+
+/* titulo */
+.tp-banner-title-box a {
+  color: #111 !important;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}
+
+/* boton moderno */
+.tp-btn-modern {
+  display: inline-block;
+  background: linear-gradient(135deg, #ff3c3c, #ff0000);
+  color: #fff !important;
+  padding: 10px 22px;
+  border-radius: 40px;
+  font-weight: 600;
+  transition: 0.3s;
+}
+
+.tp-btn-modern:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+}
+
+/* Estilos para integrar tp-feature con tp-products */
+.tp-feature-item {
+  background: #fff;
+  border: 1px solid #eaeaea;
+  border-radius: 8px;
+  padding: 30px 20px;
+  text-align: center;
+  transition: all 0.3s ease;
+  height: 100%;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.tp-feature-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+  border-color: #4a90e2;
+}
+
+.tp-feature-icon-wrapper {
+  width: 70px;
+  height: 70px;
+  margin: 0 auto 20px;
+  background: linear-gradient(135deg, #4a90e2 0%, #357abd 100%);
+  border-radius: 50%;
+  padding: 15px;
+  transition: all 0.3s ease;
+}
+
+.tp-feature-item:hover .tp-feature-icon-wrapper {
+  background: linear-gradient(135deg, #357abd 0%, #2a5f9e 100%);
+  transform: scale(1.1);
+}
+
+.tp-feature-icon svg {
+  width: 30px;
+  height: 30px;
+  color: white;
+}
+
+.tp-feature-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 10px;
+  transition: color 0.3s ease;
+}
+
+.tp-feature-item:hover .tp-feature-title {
+  color: #4a90e2;
+}
+
+.tp-feature-text {
+  font-size: 14px;
+  color: #666;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Título de sección (igual que en tp-products) */
+.tp-section-title-wrapper {
+  position: relative;
+  padding-bottom: 15px;
+}
+
+.tp-section-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #333;
+  position: relative;
+  display: inline-block;
+  margin-bottom: 0;
+}
+
+.tp-section-title svg {
+  position: absolute;
+  bottom: -10px;
+  left: 0;
+  width: 100%;
+  color: #4a90e2;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .tp-feature-item {
+    padding: 20px 15px;
+  }
+
+  .tp-feature-icon-wrapper {
+    width: 60px;
+    height: 60px;
+    padding: 12px;
+  }
+
+  .tp-feature-icon svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  .tp-section-title {
+    font-size: 24px;
+  }
+}

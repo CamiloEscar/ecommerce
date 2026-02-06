@@ -158,5 +158,10 @@ goToCart(){
     }
   });
 }
+buscarPorCategorias(name: string) {
+  this.router.navigate(['/productos-busqueda'], {
+    queryParams: { search: name }
+  });
+}
 
 }

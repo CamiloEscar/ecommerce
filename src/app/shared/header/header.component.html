@@ -228,50 +228,69 @@
                           Categorias
                        </button>
                        <nav class="tp-category-menu-content">
-                        <ul>
-                          @for(MENU_CAT of categories_menus; track MENU_CAT.id) {
-                            @if(MENU_CAT.categories.length == 0){
+  <ul>
+    @for (MENU_CAT of categories_menus; track MENU_CAT.id) {
 
-                              <li>
-                                 <a (click)="buscarPorCategoria(MENU_CAT.name)">
-                                    <span [id]="'icon-' + MENU_CAT.id" class="menu-icon">
-                                       {{getIconMenu(MENU_CAT)}}
-                                    </span>
-                                    {{MENU_CAT.name}}</a>
-                              </li>
-                            }
-                            @if(MENU_CAT.categories.length > 0){
-                              <li class="has-dropdown">
-                                 <a href="#" onclick="return false;" class="has-mega-menu">
-                                    <span [id]="'icon-' + MENU_CAT.id" class="menu-icon" >
-                                       {{getIconMenu(MENU_CAT)}}
-                                    </span>
-                                    {{MENU_CAT.name}}</a>
+      <!-- CATEGORIA SIN SUBCATEGORIAS -->
+      @if (!MENU_CAT.categories || MENU_CAT.categories.length === 0) {
+        <li>
+          <a (click)="buscarPorCategoria(MENU_CAT.name)">
+            <span class="menu-icon" [innerHTML]="MENU_CAT.icon"></span>
+            {{ MENU_CAT.name }}
+          </a>
+        </li>
+      }
 
-                                    <ul class="mega-menu tp-submenu">
-                                      @for(categorie of MENU_CAT.categories; track categorie.id){
-                                        <li>
-                                           <a (click)="buscarPorCategoria(MENU_CAT.categories)" class="mega-menu-title">{{categorie.name}}</a>
-                                           <ul>
-                                              <li *ngIf="categorie.imagen">
-                                                 <a href="#" onclick="return false;"><img [src]="categorie.imagen" alt="" style="width: 247px; height:149px object-fit;"></a>
-                                              </li>
-                                              @for(subcategorie of categorie.subcategories; track subcategorie.id){
-                                                <li>
-                                                   <a (click)="buscarPorCategoria(MENU_CAT.subcategories)">{{subcategorie.name}}</a>
-                                                </li>
-                                              }
-                                           </ul>
-                                        </li>
+      <!-- CATEGORIA CON SUBCATEGORIAS -->
+      @if (MENU_CAT.categories && MENU_CAT.categories.length > 0) {
+        <li class="has-dropdown">
+          <a class="has-mega-menu">
+            <span class="menu-icon" [innerHTML]="MENU_CAT.icon"></span>
+            {{ MENU_CAT.name }}
+          </a>
 
-                                      }
+          <ul class="mega-menu tp-submenu">
+            @for (categorie of MENU_CAT.categories; track categorie.id) {
+              <li>
+                <!-- TITULO DE SUBCATEGORIA -->
+                <a
+                  class="mega-menu-title"
+                  (click)="buscarPorCategorias(categorie.name)"
+                >
+                  {{ categorie.name }}
+                </a>
 
-                                    </ul>
-                              </li>
-                            }
-                          }
-                         </ul>
-                       </nav>
+                <ul>
+                  <!-- Imagen de la categoría -->
+                  @if (categorie.imagen) {
+                    <li>
+                      <img
+                        [src]="categorie.imagen"
+                        alt="{{ categorie.name }}"
+                        style="width:247px;height:149px;object-fit:cover"
+                      />
+                    </li>
+                  }
+
+                  <!-- Subcategorías -->
+                  @for (subcategorie of categorie.subcategories; track subcategorie.id) {
+                    <li>
+                      <a (click)="buscarPorCategorias(subcategorie.name)">
+                        {{ subcategorie.name }}
+                      </a>
+                    </li>
+                  }
+                </ul>
+              </li>
+            }
+          </ul>
+        </li>
+      }
+    }
+  </ul>
+</nav>
+
+
                     </div>
                  </div>
                  <div class="col-xl-6 col-lg-6">
@@ -614,9 +633,8 @@
                        @if(MENU_CAT.categories.length == 0){
                           <li>
                              <a href="#" onclick="return false;" (click)="buscarPorCategoria(MENU_CAT.name)">
-                                <span [id]="'icon-mobile-' + MENU_CAT.id" class="menu-icon">
-                                   {{getIconMenu(MENU_CAT)}}
-                                </span>
+                                <span class="menu-icon" [innerHTML]="MENU_CAT.icon"></span>
+
                                 {{MENU_CAT.name}}
                              </a>
                           </li>
@@ -624,9 +642,8 @@
                        @if(MENU_CAT.categories.length > 0){
                           <li class="has-dropdown">
                              <a href="#" onclick="return false;">
-                                <span [id]="'icon-mobile-' + MENU_CAT.id" class="menu-icon">
-                                   {{getIconMenu(MENU_CAT)}}
-                                </span>
+                                <span class="menu-icon" [innerHTML]="MENU_CAT.icon"></span>
+
                                 {{MENU_CAT.name}}
                              </a>
                              <ul class="tp-submenu">

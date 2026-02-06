@@ -101,6 +101,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
       this.homeService.menus().subscribe((resp:any) => {
         console.log(resp)
         this.categories_menus = resp.categories_menus;
+        //quiero el console.log de los productos
+        console.log(this.DISCOUNT_FLASH_PRODUCT)
       })
       // Initialize sliders after data is loaded
       setTimeout(() => {
@@ -485,4 +487,11 @@ export class HomeComponent implements OnInit, AfterViewInit {
       }, 25);
     }, 100);
   }
+
+hasFreeShipping(product: any): boolean {
+  if (!product) return false;
+
+  // cost = 1 → envío gratis
+  return product.cost === 1;
+}
 }

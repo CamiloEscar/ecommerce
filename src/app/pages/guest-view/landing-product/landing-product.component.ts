@@ -64,6 +64,7 @@ export class LandingProductComponent {
         if(this.DISCOUNT_CAMPAING){
           this.PRODUCT_SELECTED.discount_g = this.DISCOUNT_CAMPAING;
         }
+        console.log(this.PRODUCT_SELECTED)
 
         // Esperar renderizado del DOM antes de instanciar Swiper
       }

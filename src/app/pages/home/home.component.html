@@ -181,12 +181,40 @@
 
   <!-- feature area start -->
 
+<!-- feature area start -->
 <section class="tp-feature-area tp-feature-border-radius pb-70">
-    <div class="container">
-      <div class="row gx-1 gy-1 gy-xl-0">
-        <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6">
-          <div class="tp-feature-item d-flex align-items-start">
-            <div class="tp-feature-icon mr-15">
+  <div class="container">
+    <div class="row">
+      <div class="col-xl-12">
+        <div class="tp-section-title-wrapper mb-40">
+          <h3 class="tp-section-title">
+            ¿Por qué elegirnos?
+
+            <svg
+              width="114"
+              height="35"
+              viewBox="0 0 114 35"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M112 23.275C1.84952 -10.6834 -7.36586 1.48086 7.50443 32.9053"
+                stroke="currentColor"
+                stroke-width="4"
+                stroke-miterlimit="3.8637"
+                stroke-linecap="round"
+              />
+            </svg>
+          </h3>
+        </div>
+      </div>
+    </div>
+
+    <div class="row gx-4 gy-4">
+      <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6">
+        <div class="tp-feature-item p-relative transition-3 mb-25">
+          <div class="tp-feature-icon-wrapper d-flex align-items-center justify-content-center mb-20">
+            <div class="tp-feature-icon">
               <span>
                 <svg
                   width="33"
@@ -226,15 +254,18 @@
                 </svg>
               </span>
             </div>
-            <div class="tp-feature-content">
-              <h3 class="tp-feature-title">Entrega gratis</h3>
-              <p>A todo el pais</p>
-            </div>
+          </div>
+          <div class="tp-feature-content text-center">
+            <h3 class="tp-feature-title mb-2">Entrega gratis</h3>
+            <p class="tp-feature-text">A todo el país</p>
           </div>
         </div>
-        <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6">
-          <div class="tp-feature-item d-flex align-items-start">
-            <div class="tp-feature-icon mr-15">
+      </div>
+
+      <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6">
+        <div class="tp-feature-item p-relative transition-3 mb-25">
+          <div class="tp-feature-icon-wrapper d-flex align-items-center justify-content-center mb-20">
+            <div class="tp-feature-icon">
               <span>
                 <svg
                   width="21"
@@ -260,15 +291,18 @@
                 </svg>
               </span>
             </div>
-            <div class="tp-feature-content">
-              <h3 class="tp-feature-title">Devoluciones</h3>
-              <p>Garantía de devolución</p>
-            </div>
+          </div>
+          <div class="tp-feature-content text-center">
+            <h3 class="tp-feature-title mb-2">Devoluciones</h3>
+            <p class="tp-feature-text">Garantía de devolución</p>
           </div>
         </div>
-        <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6">
-          <div class="tp-feature-item d-flex align-items-start">
-            <div class="tp-feature-icon mr-15">
+      </div>
+
+      <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6">
+        <div class="tp-feature-item p-relative transition-3 mb-25">
+          <div class="tp-feature-icon-wrapper d-flex align-items-center justify-content-center mb-20">
+            <div class="tp-feature-icon">
               <span>
                 <svg
                   width="31"
@@ -322,15 +356,18 @@
                 </svg>
               </span>
             </div>
-            <div class="tp-feature-content">
-              <h3 class="tp-feature-title">Descuento para miembros</h3>
-              <p>Pedido superior a $50.000 ARS</p>
-            </div>
+          </div>
+          <div class="tp-feature-content text-center">
+            <h3 class="tp-feature-title mb-2">Descuento para miembros</h3>
+            <p class="tp-feature-text">Pedido superior a $50.000 ARS</p>
           </div>
         </div>
-        <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6">
-          <div class="tp-feature-item d-flex align-items-start">
-            <div class="tp-feature-icon mr-15">
+      </div>
+
+      <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6">
+        <div class="tp-feature-item p-relative transition-3 mb-25">
+          <div class="tp-feature-icon-wrapper d-flex align-items-center justify-content-center mb-20">
+            <div class="tp-feature-icon">
               <span>
                 <svg
                   width="31"
@@ -356,15 +393,17 @@
                 </svg>
               </span>
             </div>
-            <div class="tp-feature-content">
-              <h3 class="tp-feature-title">Soporte 24/7</h3>
-              <p>Contáctanos</p>
-            </div>
+          </div>
+          <div class="tp-feature-content text-center">
+            <h3 class="tp-feature-title mb-2">Soporte 24/7</h3>
+            <p class="tp-feature-text">Contáctanos</p>
           </div>
         </div>
       </div>
     </div>
-  </section>
+  </div>
+</section>
+<!-- feature area end -->
   <!-- feature area end -->
 
   <!-- product area start -->
@@ -514,32 +553,37 @@
                 <div class="row">
                   @for(TRENDING_PRODUCT of TRENDING_PRODUCTS_NEW;track TRENDING_PRODUCT.id) {
                     <div class="col-xl-3 col-lg-3 col-sm-6 col-12">
-                      <div class="tp-product-item p-relative transition-3 mb-25">
+                      <div class="tp-product-item p-relative transition-3 mb-25"
+                          [ngClass]="{'no-stock': !TRENDING_PRODUCT.stock || TRENDING_PRODUCT.stock <= 0}">
                         <div class="tp-product-thumb p-relative fix m-img">
                           <a target="_blank" [routerLink]="['/producto/'+TRENDING_PRODUCT.slug]">
                             <img
                               [src]="TRENDING_PRODUCT.imagen" style="width:100%; max-width:304px; height:auto; max-height:261px; object-fit:contain"
-                              alt="product-electronic"
+                              alt="product-funkos"
                             />
                           </a>
 
                           <!-- product badge -->
                            @if(TRENDING_PRODUCT.discount_g){
-                             <div class="tp-product-badge">
+                             <div class="tp-product-badge badge-top">
                               @if(TRENDING_PRODUCT.discount_g.type_discount == 1){
 
-                                <span class="product-hot">- {{TRENDING_PRODUCT.discount_g.discount}} %</span>
+                                <span class="product-hot text-center">- {{TRENDING_PRODUCT.discount_g.discount}} %</span>
                               }
                               @if(TRENDING_PRODUCT.discount_g.type_discount == 2){
 
-                                <span class="product-hot">- {{TRENDING_PRODUCT.discount_g.discount}} {{currency}}</span>
+                                <span class="product-hot text-center">- {{TRENDING_PRODUCT.discount_g.discount}} {{currency}}</span>
                               }
-                              @if(!TRENDING_PRODUCT.stock || TRENDING_PRODUCT.stock <= 0){
-                                <span class="product-hot bg-danger">Sin Stock</span>
-                              }
-                             </div>
-
-                           }
+                            </div>
+                          }
+                          <div class="tp-product-badge badge-below">
+                            @if(hasFreeShipping(TRENDING_PRODUCT)){
+                              <span class="product-free-shipping">Envío Gratis</span>
+                            }
+                          @if(!TRENDING_PRODUCT.stock || TRENDING_PRODUCT.stock <= 0){
+                              <span class="product-hot bg-danger">Sin Stock</span>
+                            }
+                            </div>
 
                           <!-- product action -->
                           <div class="tp-product-action">
@@ -729,6 +773,18 @@
                             <span class="tp-product-price new-price mx-1">{{getTotalPriceProduct(TRENDING_PRODUCT)}} {{currency}}</span
                             >
                           </div>
+                          @if(!TRENDING_PRODUCT.stock || TRENDING_PRODUCT.stock <= 0){
+                            <div class="mt-2">
+                              <small class="text-danger fw-bold">Producto sin stock</small>
+                            </div>
+                          }
+
+                          <!-- Indicador de envío gratis -->
+                          @if(hasFreeShipping(TRENDING_PRODUCT)){
+                            <div class="mt-2">
+                              <small class="text-success fw-bold">Envío gratis</small>
+                            </div>
+                          }
                         </div>
                       </div>
                     </div>
@@ -745,30 +801,37 @@
               <div class="row">
                 @for(product of TRENDING_PRODUCTS_FEATURED;track product.id) {
                   <div class="col-xl-3 col-lg-3 col-sm-6 col-12">
-                    <div class="tp-product-item p-relative transition-3 mb-25">
+                    <div class="tp-product-item p-relative transition-3 mb-25"
+                        [ngClass]="{'no-stock': !product.stock || product.stock <= 0}">
                       <div class="tp-product-thumb p-relative fix m-img">
                         <a target="_blank" [routerLink]="['/producto/'+product.slug]">
                           <img
                             [src]="product.imagen" style="width:100%; max-width:304px; height:auto; max-height:261px; object-fit:contain"
-                            alt="product-electronic"
+                            alt="product-funkos"
                           />
                         </a>
 
                         <!-- product badge -->
-                        @if(product.discount_g){
-                          <div class="tp-product-badge">
-                           @if(product.discount_g.type_discount == 1){
+                  @if(product.discount_g){
+                        <div class="tp-product-badge badge-top">
+                        @if(product.discount_g.type_discount == 1){
 
-                             <span class="product-hot">- {{product.discount_g.discount}} %</span>
-                           }
-                           @if(product.discount_g.type_discount == 2){
-
-                             <span class="product-hot">- {{product.discount_g.discount}} {{currency}}</span>
-                           }
-
-                          </div>
-
+                          <span class="product-hot text-center">- {{product.discount_g.discount}} %</span>
                         }
+                        @if(product.discount_g.type_discount == 2){
+
+                          <span class="product-hot text-center">- {{product.discount_g.discount}} {{currency}}</span>
+                        }
+                      </div>
+                    }
+                    <div class="tp-product-badge badge-below">
+                      @if(hasFreeShipping(product)){
+                        <span class="product-free-shipping">Envío Gratis</span>
+                      }
+                    @if(!product.stock || product.stock <= 0){
+                        <span class="product-hot bg-danger">Sin Stock</span>
+                      }
+                      </div>
 
                         <!-- product action -->
                         <div class="tp-product-action">
@@ -776,10 +839,14 @@
                             class="tp-product-action-item d-flex flex-column"
                           >
                             <button
-                              type="button"
-                              class="tp-product-action-btn tp-product-add-cart-btn"
-                              (click)="addCart(product)"
-                            >
+                                type="button"
+                                class="tp-product-action-btn tp-product-add-cart-btn"
+                                (click)="addCart(product)"
+                                [disabled]="!product.stock || product.stock <= 0"
+                                [ngClass]="{
+                                  'btn-sin-stock': !product.stock || product.stock <= 0
+                                }"
+                              >
                               <svg
                                 width="20"
                                 height="20"
@@ -951,6 +1018,18 @@
                           <span class="tp-product-price new-price mx-1">{{getTotalPriceProduct(product)}} {{currency}}</span
                             >
                         </div>
+                        @if(!product.stock || product.stock <= 0){
+                            <div class="mt-2">
+                              <small class="text-danger fw-bold">Producto sin stock</small>
+                            </div>
+                          }
+
+                          <!-- Indicador de envío gratis -->
+                          @if(hasFreeShipping(product)){
+                            <div class="mt-2">
+                              <small class="text-success fw-bold">Envío gratis</small>
+                            </div>
+                          }
                       </div>
                     </div>
                   </div>
@@ -968,30 +1047,37 @@
               <div class="row">
                 @for(product of TRENDING_PRODUCTS_TOP_SELLER;track product.id) {
                   <div class="col-xl-3 col-lg-3 col-sm-6 col-12">
-                    <div class="tp-product-item p-relative transition-3 mb-25">
+                    <div class="tp-product-item p-relative transition-3 mb-25"
+                        [ngClass]="{'no-stock': !product.stock || product.stock <= 0}">
                       <div class="tp-product-thumb p-relative fix m-img">
                         <a target="_blank" [routerLink]="['/producto/'+product.slug]">
                           <img
                             [src]="product.imagen" style="width:100%; max-width:304px; height:auto; max-height:261px; object-fit:contain"
-                            alt="product-electronic"
+                            alt="product-funkos"
                           />
                         </a>
 
                         <!-- product badge -->
-                        @if(product.discount_g){
-                          <div class="tp-product-badge">
-                           @if(product.discount_g.type_discount == 1){
+                       @if(product.discount_g){
+                             <div class="tp-product-badge badge-top">
+                              @if(product.discount_g.type_discount == 1){
 
-                             <span class="product-hot">- {{product.discount_g.discount}} %</span>
-                           }
-                           @if(product.discount_g.type_discount == 2){
+                                <span class="product-hot text-center">- {{product.discount_g.discount}} %</span>
+                              }
+                              @if(product.discount_g.type_discount == 2){
 
-                             <span class="product-hot">- {{product.discount_g.discount}} {{currency}}</span>
-                           }
-
-                          </div>
-
-                        }
+                                <span class="product-hot text-center">- {{product.discount_g.discount}} {{currency}}</span>
+                              }
+                            </div>
+                          }
+                          <div class="tp-product-badge badge-below">
+                            @if(hasFreeShipping(product)){
+                              <span class="product-free-shipping">Envío Gratis</span>
+                            }
+                          @if(!product.stock || product.stock <= 0){
+                              <span class="product-hot bg-danger">Sin Stock</span>
+                            }
+                            </div>
 
                         <!-- product action -->
                         <div class="tp-product-action">
@@ -999,10 +1085,14 @@
                             class="tp-product-action-item d-flex flex-column"
                           >
                             <button
-                              type="button"
-                              class="tp-product-action-btn tp-product-add-cart-btn"
-                              (click)="addCart(product)"
-                            >
+                                type="button"
+                                class="tp-product-action-btn tp-product-add-cart-btn"
+                                (click)="addCart(product)"
+                                [disabled]="!product.stock || product.stock <= 0"
+                                [ngClass]="{
+                                  'btn-sin-stock': !product.stock || product.stock <= 0
+                                }"
+                              >
                               <svg
                                 width="20"
                                 height="20"
@@ -1174,6 +1264,18 @@
                           <span class="tp-product-price new-price mx-1">{{getTotalPriceProduct(product)}} {{currency}}</span
                             >
                         </div>
+                        @if(!product.stock || product.stock <= 0){
+                            <div class="mt-2">
+                              <small class="text-danger fw-bold">Producto sin stock</small>
+                            </div>
+                          }
+
+                          <!-- Indicador de envío gratis -->
+                          @if(hasFreeShipping(product)){
+                            <div class="mt-2">
+                              <small class="text-success fw-bold">Envío gratis</small>
+                            </div>
+                          }
                       </div>
                     </div>
                   </div>
@@ -1190,114 +1292,137 @@
   <!-- product area end -->
 
   <!-- banner area start -->
-  <section class="tp-banner-area pb-70">
-    <div class="container">
-      <div class="row">
-        @for (BANNER of BANNER_SECUNDARIOS; track BANNER.id; let idx = $index) {
-          <!-- ancho largo chequear para cambiar el tipo de slider osea type_view=1 largo -->
-          @if(idx == 0) {
-            <div class="col-xl-8 col-lg-7 col-md-12">
-              <div class="tp-banner-item tp-banner-height p-relative mb-30 z-index-1 fix"
-              >
-                <div
-                  class="tp-banner-thumb include-bg transition-3"
-                  [attr.data-background]="BANNER.imagen"
-                ></div>
-                <div class="tp-banner-content">
-                  <span>{{ BANNER.subtitle}}</span>
-                  <h3 class="tp-banner-title">
-                    <a target="_blank" [routerLink]="['/producto/'+BANNER.slug]" [id]="'title-banner-s-'+BANNER.id"><span [innerHTML]="BANNER.title"></span></a>
-                    <!-- {{getTitleBannerSecundario(BANNER, 'title-banner-s-'+BANNER.id)}} -->
-                  </h3>
-                  @if(BANNER.link){
-                    <div class="tp-banner-btn">
-                      <a [href]="BANNER.link" class="tp-link-btn"
-                        >Shop Now
-                        <svg
-                          width="15"
-                          height="13"
-                          viewBox="0 0 15 13"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            d="M13.9998 6.19656L1 6.19656"
-                            stroke="currentColor"
-                            stroke-width="1.5"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                          />
-                          <path
-                            d="M8.75674 0.975394L14 6.19613L8.75674 11.4177"
-                            stroke="currentColor"
-                            stroke-width="1.5"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                          />
-                        </svg>
-                      </a>
-                    </div>
+<section class="tp-banner-area pb-70">
+  <div class="container">
+    <div class="row">
+      @for (BANNER of BANNER_SECUNDARIOS; track BANNER.id; let idx = $index) {
 
-                  }
+        <!-- Banner grande -->
+        @if(idx == 0) {
+          <div class="col-xl-8 col-lg-7 col-md-12">
+            <div class="tp-banner-item tp-banner-height promo-banner p-relative mb-30 z-index-1 fix">
+
+              <!-- imagen -->
+              <div
+                class="tp-banner-thumb include-bg transition-3"
+                [attr.data-background]="BANNER.imagen"
+              ></div>
+
+              <!-- sticker de descuento -->
+              @if(BANNER.price_original > BANNER.price_campaing){
+                <div
+                  class="promo-badge position-absolute"
+                  [style.background]="BANNER.color"
+                >
+                  <span class="promo-text">OFERTA</span>
+                  <span class="promo-percent">
+                    -{{
+                      ((BANNER.price_original - BANNER.price_campaing)
+                      / BANNER.price_original * 100) | number:'1.0-0'
+                    }}%
+                  </span>
                 </div>
+              }
+
+              <!-- overlay -->
+              <div class="tp-banner-overlay promo-overlay"></div>
+
+              <!-- contenido -->
+              <div class="tp-banner-content tp-banner-content-modern">
+                <span class="tp-banner-subtitle">
+                  {{ BANNER.subtitle }}
+                </span>
+
+                <h3 class="tp-banner-title">
+                  <span
+                    class="tp-banner-title-bg"
+                    [style.background]="BANNER.color || '#f50000'"
+                  >
+                    <a
+                      target="_blank"
+                      [href]="BANNER.link"
+                      [id]="'title-banner-s-'+BANNER.id"
+                    >
+                      <span [innerHTML]="BANNER.title"></span>
+                    </a>
+                  </span>
+                </h3>
+                @if(BANNER.link){
+                  <div class="tp-banner-btn">
+                    <a [href]="BANNER.link" class="tp-btn-modern promo-btn">
+                      Comprar ahora
+                    </a>
+                  </div>
+                }
               </div>
             </div>
-          }
-
-          @if(idx > 0) {
-                      <!-- ancho largo chequear para cambiar el tipo de slider osea type_view=2 corto -->
-            <div class="col-xl-4 col-lg-5 col-md-6 col-sm-12">
-              <div class="tp-banner-item tp-banner-item-sm tp-banner-height p-relative mb-30 z-index-1 fix"
-              >
-                <div
-                  class="tp-banner-thumb include-bg transition-3"
-                  [attr.data-background]="BANNER.imagen"
-                ></div>
-                <div class="tp-banner-content">
-                  <h3 class="tp-banner-title">
-                    <a target="_blank" [routerLink]="['/producto/'+BANNER.slug]" [id]="'title-banner-sa-'+BANNER.id"><span [innerHTML]="BANNER.title"></span>
-                      <!-- {{getTitleBannerSecundario(BANNER, 'title-banner-sa-'+BANNER.id)}} -->
-                      </a>
-                  </h3>
-                  <p>{{ BANNER.subtitle}}</p>
-                  @if(BANNER.link){
-                    <div class="tp-banner-btn">
-                      <a [href]="BANNER.link" class="tp-link-btn"
-                        >Shop Now
-                        <svg
-                          width="15"
-                          height="13"
-                          viewBox="0 0 15 13"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            d="M13.9998 6.19656L1 6.19656"
-                            stroke="currentColor"
-                            stroke-width="1.5"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                          />
-                          <path
-                            d="M8.75674 0.975394L14 6.19613L8.75674 11.4177"
-                            stroke="currentColor"
-                            stroke-width="1.5"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                          />
-                        </svg>
-                      </a>
-                    </div>
-
-                  }
-                </div>
-              </div>
-            </div>
-          }
+          </div>
         }
-      </div>
+
+        <!-- Banners chicos -->
+        @if(idx > 0) {
+          <div class="col-xl-4 col-lg-5 col-md-6 col-sm-12">
+            <div class="tp-banner-item tp-banner-item-sm tp-banner-height promo-banner p-relative mb-30 z-index-1 fix">
+
+              <div
+                class="tp-banner-thumb include-bg transition-3"
+                [attr.data-background]="BANNER.imagen"
+              ></div>
+
+
+
+
+              @if(BANNER.price_original > BANNER.price_campaing){
+                <div
+                  class="promo-badge promo-badge-sm position-absolute"
+                  [style.background]="BANNER.color"
+                >
+                  <span class="promo-text">OFERTA</span>
+                  <span class="promo-percent">
+                    -{{
+                      ((BANNER.price_original - BANNER.price_campaing)
+                      / BANNER.price_original * 100) | number:'1.0-0'
+                    }}%
+                  </span>
+                </div>
+              }
+
+              <div class="tp-banner-overlay promo-overlay"></div>
+
+              <div class="tp-banner-content tp-banner-content-modern">
+
+              <span class="tp-banner-subtitle tp-banner-label">
+                {{ BANNER.subtitle }}
+              </span>
+
+              <h3 class="tp-banner-title tp-banner-title-box">
+                <a
+                  target="_blank"
+                  [href]="BANNER.link"
+                  [id]="'title-banner-s-'+BANNER.id"
+                >
+                  <span [innerHTML]="BANNER.title"></span>
+                </a>
+              </h3>
+
+              @if(BANNER.link){
+                <div class="tp-banner-btn">
+                  <a [href]="BANNER.link" class="tp-btn-modern">
+                    Comprar ahora
+                  </a>
+                </div>
+              }
+            </div>
+            </div>
+          </div>
+        }
+      }
     </div>
-  </section>
+  </div>
+</section>
+
+
+
   <!-- banner area end -->
 
   <!-- product offer area start -->
@@ -1332,7 +1457,7 @@
             class="tp-product-offer-more-wrapper d-flex justify-content-sm-end p-relative z-index-1"
           >
             <div class="tp-product-offer-more mb-40 text-sm-end grey-bg-2">
-              <a href="shop.html" class="tp-btn tp-btn-2 tp-btn-blue"
+              <!-- <a href="shop.html" class="tp-btn tp-btn-2 tp-btn-blue"
                 >Mira todas las ofertas
                 <svg
                   width="17"
@@ -1356,7 +1481,7 @@
                     stroke-linejoin="round"
                   />
                 </svg>
-              </a>
+              </a> -->
               <span class="tp-product-offer-more-border"></span>
             </div>
           </div>
@@ -1375,9 +1500,25 @@
                         <img
                           [src]="DISCOUNT_FLASH_PRODUCT.imagen"
                           style="width:100%; max-width:386px; height:auto; max-height:386px; object-fit:contain"
-                          alt="product-electronic"
+                          alt="product-funkos"
                         />
                       </a>
+
+                      @if(DISCOUNT_FLASH){
+                        <div class="tp-product-badge badge-top">
+                          <span class="product-hot text-center">
+                            - {{DISCOUNT_FLASH.discount}} %
+                          </span>
+                        </div>
+                      }
+                        <div class="tp-product-badge badge-below">
+                          @if(hasFreeShipping(DISCOUNT_FLASH_PRODUCT)){
+                            <span class="product-free-shipping">Envío Gratis</span>
+                          }
+                        @if(!DISCOUNT_FLASH_PRODUCT.stock || DISCOUNT_FLASH_PRODUCT.stock <= 0){
+                            <span class="product-hot bg-danger">Sin Stock</span>
+                          }
+                          </div>
 
                       <!-- product action -->
                       <div class="tp-product-action">
@@ -1518,6 +1659,10 @@
                           type="button"
                           class="tp-product-add-cart-btn-large"
                           (click)="addCart(DISCOUNT_FLASH_PRODUCT)"
+                          [disabled]="!DISCOUNT_FLASH_PRODUCT.stock || DISCOUNT_FLASH_PRODUCT.stock <= 0"
+                          [ngClass]="{
+                            'btn-sin-stock': !DISCOUNT_FLASH_PRODUCT.stock || DISCOUNT_FLASH_PRODUCT.stock <= 0
+                          }"
                         >
                           <svg
                             width="20"
@@ -1575,7 +1720,7 @@
                         <a target="_blank" [routerLink]="['/producto/'+DISCOUNT_FLASH_PRODUCT.slug]" [queryParams]="{campaing_discount: DISCOUNT_FLASH.code}">{{DISCOUNT_FLASH_PRODUCT.brand.name}}</a>
                       </div>
                       <h3 class="tp-product-title">
-                        <a target="_blank" [routerLink]="['/producto/'+DISCOUNT_FLASH_PRODUCT.slug]" [queryParams]="{campaing_discount: DISCOUNT_FLASH.code}">>
+                        <a target="_blank" [routerLink]="['/producto/'+DISCOUNT_FLASH_PRODUCT.slug]" [queryParams]="{campaing_discount: DISCOUNT_FLASH.code}">
                           {{DISCOUNT_FLASH_PRODUCT.title}}
                         </a>
                       </h3>
@@ -1771,7 +1916,7 @@
                         <img
                           [src]="PRODUCT_COMIC.imagen"
                           style="width:100%; max-width:248px; height:auto; max-height:240px; object-fit:contain"
-                          alt="product-electronic"
+                          alt="product-funkos"
                         />
                       </a>
 
@@ -1798,6 +1943,10 @@
                             type="button"
                             class="tp-product-action-btn tp-product-add-cart-btn"
                             (click)="addCart(PRODUCT_COMIC)"
+                            [disabled]="!PRODUCT_COMIC.stock || PRODUCT_COMIC.stock <= 0"
+                            [ngClass]="{
+                              'btn-sin-stock': !PRODUCT_COMIC.stock || PRODUCT_COMIC.stock <= 0
+                            }"
                           >
                             <svg
                               width="20"
@@ -2017,8 +2166,15 @@
                           class="tp-offer-shape"
                           src="assets/img/banner/banner-slider-offer.png"
                           alt=""
-                        />
-                      </div>
+                          />
+                          <span class="tp-offer-shape text-white"
+                          style="position:absolute; top:20px; left:200px; font-size:24px; font-weight:bold;">
+                            {{
+                              ((BANNER_PRODUCTO.price_original - BANNER_PRODUCTO.price_campaing)
+                              / BANNER_PRODUCTO.price_original * 100) | number:'1.0-0'
+                            }}
+                          </span>
+                        </div>
 
                       <div
                         class="tp-product-banner-thumb text-end p-relative z-index-1"
@@ -2120,12 +2276,13 @@
 
                 @for(PRODUCT_CAROUSEL of PRODUCTS_CAROUSEL; track PRODUCT_CAROUSEL.id) {
                   <div class="tp-product-item transition-3 mb-25 swiper-slide">
-                    <div class="tp-product-thumb p-relative fix m-img">
+                    <div class="tp-product-thumb p-relative fix m-img"
+                    [ngClass]="{'no-stock': !PRODUCT_CAROUSEL.stock || PRODUCT_CAROUSEL.stock <= 0}">
                       <a target="_blank" [routerLink]="['/producto/'+PRODUCT_CAROUSEL.slug]">
                         <img
                           [src]="PRODUCT_CAROUSEL.imagen"
                           style="width:100%; max-width:282px; height:auto; max-height:242px; object-fit:contain"
-                          alt="product-electronic"
+                          alt="product-funkos"
                         />
                       </a>
 
@@ -2144,6 +2301,14 @@
                         </div>
 
                       }
+                      <div class="tp-product-badge badge-below">
+                      @if(hasFreeShipping(PRODUCT_CAROUSEL)){
+                        <span class="product-free-shipping">Envío Gratis</span>
+                      }
+                    @if(!PRODUCT_CAROUSEL.stock || PRODUCT_CAROUSEL.stock <= 0){
+                        <span class="product-hot bg-danger">Sin Stock</span>
+                      }
+                      </div>
 
                       <!-- product action -->
                       <div class="tp-product-action">
@@ -2152,6 +2317,10 @@
                             type="button"
                             class="tp-product-action-btn tp-product-add-cart-btn"
                             (click)="addCart(PRODUCT_CAROUSEL)"
+                            [disabled]="!PRODUCT_CAROUSEL.stock || PRODUCT_CAROUSEL.stock <= 0"
+                            [ngClass]="{
+                              'btn-sin-stock': !PRODUCT_CAROUSEL.stock || PRODUCT_CAROUSEL.stock <= 0
+                            }"
                           >
                             <svg
                               width="20"
@@ -2319,6 +2488,18 @@
                         <span class="tp-product-price new-price mx-1">{{getTotalPriceProduct(PRODUCT_CAROUSEL)}} {{currency}}</span
                         >
                       </div>
+                      @if(!PRODUCT_CAROUSEL.stock || PRODUCT_CAROUSEL.stock <= 0){
+                            <div class="mt-2">
+                              <small class="text-danger fw-bold">Producto sin stock</small>
+                            </div>
+                          }
+
+                          <!-- Indicador de envío gratis -->
+                          @if(hasFreeShipping(PRODUCT_CAROUSEL)){
+                            <div class="mt-2">
+                              <small class="text-success fw-bold">Envío gratis</small>
+                            </div>
+                          }
                     </div>
                   </div>
 
@@ -2364,7 +2545,8 @@
 
               @for(LAST_PRODUCT_DISCOUNT of LASTS_PRODUCTS_DISCOUNTS; track LAST_PRODUCT_DISCOUNT.id) {
                 <div class="tp-product-sm-item d-flex align-items-center">
-                  <div class="tp-product-thumb mr-25 fix">
+                  <div class="tp-product-thumb mr-25 fix"
+                  [ngClass]="{'no-stock': !LAST_PRODUCT_DISCOUNT.stock || LAST_PRODUCT_DISCOUNT.stock <= 0}">
                     <a target="_blank" [routerLink]="['/producto/'+LAST_PRODUCT_DISCOUNT.slug]">
                       <img [src]="LAST_PRODUCT_DISCOUNT.imagen" style="width:100%; max-width:140px; height:auto; max-height:140px; object-fit:contain" alt="" />
                     </a>
@@ -2541,408 +2723,6 @@
     </div>
   </section>
   <!-- product sm area end -->
-
-  <!-- blog area start -->
-  <!-- <section class="tp-blog-area pt-50 pb-75">
-    <div class="container">
-      <div class="row align-items-end">
-        <div class="col-xl-4 col-md-6">
-          <div class="tp-section-title-wrapper mb-50">
-            <h3 class="tp-section-title">
-              Latest news & articles
-
-              <svg
-                width="114"
-                height="35"
-                viewBox="0 0 114 35"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M112 23.275C1.84952 -10.6834 -7.36586 1.48086 7.50443 32.9053"
-                  stroke="currentColor"
-                  stroke-width="4"
-                  stroke-miterlimit="3.8637"
-                  stroke-linecap="round"
-                />
-              </svg>
-            </h3>
-          </div>
-        </div>
-        <div class="col-xl-8 col-md-6">
-          <div class="tp-blog-more-wrapper d-flex justify-content-md-end">
-            <div class="tp-blog-more mb-50 text-md-end">
-              <a href="blog-grid.html" class="tp-btn tp-btn-2 tp-btn-blue"
-                >View All Blog
-                <svg
-                  width="17"
-                  height="14"
-                  viewBox="0 0 17 14"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M16 6.99976L1 6.99976"
-                    stroke="currentColor"
-                    stroke-width="1.5"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                  <path
-                    d="M9.9502 0.975414L16.0002 6.99941L9.9502 13.0244"
-                    stroke="currentColor"
-                    stroke-width="1.5"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                </svg>
-              </a>
-              <span class="tp-blog-more-border"></span>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-xl-12">
-          <div class="tp-blog-main-slider">
-            <div class="tp-blog-main-slider-active swiper-container">
-              <div class="swiper-wrapper">
-                <div class="tp-blog-item mb-30 swiper-slide">
-                  <div class="tp-blog-thumb p-relative fix">
-                    <a href="blog-details.html">
-                      <img src="assets/img/blog/blog-1.jpg" alt="" />
-                    </a>
-                    <div class="tp-blog-meta tp-blog-meta-date">
-                      <span>14 July, 2022</span>
-                    </div>
-                  </div>
-                  <div class="tp-blog-content">
-                    <h3 class="tp-blog-title">
-                      <a href="blog-details.html"
-                        >The Modern Art Clay Ceramics.</a
-                      >
-                    </h3>
-
-                    <div class="tp-blog-tag">
-                      <span><i class="fa-light fa-tag"></i></span>
-                      <a href="#">Tablet</a>
-                      <a href="#">News</a>
-                    </div>
-
-                    <p>
-                      The world is an amazing place providing an incredible
-                      assortment of interesting locations across.
-                    </p>
-
-                    <div class="tp-blog-btn">
-                      <a
-                        href="blog-details.html"
-                        class="tp-btn-2 tp-btn-border-2"
-                      >
-                        Read More
-                        <span>
-                          <svg
-                            width="17"
-                            height="15"
-                            viewBox="0 0 17 15"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <path
-                              d="M16 7.5L1 7.5"
-                              stroke="currentColor"
-                              stroke-width="1.5"
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                            />
-                            <path
-                              d="M9.9502 1.47541L16.0002 7.49941L9.9502 13.5244"
-                              stroke="currentColor"
-                              stroke-width="1.5"
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                            />
-                          </svg>
-                        </span>
-                      </a>
-                    </div>
-                  </div>
-                </div>
-                <div class="tp-blog-item mb-30 swiper-slide">
-                  <div class="tp-blog-thumb p-relative fix">
-                    <a href="blog-details.html">
-                      <img src="assets/img/blog/blog-2.jpg" alt="" />
-                    </a>
-                    <div class="tp-blog-meta tp-blog-meta-date">
-                      <span>10 Nov, 2022</span>
-                    </div>
-                  </div>
-                  <div class="tp-blog-content">
-                    <h3 class="tp-blog-title">
-                      <a href="blog-details.html"
-                        >How clothes are linked to climate</a
-                      >
-                    </h3>
-
-                    <div class="tp-blog-tag">
-                      <span><i class="fa-light fa-tag"></i></span>
-                      <a href="#">Monitor,</a>
-                      <a href="#">Technology</a>
-                    </div>
-
-                    <p>
-                      The world is an amazing place providing an incredible
-                      assortment of interesting locations across.
-                    </p>
-
-                    <div class="tp-blog-btn">
-                      <a
-                        href="blog-details.html"
-                        class="tp-btn-2 tp-btn-border-2"
-                      >
-                        Read More
-                        <span>
-                          <svg
-                            width="17"
-                            height="15"
-                            viewBox="0 0 17 15"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <path
-                              d="M16 7.5L1 7.5"
-                              stroke="currentColor"
-                              stroke-width="1.5"
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                            />
-                            <path
-                              d="M9.9502 1.47541L16.0002 7.49941L9.9502 13.5244"
-                              stroke="currentColor"
-                              stroke-width="1.5"
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                            />
-                          </svg>
-                        </span>
-                      </a>
-                    </div>
-                  </div>
-                </div>
-                <div class="tp-blog-item mb-30 swiper-slide">
-                  <div class="tp-blog-thumb p-relative fix">
-                    <a href="blog-details.html">
-                      <img src="assets/img/blog/blog-3.jpg" alt="" />
-                    </a>
-                    <div class="tp-blog-meta tp-blog-meta-date">
-                      <span>20 June, 2023</span>
-                    </div>
-                  </div>
-                  <div class="tp-blog-content">
-                    <h3 class="tp-blog-title">
-                      <a href="blog-details.html"
-                        >The Sound Of Fashion: Malcolm</a
-                      >
-                    </h3>
-
-                    <div class="tp-blog-tag">
-                      <span><i class="fa-light fa-tag"></i></span>
-                      <a href="#">Microphone,</a>
-                      <a href="#">Computer</a>
-                    </div>
-
-                    <p>
-                      The world is an amazing place providing an incredible
-                      assortment of interesting locations across.
-                    </p>
-
-                    <div class="tp-blog-btn">
-                      <a
-                        href="blog-details.html"
-                        class="tp-btn-2 tp-btn-border-2"
-                      >
-                        Read More
-                        <span>
-                          <svg
-                            width="17"
-                            height="15"
-                            viewBox="0 0 17 15"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <path
-                              d="M16 7.5L1 7.5"
-                              stroke="currentColor"
-                              stroke-width="1.5"
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                            />
-                            <path
-                              d="M9.9502 1.47541L16.0002 7.49941L9.9502 13.5244"
-                              stroke="currentColor"
-                              stroke-width="1.5"
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                            />
-                          </svg>
-                        </span>
-                      </a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section> -->
-  <!-- blog area end -->
-
-  <!-- instagram area start -->
-  <!-- <div class="tp-instagram-area pb-70">
-    <div class="container">
-      <div class="row row-cols-lg-5 row-cols-md-3 row-cols-sm-2 row-cols-1">
-        <div class="col">
-          <div class="tp-instagram-item p-relative z-index-1 fix mb-30 w-img">
-            <img src="assets/img/instagram/instagram-1.jpg" alt="" />
-            <div class="tp-instagram-icon">
-              <a href="assets/img/instagram/instagram-1.jpg" class="popup-image"
-                ><i class="fa-brands fa-instagram"></i
-              ></a>
-            </div>
-          </div>
-        </div>
-        <div class="col">
-          <div class="tp-instagram-item p-relative z-index-1 fix mb-30 w-img">
-            <img src="assets/img/instagram/instagram-2.jpg" alt="" />
-            <div class="tp-instagram-icon">
-              <a href="assets/img/instagram/instagram-2.jpg" class="popup-image"
-                ><i class="fa-brands fa-instagram"></i
-              ></a>
-            </div>
-          </div>
-        </div>
-        <div class="col">
-          <div class="tp-instagram-item p-relative z-index-1 fix mb-30 w-img">
-            <img src="assets/img/instagram/instagram-3.jpg" alt="" />
-            <div class="tp-instagram-icon">
-              <a href="assets/img/instagram/instagram-3.jpg" class="popup-image"
-                ><i class="fa-brands fa-instagram"></i
-              ></a>
-            </div>
-          </div>
-        </div>
-        <div class="col">
-          <div class="tp-instagram-item p-relative z-index-1 fix mb-30 w-img">
-            <img src="assets/img/instagram/instagram-4.jpg" alt="" />
-            <div class="tp-instagram-icon">
-              <a href="assets/img/instagram/instagram-4.jpg" class="popup-image"
-                ><i class="fa-brands fa-instagram"></i
-              ></a>
-            </div>
-          </div>
-        </div>
-        <div class="col">
-          <div class="tp-instagram-item p-relative z-index-1 fix mb-30 w-img">
-            <img src="assets/img/instagram/instagram-5.jpg" alt="" />
-            <div class="tp-instagram-icon">
-              <a href="assets/img/instagram/instagram-5.jpg" class="popup-image"
-                ><i class="fa-brands fa-instagram"></i
-              ></a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div> -->
-  <!-- instagram area end -->
-
-  <!-- subscribe area start -->
-  <!-- <section class="tp-subscribe-area pt-70 pb-65 theme-bg p-relative z-index-1">
-    <div class="tp-subscribe-shape">
-      <img
-        class="tp-subscribe-shape-1"
-        src="assets/img/subscribe/subscribe-shape-1.png"
-        alt=""
-      />
-      <img
-        class="tp-subscribe-shape-2"
-        src="assets/img/subscribe/subscribe-shape-2.png"
-        alt=""
-      />
-      <img
-        class="tp-subscribe-shape-3"
-        src="assets/img/subscribe/subscribe-shape-3.png"
-        alt=""
-      />
-      <img
-        class="tp-subscribe-shape-4"
-        src="assets/img/subscribe/subscribe-shape-4.png"
-        alt=""
-      />
-
-      <div class="tp-subscribe-plane">
-        <img
-          class="tp-subscribe-plane-shape"
-          src="assets/img/subscribe/plane.png"
-          alt=""
-        />
-        <svg
-          width="399"
-          height="110"
-          class="d-none d-sm-block"
-          viewBox="0 0 399 110"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M0.499634 1.00049C8.5 20.0005 54.2733 13.6435 60.5 40.0005C65.6128 61.6426 26.4546 130.331 15 90.0005C-9 5.5 176.5 127.5 218.5 106.5C301.051 65.2247 202 -57.9188 344.5 40.0003C364 53.3997 384 22 399 22"
-            stroke="white"
-            stroke-opacity="0.5"
-            stroke-dasharray="3 3"
-          />
-        </svg>
-        <svg
-          class="d-sm-none"
-          width="193"
-          height="110"
-          viewBox="0 0 193 110"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M1 1C4.85463 20.0046 26.9085 13.6461 29.9086 40.0095C32.372 61.6569 13.5053 130.362 7.98637 90.0217C-3.57698 5.50061 85.7981 127.53 106.034 106.525C145.807 65.2398 98.0842 -57.9337 166.742 40.0093C176.137 53.412 185.773 22.0046 193 22.0046"
-            stroke="white"
-            stroke-opacity="0.5"
-            stroke-dasharray="3 3"
-          />
-        </svg>
-      </div>
-    </div>
-    <div class="container">
-      <div class="row align-items-center">
-        <div class="col-xl-7 col-lg-7">
-          <div class="tp-subscribe-content">
-            <span>Sale 20% off all store</span>
-            <h3 class="tp-subscribe-title">Subscribe our Newsletter</h3>
-          </div>
-        </div>
-        <div class="col-xl-5 col-lg-5">
-          <div class="tp-subscribe-form">
-            <form action="#">
-              <div class="tp-subscribe-input">
-                <input type="email" placeholder="Enter Your Email" />
-                <button type="submit">Subscribe</button>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section> -->
-  <!-- subscribe area end -->
-
   <div
     class="modal fade tp-product-modal"
     id="producQuickViewModal"

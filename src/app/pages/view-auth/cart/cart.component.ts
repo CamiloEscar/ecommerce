@@ -29,25 +29,26 @@ export class CartComponent {
     private router: Router,
   ) {}
 
-  ngOnInit(): void {
-    this.currency = this.cookieService.get("currency") ? this.cookieService.get("currency") : 'ARS';
+ngOnInit(): void {
+    this.currency = this.cookieService.get("currency")
+      ? this.cookieService.get("currency") : 'ARS';
 
     this.cartService.currentDataCart$.subscribe((resp: any) => {
-      // Filtrar cualquier item de envío que pudiera venir del backend
-      this.listCarts = resp.filter((i: any) => i.id !== 'SHIPPING');
-
-      // Actualizar total sin incluir el item SHIPMENT si existe
+      this.listCarts = resp.map((i: any) => ({ ...i })); // deep copy
       this.totalCarts = this.listCarts.reduce((sum: number, item: any) => sum + item.total, 0);
-
-      // Verificar problemas de stock
       this.checkStockIssues();
 
-      // Sincronizar costo de envío desde el servicio si existe
       if (this.cartService.shippingCost !== null && this.cartService.shippingCost !== undefined) {
         this.costoEnvio = this.cartService.shippingCost;
       }
     });
-  }
+
+    // Siempre recargar del backend
+    this.cartService.listCart().subscribe((resp: any) => {
+      this.cartService.resetCart();
+      this.cartService.setCart(resp.carts.data);
+    });
+}
 
   // Verificar si hay productos sin stock suficiente
   checkStockIssues() {
@@ -141,9 +142,9 @@ export class CartComponent {
   // Subtotal SIN descuentos (precio original * cantidad)
   get subtotalOriginal() {
     return this.listCarts.reduce((sum: number, item: any) => {
-      // Usar price_unit si existe, sino subtotal
-      const precioUnitario = item.price_unit ?? item.subtotal;
-      return sum + (precioUnitario * item.quantity);
+      // price_unit DEBE ser el precio unitario original del producto
+      const precioOriginalUnitario = item.price_unit ?? item.product?.price_ars ?? item.subtotal;
+      return sum + (precioOriginalUnitario * item.quantity);
     }, 0);
   }
 
@@ -276,44 +277,51 @@ export class CartComponent {
     });
   }
 
-  applyCosto() {
-    // PRIORIDAD MÁXIMA: Verificar si TODOS los productos tienen envío gratis (cost = 1)
+// applyCosto: Solo guardar el valor, recargar del backend
+applyCosto() {
     if (this.hasFreeShipping) {
       this.costoEnvio = 0;
-      this.cartService.setShipping(0);
-      this.toastr.info('Información', 'Todos los productos en tu carrito tienen envío gratis');
+      this.cartService.shippingCost = 0;
+      this.toastr.info('Informacion', 'Todos los productos tienen envio gratis');
       return;
     }
 
     if (!this.selectedProvinceCode) {
-      this.toastr.error('Validación', 'Se necesita seleccionar una provincia');
+      this.toastr.error('Validacion', 'Se necesita seleccionar una provincia');
       return;
     }
 
-    let data = {
-      code_costo: this.selectedProvinceCode
-    };
+    let data = { code_costo: this.selectedProvinceCode };
 
     this.cartService.applyCosto(data).subscribe((resp: any) => {
-      console.log(resp);
       if (resp.message == 403) {
-        this.toastr.error("Validación", resp.message_text);
+        this.toastr.error("Validacion", resp.message_text);
         return;
-      } else {
-        this.costoEnvio = resp.costo ?? 0;
-        // Persistir en el servicio para que sobreviva a recargas
-        this.cartService.setShipping(this.costoEnvio);
-        this.toastr.success("Éxito", "Se aplicó el costo de envío");
       }
+      this.costoEnvio = resp.costo ?? 0;
+      this.cartService.shippingCost = this.costoEnvio;
+      // NO setShipping, solo recargar items frescos del backend
+      this.cartService.listCart().subscribe((r: any) => {
+        this.cartService.resetCart();
+        this.cartService.setCart(r.carts.data);
+      });
+      this.toastr.success("Exito", "Se aplico el costo de envio");
     });
-  }
+}
 
-  removeProvincia() {
+// removeProvincia: Limpiar y recargar
+removeProvincia() {
     this.selectedProvinceCode = null;
     this.costoEnvio = null;
-    this.cartService.setShipping(null);
-    this.toastr.info("Información", "Se removió el costo de envío");
-  }
+    this.cartService.shippingCost = null;
+    this.cartService.removeCosto().subscribe(() => {
+      this.cartService.listCart().subscribe((resp: any) => {
+        this.cartService.resetCart();
+        this.cartService.setCart(resp.carts.data);
+      });
+    });
+    this.toastr.info("Informacion", "Se removio el costo de envio");
+}
 
   provincias: { name: string, code: string }[] = [
     { name: "BUENOS AIRES", code: "BUENOSAIRES" },

@@ -212,67 +212,107 @@
     }
 
     <!-- actions -->
-    <div class="tp-product-details-action-wrapper">
-      <h3 class="tp-product-details-action-title">Cantidad</h3>
-      <div
-        class="tp-product-details-action-item-wrapper d-sm-flex align-items-center"
-      >
+        <div
+          class="tp-product-details-action-wrapper"
+          [ngClass]="{
+            'product-disabled':
+              (sub_variation_selected?.stock ||
+                variation_selected?.stock ||
+                product_selected.stock) <= 0
+          }"
+        >
+          <div class="tp-product-details-action-item-wrapper d-sm-flex align-items-center">
+
+            <!-- Cantidad -->
         <div class="tp-product-details-quantity">
           <div class="tp-product-quantity mb-15 mr-15">
-            <span class="tp-cart-minus" id="tp-cart-minus">
-              <svg
-                width="11"
-                height="2"
-                viewBox="0 0 11 2"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M1 1H10"
-                  stroke="currentColor"
-                  stroke-width="1.5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
+
+            <!-- Botón menos -->
+            <span
+              class="tp-cart-minus"
+              [class.disabled]="(sub_variation_selected?.stock || variation_selected?.stock || product_selected.stock) <= 0"
+            >
+              <svg width="10" height="2" viewBox="0 0 10 2">
+                <path d="M1 1H9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
               </svg>
             </span>
-            <input class="tp-cart-input" id="tp-cart-input-val" type="text" value="1" />
-            <span class="tp-cart-plus" id="tp-cart-plus">
-              <svg
-                width="11"
-                height="12"
-                viewBox="0 0 11 12"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M1 6H10"
-                  stroke="currentColor"
-                  stroke-width="1.5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-                <path
-                  d="M5.5 10.5V1.5"
-                  stroke="currentColor"
-                  stroke-width="1.5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
+
+            <!-- Input cantidad -->
+            <input
+              id="tp-cart-input-val"
+              class="tp-cart-input"
+              type="text"
+              value="1"
+              [disabled]="(sub_variation_selected?.stock || variation_selected?.stock || product_selected.stock) <= 0"
+            />
+
+            <!-- Botón más -->
+            <span
+              class="tp-cart-plus"
+              [class.disabled]="(sub_variation_selected?.stock || variation_selected?.stock || product_selected.stock) <= 0"
+            >
+              <svg width="10" height="10" viewBox="0 0 10 10">
+                <path d="M5 1V9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                <path d="M1 5H9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
               </svg>
             </span>
           </div>
         </div>
+        <!-- Botón carrito -->
         <div class="tp-product-details-add-to-cart mb-15 w-100">
-          <button class="tp-product-details-add-to-cart-btn w-100" (click)="addCart()">
+          <button
+            (click)="addCart()"
+            class="tp-product-details-add-to-cart-btn w-100"
+            [disabled]="(sub_variation_selected?.stock || variation_selected?.stock || product_selected.stock) <= 0"
+            [ngClass]="{
+              'btn-sin-stock':
+                (sub_variation_selected?.stock ||
+                  variation_selected?.stock ||
+                  product_selected.stock) <= 0
+            }"
+          >
             Añadir al carrito
           </button>
         </div>
       </div>
-      <button class="tp-product-details-buy-now-btn w-100" (click)="comprarAhora()">
-        Comprar
-      </button>
+
+      <!-- Comprar ahora -->
+    <div class="tp-product-details-buy-now mb-15">
+        <button
+          class="tp-product-details-buy-now-btn w-100"
+          (click)="comprarAhora()"
+          [disabled]="(sub_variation_selected?.stock || variation_selected?.stock || product_selected.stock) <= 0"
+          [ngClass]="{
+            'btn-sin-stock':
+              (sub_variation_selected?.stock ||
+                variation_selected?.stock ||
+                product_selected.stock) <= 0
+          }"
+        >
+          Comprar ahora
+        </button>
     </div>
+
+      <!-- Mensaje sin stock -->
+      <p
+        class="text-center text-danger fw-bold mt-2"
+        *ngIf="(sub_variation_selected?.stock || variation_selected?.stock || product_selected.stock) <= 0"
+      >
+        Sin stock disponible
+      </p>
+      <p
+  class="stock-warning" style="text-align: center;"
+  *ngIf="(sub_variation_selected?.stock || variation_selected?.stock || product_selected.stock) > 0
+         && (sub_variation_selected?.stock || variation_selected?.stock || product_selected.stock) <= 10"
+  >
+  🔥 Solo quedan {{
+    sub_variation_selected?.stock ||
+    variation_selected?.stock ||
+    product_selected.stock
+  }} unidades
+  </p>
+    </div>
+
     <div class="tp-product-details-action-sm">
       <button type="button" class="tp-product-details-action-sm-btn">
         <svg
