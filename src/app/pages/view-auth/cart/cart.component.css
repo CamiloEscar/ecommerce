@@ -63,3 +63,117 @@
   border: 1px solid #bee5eb;
   color: #0c5460;
 }
+/* ============================================
+   ESTILOS PARA PRODUCTOS SIN STOCK
+   ============================================ */
+
+/* Fila de producto sin stock en el carrito */
+.out-of-stock-row {
+  background-color: #fff5f5;
+  opacity: 0.85;
+}
+
+.out-of-stock-row td {
+  position: relative;
+}
+
+/* Imagen con opacidad reducida */
+.opacity-50 {
+  opacity: 0.5;
+  filter: grayscale(30%);
+}
+
+/* Item sin stock en mini-carrito */
+.out-of-stock-item {
+  background-color: #fff8f8;
+  border-left: 3px solid #dc3545;
+  padding-left: 8px;
+}
+
+/* Alerta de stock personalizada */
+.stock-alert {
+  border-radius: 6px;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.stock-alert i {
+  font-size: 1rem;
+}
+
+/* Badge de estado de stock */
+.badge.bg-danger i,
+.badge.bg-warning i {
+  margin-right: 4px;
+}
+
+/* Botón deshabilitado mejorado */
+.tp-cart-checkout-btn.disabled-btn,
+.tp-cart-checkout-btn:disabled {
+  background-color: #6c757d !important;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Control de cantidad deshabilitado */
+.tp-cart-minus.disabled,
+.tp-cart-plus.disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Texto tachado para precios de productos sin stock */
+.text-decoration-line-through {
+  text-decoration: line-through;
+}
+
+/* Alertas en el sidebar del carrito */
+.tp-cart-checkout-wrapper .alert {
+  border-radius: 8px;
+  font-size: 0.9rem;
+}
+
+.tp-cart-checkout-wrapper .alert strong {
+  display: block;
+  margin-bottom: 4px;
+}
+
+/* Animación sutil para alertas importantes */
+@keyframes pulse-warning {
+  0%, 100% {
+    background-color: #fff3cd;
+  }
+  50% {
+    background-color: #ffe69c;
+  }
+}
+
+.alert-warning.pulse {
+  animation: pulse-warning 2s ease-in-out infinite;
+}
+
+/* Responsive: ajustar alertas en móvil */
+@media (max-width: 768px) {
+  .stock-alert {
+    font-size: 0.8rem;
+    padding: 6px 10px;
+  }
+
+  .cartmini__widget-item .badge {
+    font-size: 0.7rem;
+  }
+}
+
+/* Mejorar visibilidad de totales */
+.tp-cart-checkout-total strong {
+  font-weight: 600;
+}
+
+/* Separador visual mejorado */
+.tp-cart-checkout-wrapper hr {
+  border-top: 1px solid #dee2e6;
+  margin: 1rem 0;
+}

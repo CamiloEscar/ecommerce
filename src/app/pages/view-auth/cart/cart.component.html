@@ -35,10 +35,11 @@
                       </tr>
                     </thead>
                     <tbody>
-                      <tr *ngFor="let cart of listCarts">
+                      <tr *ngFor="let cart of listCarts"
+                          [ngClass]="{'out-of-stock-row': cart.stock_suficiente === false}">
                         <ng-container *ngIf="cart.id !== 'SHIPPING'">
                            <!-- img -->
-                           <td class="tp-cart-img">
+                           <td class="tp-cart-img" [ngClass]="{'opacity-50': cart.stock_suficiente === false}">
                              <a [routerLink]="['/producto/'+cart.product.slug]">
                                <img [src]="cart.product.imagen" alt="">
                              </a>
@@ -51,22 +52,31 @@
                              </a>
 
                              <!-- Aviso de envío gratis por producto -->
-                             <ng-container *ngIf="cart.product && cart.product.cost == 1">
+                             <ng-container *ngIf="cart.product && cart.product.cost == 1 && cart.stock_suficiente !== false">
                                <br>
-                               <span class="badge bg-success" style="font-size: 0.85rem; margin-top: 5px;">  ✓ Envío GRATIS</span>
+                               <span class="badge bg-success" style="font-size: 0.85rem; margin-top: 5px;">✓ Envío GRATIS</span>
                              </ng-container>
 
                              <!-- INDICADOR DE STOCK -->
-                             <ng-container *ngIf="!cart.stock_suficiente">
+                             <ng-container *ngIf="cart.stock_suficiente === false">
                                <br>
-                               <div class="alert alert-warning stock-alert" style="margin-top: 8px; padding: 8px 12px; font-size: 0.9rem; max-width: 400px;">
-                                 <i class="fas fa-exclamation-triangle"></i>
+                               <div class="alert alert-danger stock-alert" style="margin-top: 8px; padding: 8px 12px; font-size: 0.9rem; max-width: 400px;">
+                                 <i class="fas fa-times-circle"></i>
                                  <span *ngIf="cart.stock_disponible === 0">
-                                   <strong>Sin stock disponible</strong>
+                                   <strong>SIN STOCK</strong> - Este producto no se incluirá en tu compra
                                  </span>
                                  <span *ngIf="cart.stock_disponible > 0">
-                                   Solo quedan <strong>{{cart.stock_disponible}}</strong> unidades disponibles
+                                   <strong>STOCK INSUFICIENTE</strong> - Solo quedan {{cart.stock_disponible}} unidades
                                  </span>
+                               </div>
+                             </ng-container>
+
+                             <!-- Stock suficiente pero bajo -->
+                             <ng-container *ngIf="cart.stock_suficiente && cart.stock_disponible > 0 && cart.stock_disponible <= 5">
+                               <br>
+                               <div class="alert alert-warning stock-alert" style="margin-top: 8px; padding: 8px 12px; font-size: 0.85rem; max-width: 400px;">
+                                 <i class="fas fa-exclamation-triangle"></i>
+                                 <span>Solo quedan <strong>{{cart.stock_disponible}}</strong> unidades disponibles</span>
                                </div>
                              </ng-container>
 
@@ -98,22 +108,26 @@
                            </td>
 
                            <!-- price -->
-                           <td class="tp-cart-price"><span>{{cart.subtotal}} {{cart.currency}}</span></td>
+                           <td class="tp-cart-price" [ngClass]="{'text-muted': cart.stock_suficiente === false}">
+                             <span>{{cart.subtotal}} {{cart.currency}}</span>
+                             <span *ngIf="cart.stock_suficiente === false" class="d-block text-danger small">No disponible</span>
+                           </td>
 
                            <!-- quantity -->
                            <td class="tp-cart-quantity">
                               <div class="tp-product-quantity mt-10 mb-10">
                                  <span class="tp-cart-minus"
                                        (click)="minusQuantity(cart)"
-                                       [class.disabled]="cart.quantity <= 1">
+                                       [class.disabled]="cart.quantity <= 1 || cart.stock_suficiente === false">
                                     <svg width="10" height="2" viewBox="0 0 10 2" fill="none" xmlns="http://www.w3.org/2000/svg">
                                        <path d="M1 1H9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                                     </svg>
                                  </span>
-                                 <input class="tp-cart-input" type="text" [value]="cart.quantity" readonly>
+                                 <input class="tp-cart-input" type="text" [value]="cart.quantity" readonly
+                                        [ngClass]="{'text-muted': cart.stock_suficiente === false}">
                                  <span class="tp-cart-plus"
                                        (click)="plusQuantity(cart)"
-                                       [class.disabled]="!cart.stock_suficiente || cart.quantity >= cart.stock_disponible">
+                                       [class.disabled]="!cart.stock_suficiente || cart.quantity >= cart.stock_disponible || cart.stock_suficiente === false">
                                     <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
                                        <path d="M5 1V9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                                        <path d="M1 5H9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -122,7 +136,12 @@
                               </div>
                            </td>
 
-                           <td class="tp-cart-price"><span>{{cart.total}} {{cart.currency}}</span></td>
+                           <td class="tp-cart-price" [ngClass]="{'text-muted': cart.stock_suficiente === false}">
+                             <span>
+                               <span *ngIf="cart.stock_suficiente !== false">{{cart.total}} {{cart.currency}}</span>
+                               <span *ngIf="cart.stock_suficiente === false" class="text-danger">-</span>
+                             </span>
+                           </td>
 
                            <!-- action -->
                            <td class="tp-cart-action">
@@ -139,11 +158,19 @@
                   </table>
               </div>
 
-              <!-- MENSAJE DE ADVERTENCIA GENERAL DE STOCK -->
-              <div *ngIf="hasStockIssues" class="alert alert-danger mb-4" style="padding: 15px; border-radius: 5px;">
+              <!-- MENSAJE INFORMATIVO SOBRE PRODUCTOS SIN STOCK -->
+              <div *ngIf="hasStockIssues && availableProducts.length > 0" class="alert alert-info mb-4" style="padding: 15px; border-radius: 5px;">
+                <i class="fas fa-info-circle"></i>
+                <strong>Información:</strong> Tienes {{outOfStockProducts.length}} producto(s) sin stock en tu carrito.
+                Puedes continuar con la compra de los {{availableProducts.length}} producto(s) disponibles.
+                Los productos sin stock se ignorarán automáticamente.
+              </div>
+
+              <!-- MENSAJE SI TODOS LOS PRODUCTOS ESTÁN SIN STOCK -->
+              <div *ngIf="hasStockIssues && availableProducts.length === 0" class="alert alert-danger mb-4" style="padding: 15px; border-radius: 5px;">
                 <i class="fas fa-exclamation-circle"></i>
-                <strong>Atención:</strong> Algunos productos en tu carrito no tienen stock suficiente.
-                Por favor actualiza las cantidades o elimínalos para continuar con la compra.
+                <strong>Atención:</strong> Ninguno de los productos en tu carrito tiene stock disponible.
+                Por favor elimínalos o espera a que vuelvan a estar disponibles.
               </div>
 
               <div class="tp-cart-bottom">
@@ -169,6 +196,13 @@
               <div class="tp-cart-checkout-wrapper">
 
                   <!-- ========== RESUMEN DE COMPRA ========== -->
+
+                  <!-- Información de productos sin stock -->
+                  <div *ngIf="hasStockIssues" class="alert alert-warning mb-3" style="font-size: 0.85rem;">
+                    <strong>Resumen solo de productos disponibles</strong>
+                    <br>
+                    <small>{{outOfStockProducts.length}} producto(s) sin stock no se incluyen en el total</small>
+                  </div>
 
                   <!-- Subtotal original -->
                   <div class="tp-cart-checkout-total d-flex align-items-center justify-content-between">
@@ -213,18 +247,32 @@
                   <div class="tp-cart-checkout-shipping">
                     <h4 class="tp-cart-checkout-shipping-title">Envío</h4>
 
-                    <!-- Mensaje de envío gratis -->
+                    <!-- Mensaje de envío gratis por monto -->
+                    <div *ngIf="qualifiesForFreeShippingByAmount && !hasFreeShipping" class="alert alert-success mb-3">
+                      <strong>¡Felicitaciones!</strong><br>
+                      Tu compra supera los <strong>${{ freeShippingThreshold | number:'1.0-0' }}</strong><br>
+                      <strong>¡Envío GRATIS!</strong>
+                    </div>
+
+                    <!-- Mensaje de envío gratis por productos -->
                     <div *ngIf="hasFreeShipping" class="alert alert-success mb-3">
-                      <strong>¡Envío GRATIS!</strong> Todos los productos en tu carrito tienen envío gratis.
+                      <strong>¡Envío GRATIS!</strong> Todos los productos disponibles tienen envío gratis.
+                    </div>
+
+                    <!-- Mensaje para alcanzar envío gratis (solo si está cerca) -->
+                    <div *ngIf="!hasFreeShippingOverall && (freeShippingThreshold - subtotalAfterDiscount) <= 50000 && (freeShippingThreshold - subtotalAfterDiscount) > 0"
+                         class="alert alert-info mb-3">
+                      <strong>¡Estás cerca!</strong><br>
+                      Agregando <strong>${{ (freeShippingThreshold - subtotalAfterDiscount) | number:'1.2-2' }}</strong> más, tendrás envío gratis
                     </div>
 
                     <!-- Mensaje mixto (algunos productos con envío gratis) -->
-                    <div *ngIf="hasSomeFreeShipping && !hasFreeShipping" class="alert alert-info mb-3">
+                    <div *ngIf="hasSomeFreeShipping && !hasFreeShipping && !qualifiesForFreeShippingByAmount" class="alert alert-info mb-3">
                       <strong>Nota:</strong> Algunos productos tienen envío gratis, pero otros no.
                     </div>
 
-                    <!-- Formulario de provincia (solo si NO todos tienen envío gratis) -->
-                    <form *ngIf="!hasFreeShipping" #provinciaForm="ngForm" (ngSubmit)="applyCosto()">
+                    <!-- Formulario de provincia (solo si NO hay envío gratis) -->
+                    <form *ngIf="!hasFreeShippingOverall" #provinciaForm="ngForm" (ngSubmit)="applyCosto()">
                       <label for="provincia">Seleccionar provincia:</label>
                       <div class="d-flex align-items-center">
                         <select
@@ -266,13 +314,13 @@
                   </div>
 
                   <!-- Costo de envío -->
-                  <div *ngIf="!hasFreeShipping && shippingCostValue > 0" class="tp-cart-checkout-total d-flex align-items-center justify-content-between">
+                  <div *ngIf="!hasFreeShippingOverall && shippingCostValue > 0" class="tp-cart-checkout-total d-flex align-items-center justify-content-between">
                     <span>Costo de envío</span>
                     <span>{{ shippingCostValue | number:'1.2-2' }} {{ currency }}</span>
                   </div>
 
                   <!-- Mostrar envío gratis si aplica -->
-                  <div *ngIf="hasFreeShipping" class="tp-cart-checkout-total d-flex align-items-center justify-content-between text-success">
+                  <div *ngIf="hasFreeShippingOverall" class="tp-cart-checkout-total d-flex align-items-center justify-content-between text-success">
                     <span>Costo de envío</span>
                     <span><strong>GRATIS</strong></span>
                   </div>
@@ -285,26 +333,36 @@
                     <span><strong>{{ grandTotal | number:'1.2-2' }} {{ currency }}</strong></span>
                   </div>
 
-                  <!-- BOTÓN DE CHECKOUT CON VALIDACIÓN DE STOCK -->
+                  <!-- BOTÓN DE CHECKOUT ACTUALIZADO -->
                   <div class="tp-cart-checkout-proceed">
                     <button
                       class="tp-cart-checkout-btn w-100"
                       (click)="proceedToCheckout()"
-                      [disabled]="hasStockIssues || (!hasFreeShipping && !selectedProvinceCode) || listCarts.length === 0"
-                      [ngClass]="{'disabled-btn': hasStockIssues || (!hasFreeShipping && !selectedProvinceCode) || listCarts.length === 0}"
+                      [disabled]="(!hasFreeShippingOverall && !selectedProvinceCode) || availableProducts.length === 0"
+                      [ngClass]="{'disabled-btn': (!hasFreeShippingOverall && !selectedProvinceCode) || availableProducts.length === 0}"
                     >
-                      <span *ngIf="!hasStockIssues">Ir al checkout</span>
-                      <span *ngIf="hasStockIssues">Stock insuficiente</span>
+                      <span *ngIf="availableProducts.length > 0">
+                        Continuar con {{availableProducts.length}} producto(s)
+                      </span>
+                      <span *ngIf="availableProducts.length === 0">
+                        No hay productos disponibles
+                      </span>
                     </button>
 
                     <!-- Mensajes de validación -->
-                    <div *ngIf="hasStockIssues" class="text-danger text-center mt-2">
+                    <div *ngIf="availableProducts.length === 0" class="text-danger text-center mt-2">
                       <i class="fas fa-exclamation-circle"></i>
-                      No puedes continuar debido a problemas de stock.
+                      No hay productos con stock disponible en tu carrito.
                     </div>
 
-                    <div *ngIf="!hasStockIssues && !hasFreeShipping && !selectedProvinceCode" class="text-danger text-center mt-2">
-                      Debes seleccionar una provincia antes de continuar.
+                    <div *ngIf="availableProducts.length > 0 && !hasFreeShippingOverall && !selectedProvinceCode" class="text-warning text-center mt-2">
+                      <i class="fas fa-exclamation-triangle"></i>
+                      Selecciona una provincia para calcular el envío.
+                    </div>
+
+                    <div *ngIf="hasStockIssues && availableProducts.length > 0" class="text-info text-center mt-2">
+                      <i class="fas fa-info-circle"></i>
+                      Los productos sin stock se ignorarán automáticamente.
                     </div>
                   </div>
 

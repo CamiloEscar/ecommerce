@@ -22,6 +22,9 @@ export class CartComponent {
   costoEnvio: number | null = null;
   hasStockIssues: boolean = false;
 
+  // Umbral para envío gratis por monto (configurable)
+  freeShippingThreshold: number = 300000; // $300,000 ARS
+
   constructor(
     public cartService: CartService,
     private cookieService: CookieService,
@@ -35,7 +38,7 @@ ngOnInit(): void {
 
     this.cartService.currentDataCart$.subscribe((resp: any) => {
       this.listCarts = resp.map((i: any) => ({ ...i })); // deep copy
-      this.totalCarts = this.listCarts.reduce((sum: number, item: any) => sum + item.total, 0);
+      this.totalCarts = this.calculateTotalWithStock();
       this.checkStockIssues();
 
       if (this.cartService.shippingCost !== null && this.cartService.shippingCost !== undefined) {
@@ -50,7 +53,7 @@ ngOnInit(): void {
     });
 }
 
-  // Verificar si hay productos sin stock suficiente
+  // Verificar si hay productos sin stock suficiente (solo para mostrar advertencias)
   checkStockIssues() {
     this.hasStockIssues = this.listCarts.some(
       (cart: any) => {
@@ -65,15 +68,39 @@ ngOnInit(): void {
     console.log('List carts:', this.listCarts);
   }
 
-  // Validar stock y proceder al checkout
+  // Obtener solo los productos con stock disponible
+  get availableProducts() {
+    return this.listCarts.filter((cart: any) => cart.stock_suficiente !== false);
+  }
+
+  // Obtener productos sin stock
+  get outOfStockProducts() {
+    return this.listCarts.filter((cart: any) => cart.stock_suficiente === false);
+  }
+
+  // Calcular total solo con productos que tienen stock
+  calculateTotalWithStock(): number {
+    return this.listCarts
+      .filter((cart: any) => cart.stock_suficiente !== false)
+      .reduce((sum: number, item: any) => sum + item.total, 0);
+  }
+
+  // Validar stock y proceder al checkout (ahora permite continuar con productos disponibles)
   proceedToCheckout() {
+    // Si NO hay productos con stock disponible, no permitir continuar
+    if (this.availableProducts.length === 0) {
+      this.toastr.error('No hay productos disponibles en tu carrito', 'Carrito vacío');
+      return;
+    }
+
+    // Validar stock antes de proceder
     this.cartService.validateStock().subscribe({
       next: (resp: any) => {
         console.log('Respuesta de validación de stock:', resp);
 
-        // Verificar si hay problemas de stock (message === 403)
+        // Si hay problemas de stock (message === 403)
         if (resp.message === 403) {
-          // Construir mensaje detallado
+          // Construir mensaje informativo
           let mensaje = '';
 
           if (resp.items_sin_stock && resp.items_sin_stock.length > 0) {
@@ -91,7 +118,10 @@ ngOnInit(): void {
             });
           }
 
-          this.toastr.error(mensaje, 'Productos no disponibles', {
+          // Agregar mensaje informativo sobre continuar
+          mensaje += '<br><strong>Los productos sin stock se ignorarán automáticamente en el checkout.</strong>';
+
+          this.toastr.warning(mensaje, 'Atención: Algunos productos no están disponibles', {
             timeOut: 10000,
             enableHtml: true,
             closeButton: true
@@ -101,6 +131,13 @@ ngOnInit(): void {
           this.cartService.listCart().subscribe((resp: any) => {
             this.cartService.setCart(resp.carts.data);
           });
+
+          // PERMITIR continuar al checkout si hay al menos 1 producto con stock
+          if (this.availableProducts.length > 0) {
+            setTimeout(() => {
+              this.router.navigate(['/proceso-de-pago']);
+            }, 1500);
+          }
         } else {
           // Todo OK, proceder al checkout
           this.router.navigate(['/proceso-de-pago']);
@@ -123,39 +160,49 @@ ngOnInit(): void {
     });
   }
 
-  // Verificar si TODOS los productos tienen envío gratis (cost = 1)
+  // Verificar si TODOS los productos CON STOCK tienen envío gratis
   get hasFreeShipping(): boolean {
-    if (this.listCarts.length === 0) return false;
+    const productsWithStock = this.availableProducts;
+    if (productsWithStock.length === 0) return false;
 
-    return this.listCarts.every(
+    return productsWithStock.every(
       (item: any) => item.product?.cost == 1
     );
   }
 
-  // Verificar si AL MENOS UN producto tiene envío gratis (cost = 1)
+  // Verificar si AL MENOS UN producto con stock tiene envío gratis
   get hasSomeFreeShipping(): boolean {
-    return this.listCarts.some((item: any) => item.product && item.product.cost == 1);
+    return this.availableProducts.some((item: any) => item.product && item.product.cost == 1);
   }
 
-  // ========== CÁLCULOS CORREGIDOS ==========
+  // Verificar si el subtotal supera el umbral para envío gratis
+  get qualifiesForFreeShippingByAmount(): boolean {
+    return this.subtotalAfterDiscount >= this.freeShippingThreshold;
+  }
 
-  // Subtotal SIN descuentos (precio original * cantidad)
+  // Verificar si el envío es gratis (por productos O por monto)
+  get hasFreeShippingOverall(): boolean {
+    return this.hasFreeShipping || this.qualifiesForFreeShippingByAmount;
+  }
+
+  // ========== CÁLCULOS CORREGIDOS (SOLO PRODUCTOS CON STOCK) ==========
+
+  // Subtotal SIN descuentos (precio original * cantidad) - SOLO PRODUCTOS CON STOCK
   get subtotalOriginal() {
-    return this.listCarts.reduce((sum: number, item: any) => {
-      // price_unit DEBE ser el precio unitario original del producto
+    return this.availableProducts.reduce((sum: number, item: any) => {
       const precioOriginalUnitario = item.price_unit ?? item.product?.price_ars ?? item.subtotal;
       return sum + (precioOriginalUnitario * item.quantity);
     }, 0);
   }
 
-  // Subtotal CON descuentos aplicados (después de cupones/campañas)
+  // Subtotal CON descuentos aplicados - SOLO PRODUCTOS CON STOCK
   get subtotalAfterDiscount() {
-    return this.listCarts.reduce((sum: number, item: any) => {
+    return this.availableProducts.reduce((sum: number, item: any) => {
       return sum + item.total;
     }, 0);
   }
 
-  // Total de descuentos aplicados
+  // Total de descuentos aplicados - SOLO PRODUCTOS CON STOCK
   get discountTotal() {
     const disc = this.subtotalOriginal - this.subtotalAfterDiscount;
     return disc > 0 ? disc : 0;
@@ -163,27 +210,27 @@ ngOnInit(): void {
 
   // Costo de envío
   get shippingCostValue() {
-    // Si todos los productos tienen envío gratis, el costo es 0
-    if (this.hasFreeShipping) {
+    // Si todos los productos CON STOCK tienen envío gratis O se supera el umbral, el costo es 0
+    if (this.hasFreeShippingOverall) {
       return 0;
     }
     return this.costoEnvio ?? 0;
   }
 
-  // Total final (subtotal con descuento + envío)
+  // Total final (subtotal con descuento + envío) - SOLO PRODUCTOS CON STOCK
   get grandTotal() {
     return this.subtotalAfterDiscount + this.shippingCostValue;
   }
 
-  // Obtener código de cupón global
+  // Obtener código de cupón global (de productos con stock)
   get globalCouponCode() {
-    const found = this.listCarts.find((i: any) => i.code_cupon || i.code_discount);
+    const found = this.availableProducts.find((i: any) => i.code_cupon || i.code_discount);
     return found ? (found.code_cupon || found.code_discount) : null;
   }
 
   // Obtener tipo de descuento
   get discountType() {
-    const found = this.listCarts.find((i: any) => i.code_cupon || i.code_discount);
+    const found = this.availableProducts.find((i: any) => i.code_cupon || i.code_discount);
     if (!found) return null;
     return {
       type: found.type_discount, // 1 = porcentaje, 2 = monto fijo
@@ -279,10 +326,19 @@ ngOnInit(): void {
 
 // applyCosto: Solo guardar el valor, recargar del backend
 applyCosto() {
+    // Si el envío es gratis por productos
     if (this.hasFreeShipping) {
       this.costoEnvio = 0;
       this.cartService.shippingCost = 0;
       this.toastr.info('Informacion', 'Todos los productos tienen envio gratis');
+      return;
+    }
+
+    // Si califica para envío gratis por monto
+    if (this.qualifiesForFreeShippingByAmount) {
+      this.costoEnvio = 0;
+      this.cartService.shippingCost = 0;
+      this.toastr.success('¡Felicitaciones!', `Tu compra supera los $${this.freeShippingThreshold.toLocaleString()} - ¡Envío GRATIS!`);
       return;
     }
 

@@ -1,12 +1,12 @@
-import { afterNextRender, Component, ElementRef, HostListener, OnInit, ViewChild, afterRender } from '@angular/core';
+import { afterNextRender, Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
 import { HomeService } from '../../pages/home/service/home.service';
 import { FormsModule } from '@angular/forms';
-import { Router , RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { CookieService } from 'ngx-cookie-service';
 import { CartService } from '../../pages/home/service/cart.service';
 import { ToastrService } from 'ngx-toastr';
-import { ChangeDetectorRef } from '@angular/core';
+
 @Component({
   selector: 'app-header',
   standalone: true,
@@ -14,154 +14,177 @@ import { ChangeDetectorRef } from '@angular/core';
   templateUrl: './header.component.html',
   styleUrl: './header.component.css',
 })
-export class HeaderComponent {
-@ViewChild('currencyToggle') currencyToggleRef!: ElementRef;
-@ViewChild('currencyList') currencyListRef!: ElementRef;
+export class HeaderComponent implements OnInit {
+  @ViewChild('currencyToggle') currencyToggleRef!: ElementRef;
+  @ViewChild('currencyList') currencyListRef!: ElementRef;
 
-@HostListener('document:click', ['$event'])
-onClickOutside(event: MouseEvent): void {
-  const toggleEl = this.currencyToggleRef?.nativeElement;
-  const listEl = this.currencyListRef?.nativeElement;
+  @HostListener('document:click', ['$event'])
+  onClickOutside(event: MouseEvent): void {
+    const toggleEl = this.currencyToggleRef?.nativeElement;
+    const listEl = this.currencyListRef?.nativeElement;
 
-  if (toggleEl && toggleEl.contains(event.target)) {
-    listEl?.classList.toggle('tp-currency-list-open');
-  } else {
-    listEl?.classList.remove('tp-currency-list-open');
+    if (toggleEl && toggleEl.contains(event.target)) {
+      listEl?.classList.toggle('tp-currency-list-open');
+    } else {
+      listEl?.classList.remove('tp-currency-list-open');
+    }
   }
-}
 
   categories_menus: any = [];
-  currency:string = 'ARS';
-
-  user:any;
+  currency: string = 'ARS';
+  user: any;
   listCarts: any = [];
-  totalCarts:number = 0;
-  imagen_previsualizacion: string = ''
-
-  //TODO: AGREGAR LISTA DE FAVORITOS SIMILAR A LISTCARTS
-
-  isLoading:boolean = false;
-
+  totalCarts: number = 0;
+  outOfStockCount: number = 0;
+  imagen_previsualizacion: string = '';
+  isLoading: boolean = true;
   searchT: string = '';
-  constructor(public homeService: HomeService,
-              public cookieService: CookieService,
-              public cartService: CartService,
-              private toastr: ToastrService,
-              private cdr: ChangeDetectorRef,
-              private router: Router
+
+  constructor(
+    public homeService: HomeService,
+    public cookieService: CookieService,
+    public cartService: CartService,
+    private toastr: ToastrService,
+    private router: Router
   ) {
     afterNextRender(() => {
       this.homeService.menus().subscribe((resp: any) => {
-        // //console.log(resp);
         this.categories_menus = resp.categories_menus;
       });
-      this.currency = this.cookieService.get("currency") ? this.cookieService.get("currency") : 'ARS';
+
+      this.currency = this.cookieService.get("currency") || 'ARS';
       this.user = this.cartService.authService.user;
-      setTimeout(() => {
-        // this.isLoading = true;
-        this.cdr.detectChanges();
-      }, 50);
-      if(this.user){
-        this.cartService.listCart().subscribe((resp:any) => {
-          // console.log(resp)
-          resp.carts.data.forEach((cart:any) => {
-            this.cartService.changeCart(cart)
-          });
-        })
+
+      // Solo al cargar la página, refrescar desde backend Y validar stock
+      if (this.user) {
+        this.refreshCartWithStockValidation();
       }
     });
-    afterRender(() => {
-      setTimeout(() => {
-        this.isLoading = true;
-
-      }, 50);
-    })
   }
-
 
   ngOnInit(): void {
-    //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
-    //Add 'implements OnInit' to the class.
-
-    this.cartService.currentDataCart$.subscribe((resp:any)=> {
-      // console.log(resp)
+    // Simplemente recibir los datos del servicio TAL CUAL VIENEN
+    this.cartService.currentDataCart$.subscribe((resp: any) => {
       this.listCarts = resp;
-      this.totalCarts = this.listCarts.reduce((sum:number, item:any) => sum + item.total, 0 )  //el controlador esta escuchando todo el tiempo, asi que cuando se elimine el controlador actualiza
-    })
+      this.calculateTotals();
+    });
   }
 
-  logout(){
+  private calculateTotals(): void {
+    // Solo sumar - NO modificar ni calcular stock
+    this.totalCarts = this.listCarts
+      .filter((item: any) => item.stock_suficiente !== false)
+      .reduce((sum: number, item: any) => sum + (item.total || 0), 0);
+
+    this.outOfStockCount = this.listCarts
+      .filter((item: any) => item.stock_suficiente === false).length;
+  }
+
+  // NUEVO: Método que solo se ejecuta al recargar la página
+  private refreshCartWithStockValidation(): void {
+    if (!this.user) return;
+
+    this.cartService.listCart().subscribe({
+      next: (resp: any) => {
+        this.cartService.resetCart();
+
+        // Cargar cada item del carrito
+        resp.carts.data.forEach((cart: any) => {
+          this.cartService.changeCart(cart);
+        });
+
+        // SOLO al recargar página, validar stock
+        this.cartService.validateStock().subscribe({
+          next: (stockResp: any) => {
+            if (stockResp && stockResp.carts) {
+              const updatedCarts = stockResp.carts.data || stockResp.carts;
+              let listCart = [...this.cartService.cart.getValue()];
+
+              updatedCarts.forEach((backendCart: any) => {
+                const index = listCart.findIndex((item: any) => item.id === backendCart.id);
+                if (index !== -1) {
+                  listCart[index] = {
+                    ...listCart[index],
+                    stock_suficiente: backendCart.stock_suficiente,
+                    stock_disponible: backendCart.stock_disponible
+                  };
+                }
+              });
+
+              this.cartService.cart.next(listCart);
+            }
+          },
+          error: (err) => {
+            console.error('Error al validar stock:', err);
+          }
+        });
+      },
+      error: (err) => {
+        console.error('Error al refrescar carrito:', err);
+      }
+    });
+  }
+
+  logout(): void {
     this.cartService.authService.logout();
     setTimeout(() => {
       window.location.reload();
     }, 50);
   }
-  deleteCart(CART:any){
-    this.cartService.deleteCart(CART.id).subscribe((resp:any)=> {  //lo eliminamos del front
-      this.toastr.info('Eliminacion', "Se elimino el producto: "+CART.product.title + " del carrito de compra");
-      this.cartService.removeCart(CART);                     //lo eliminamos del backend
-    })
+
+  deleteCart(CART: any): void {
+    this.cartService.deleteCart(CART.id).subscribe((resp: any) => {
+      this.toastr.info('Eliminación', `Se eliminó el producto: ${CART.product.title} del carrito de compra`);
+      this.cartService.removeCart(CART);
+    });
   }
-  getIconMenu(MENU_CAT:any){
-    var miDiv: any = document.getElementById('icon-' + MENU_CAT.id);
-    miDiv.innerHTML = MENU_CAT.icon;
+
+  getIconMenu(MENU_CAT: any): string {
+    const miDiv: any = document.getElementById('icon-' + MENU_CAT.id);
+    if (miDiv) {
+      miDiv.innerHTML = MENU_CAT.icon;
+    }
     return '';
   }
 
-  changeCurrency(val: string){
-      if(this.user){
-        this.cartService.deleteCartsAll().subscribe((resp:any) => {
-          this.cookieService.set("currency", val);
-          window.location.reload();
-        })
-      }else {
+  changeCurrency(val: string): void {
+    if (this.user) {
+      this.cartService.deleteCartsAll().subscribe(() => {
         this.cookieService.set("currency", val);
-        setTimeout(() => {
-
-          window.location.reload();
-        }, 25);
-      }
-  }
-
-  searchProduct(){
-    window.location.href = '/productos-busqueda?search=' + this.searchT;
-  }
-
-  buscarPorCategoria(nombreCategoria: string) {
-  this.router.navigate(['/productos-busqueda'], {
-    queryParams: { search: nombreCategoria }
-  });
-}
-getUserAvatar(): string | null {
-  return this.user?.avatar
-    || this.user?.photo_url
-    || this.imagen_previsualizacion
-    || null;
-}
-goToCart(){
-  this.cartService.listCart().subscribe({
-    next: (resp:any) => {
-
-      // 🔥 limpiar carrito actual
-      this.cartService.clearCart();
-
-      // 🔥 volver a cargar desde backend
-      resp.carts.data.forEach((cart:any) => {
-        this.cartService.changeCart(cart);
+        window.location.reload();
       });
-
-      // 👉 ahora sí navegamos
-      this.router.navigate(['/carrito-de-compra']);
-    },
-    error: () => {
-      this.router.navigate(['/carrito-de-compra']);
+    } else {
+      this.cookieService.set("currency", val);
+      setTimeout(() => {
+        window.location.reload();
+      }, 25);
     }
-  });
-}
-buscarPorCategorias(name: string) {
-  this.router.navigate(['/productos-busqueda'], {
-    queryParams: { search: name }
-  });
-}
+  }
 
+  searchProduct(): void {
+    this.router.navigate(['/productos-busqueda'], {
+      queryParams: { search: this.searchT }
+    });
+  }
+
+  buscarPorCategoria(nombreCategoria: string): void {
+    this.router.navigate(['/productos-busqueda'], {
+      queryParams: { search: nombreCategoria }
+    });
+  }
+
+  getUserAvatar(): string | null {
+    return this.user?.avatar || this.user?.photo_url || this.imagen_previsualizacion || null;
+  }
+
+  goToCart(): void {
+    // NO validar stock aquí, solo navegar
+    this.router.navigate(['/carrito-de-compra']);
+  }
+
+  buscarPorCategorias(name: string): void {
+    this.router.navigate(['/productos-busqueda'], {
+      queryParams: { search: name }
+    });
+  }
 }

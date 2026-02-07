@@ -755,31 +755,80 @@
           </div>
           <div class="cartmini__widget">
             @for(cart of listCarts; track cart.id){
-              <div class="cartmini__widget-item">
-                  <div class="cartmini__thumb">
+              <div class="cartmini__widget-item" [ngClass]="{'out-of-stock-item': cart.stock_suficiente === false}">
+                  <div class="cartmini__thumb" [ngClass]="{'opacity-50': cart.stock_suficiente === false}">
                     <a [routerLink]="['/producto/'+cart.product.slug]">
                        <img [src]="cart.product.imagen" alt="">
                     </a>
                   </div>
                   <div class="cartmini__content">
-                    <h5 class="cartmini__title"><a [routerLink]="['/producto/'+cart.product.slug]">{{cart.product.title}}</a></h5>
+                    <h5 class="cartmini__title">
+                      <a [routerLink]="['/producto/'+cart.product.slug]">
+                        {{cart.product.title}}
+                      </a>
+                    </h5>
+
+                    <!-- ESTADO DE STOCK - Solo mostrar si stock_suficiente está explícitamente en false -->
+                    <div *ngIf="cart.stock_suficiente === false && cart.stock_disponible !== null && cart.stock_disponible !== undefined" class="mb-2">
+                      <span class="badge bg-danger" style="font-size: 0.75rem;">
+                        <i class="fas fa-times-circle"></i>
+                        <span *ngIf="cart.stock_disponible === 0">SIN STOCK</span>
+                        <span *ngIf="cart.stock_disponible > 0">STOCK INSUFICIENTE</span>
+                      </span>
+                    </div>
+
+                    <!-- Indicador de stock bajo pero suficiente - Solo si tenemos la info -->
+                    <div *ngIf="cart.stock_suficiente !== false && cart.stock_disponible !== null && cart.stock_disponible !== undefined && cart.stock_disponible > 0 && cart.stock_disponible <= 5" class="mb-2">
+                      <span class="badge bg-warning" style="font-size: 0.75rem;">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        Solo {{cart.stock_disponible}} disponibles
+                      </span>
+                    </div>
+
                     <div class="cartmini__price-wrapper">
-                       <span class="cartmini__price">{{cart.subtotal}} {{cart.currency}}</span>
-                       <span class="cartmini__quantity mx-1">x{{cart.quantity}}</span>
+                       <!-- Precio unitario -->
+                       <span class="cartmini__price" [ngClass]="{'text-muted text-decoration-line-through': cart.stock_suficiente === false}">
+                         {{cart.subtotal}} {{cart.currency}}
+                       </span>
+                       <span class="cartmini__quantity mx-1" [ngClass]="{'text-muted': cart.stock_suficiente === false}">
+                         x{{cart.quantity}}
+                       </span>
+
                        <br>
-                       <span class="cartmini__price">Total: {{cart.total}} {{cart.currency}}</span>
+
+                       <!-- Total -->
+                       <span class="cartmini__price fw-bold" [ngClass]="{'text-muted': cart.stock_suficiente === false}">
+                         Total:
+                         <span *ngIf="cart.stock_suficiente !== false">{{cart.total}} {{cart.currency}}</span>
+                         <span *ngIf="cart.stock_suficiente === false" class="text-danger">No disponible</span>
+                       </span>
+
+                       <!-- Envío gratis -->
+                       @if(cart.product?.cost == 1 && cart.stock_suficiente !== false){
+                         <br>
+                         <span class="badge bg-success" style="font-size: 0.7rem; margin-top: 4px;">
+                           ✓ Envío GRATIS
+                         </span>
+                       }
+
+                       <!-- Variaciones -->
                        @if(cart.product_variation){
                         <br>
-                        <span class="cartmini__quantity mx-1">• {{cart.product_variation.attribute.name}}: {{cart.product_variation.propertie?.name || cart.product_variation.value_add}}</span>
+                        <span class="cartmini__quantity mx-1" style="font-size: 0.8rem;">
+                          • {{cart.product_variation.attribute.name}}: {{cart.product_variation.propertie?.name || cart.product_variation.value_add}}
+                        </span>
                         @if(cart.product_variation.variation_father){
                           <br>
-                          <span class="cartmini__quantity mx-1">• {{cart.product_variation.variation_father.attribute.name}}: {{cart.product_variation.variation_father.propertie?.name || cart.product_variation.variation_father.value_add}}
+                          <span class="cartmini__quantity mx-1" style="font-size: 0.8rem;">
+                            • {{cart.product_variation.variation_father.attribute.name}}: {{cart.product_variation.variation_father.propertie?.name || cart.product_variation.variation_father.value_add}}
                           </span>
                         }
                       }
                     </div>
                   </div>
-                  <a href="#" onclick="return false;" (click)="deleteCart(cart)" class="cartmini__del"><i class="fa-regular fa-xmark"></i></a>
+                  <a href="#" onclick="return false;" (click)="deleteCart(cart)" class="cartmini__del">
+                    <i class="fa-regular fa-xmark"></i>
+                  </a>
               </div>
             }
           </div>
@@ -790,17 +839,27 @@
           </div>
       </div>
       <div class="cartmini__checkout" *ngIf="listCarts.length > 0">
-          <div class="cartmini__checkout-title mb-30" *ngIf="isLoading">
+          <div class="cartmini__checkout-title mb-30">
+              <!-- Mostrar info si hay productos sin stock -->
+              <div *ngIf="outOfStockCount > 0" class="alert alert-warning mb-2" style="font-size: 0.8rem; padding: 8px;">
+                <i class="fas fa-exclamation-triangle"></i>
+                {{outOfStockCount}} producto(s) sin stock no se incluyen
+              </div>
+
               <h4>Subtotal:</h4>
               <span>$ {{totalCarts}} {{currency}}</span>
+
+              <div *ngIf="outOfStockCount > 0" class="text-muted" style="font-size: 0.75rem; margin-top: 4px;">
+                Solo productos disponibles
+              </div>
           </div>
           <div class="cartmini__checkout-btn">
               <a
-  class="tp-btn mb-10 w-100"
-  (click)="goToCart()"
->
-  Ver carrito
-</a>
+                class="tp-btn mb-10 w-100"
+                (click)="goToCart()"
+              >
+                Ver carrito
+              </a>
           </div>
       </div>
   </div>
