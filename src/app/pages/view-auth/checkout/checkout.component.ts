@@ -57,6 +57,10 @@ export class CheckoutComponent {
 ];
 
 paymentAlias: string = '';
+//TODO: REVISAR ESTE METODO PARA EL BRICK DE MERCADO PAGO
+preferenceId: string | null = null;
+  loadingPayment: boolean = false;
+  mp: any; // Instancia de Mercado Pago
 
   constructor(
     public cartService: CartService,
@@ -83,6 +87,13 @@ paymentAlias: string = '';
     // this.dolarService.obtenerDolar().subscribe((resp: any) => {
     //   this.price_dolar = resp.value_sell;
     // });
+//TODO: REVISAR ESTE METODO PARA EL BRICK DE MERCAOD PAGO
+    // 1. INICIALIZAR MERCADO PAGO AL CARGAR EL COMPONENTE
+    // Reemplaza 'TU_PUBLIC_KEY' con tu clave pública real
+    this.mp = new MercadoPago('TEST-8d1841e1-ba74-4790-a451-60adea26788b', {
+      locale: 'es-AR'
+    });
+
     this.cartService.currentDataCart$.subscribe((resp:any)=>{
       this.listCarts = resp;
       this.totalCarts = Number(this.listCarts.reduce((sum:number, item:any) => sum + item.total, 0 ).toFixed(2));
@@ -191,6 +202,100 @@ paymentAlias: string = '';
     //   }
     // }).render(this.paypalElement?.nativeElement);
     }
+
+    //TODO: REVISAR ESTE METODO PARA EL BRICK DE MERCADO PAGO
+  //   createPreference() {
+  //   if(this.totalCarts == 0){
+  //      this.toastr.error("Validacion", "Monto 0 no permitido"); return;
+  //   }
+  //   if(this.listCarts.length == 0){
+  //      this.toastr.error("Validacion", "Carrito vacío"); return;
+  //   }
+  //   if( !this.name || !this.surname || !this.email || !this.phone || !this.address || !this.city || !this.postcode_zip || !this.country_region){
+  //      this.toastr.error("Validacion", "Completa los datos de envío"); return;
+  //   }
+
+  //   this.loadingPayment = true;
+
+  //   // 1. Guardar datos temporales (Tu lógica actual)
+  //   let data = {
+  //     description: this.description,
+  //     sale_address: {
+  //       name: this.name,
+  //     surname: this.surname,
+  //     company: this.company,
+  //     country_region: this.country_region,
+  //     address: this.address,
+  //     street: this.street,
+  //     city: this.city,
+  //     postcode_zip: this.postcode_zip,
+  //     phone: this.phone,
+  //     email: this.email,
+  //     }
+  //   }
+
+  //   this.cartService.storeTemp(data).subscribe((resp: any) => {
+
+  //     // 2. Pedir la preferencia al Backend
+  //     this.cartService.mercadopago(this.totalCarts).subscribe((resp: any) => {
+  //       console.log("Respuesta MP:", resp);
+
+  //       if (resp && resp.preference && resp.preference.id) {
+
+  //         this.preferenceId = resp.preference.id; // Guardamos el ID
+  //         this.loadingPayment = false;
+
+  //         // 3. RENDERIZAR EL BRICK (BOTÓN)
+  //         this.renderWalletBrick(this.preferenceId);
+
+  //       } else {
+  //         this.toastr.error("Error", "No se pudo generar el pago");
+  //         this.loadingPayment = false;
+  //       }
+  //     }, (error) => {
+  //       console.error(error);
+  //       this.toastr.error("Error", "Fallo al conectar con Mercado Pago");
+  //       this.loadingPayment = false;
+  //     });
+
+  //   }, (error) => {
+  //     this.toastr.error("Error", "No se pudieron guardar los datos");
+  //     this.loadingPayment = false;
+  //   });
+  // }
+
+  // // Función específica para dibujar el Wallet Brick
+  // renderWalletBrick(preferenceId: string | null) {
+  //   if (!preferenceId) return;
+
+  //   const bricksBuilder = this.mp.bricks();
+
+  //   bricksBuilder.create("wallet", "wallet_container", {
+  //     initialization: {
+  //       preferenceId: preferenceId,
+  //       redirectMode: 'modal' // Opcional: 'modal' (abre popup) o 'self' (redirige)
+  //     },
+  //     customization: {
+  //       texts: {
+  //         valueProp: 'smart_option',
+  //       },
+  //       visual: {
+  //          style: {
+  //            theme: 'default' // 'default', 'dark' or 'bootstrap'
+  //          }
+  //       }
+  //     },
+  //     callbacks: {
+  //       onReady: () => {
+  //         console.log('Brick de Mercado Pago listo');
+  //       },
+  //       onError: (error: any) => {
+  //         console.error('Error en Brick MP:', error);
+  //       },
+  //     },
+  //   });
+  // }
+
     generatePaymentAlias() {
   const index = Math.floor(Math.random() * this.paymentAliasList.length);
   this.paymentAlias = this.paymentAliasList[index];

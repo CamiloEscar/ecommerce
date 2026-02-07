@@ -324,6 +324,18 @@
                         <p>Realiza tu pago por mercado pago. Por favor, usa tu ID de pedido como referencia de pago. Tu pedido no será enviado hasta que los fondos hayan sido confirmados en nuestra cuenta.</p>
                      </div> -->
                   </div>
+                  <!-- <div class="tp-checkout-payment-item">
+
+                    <button *ngIf="!preferenceId" (click)="createPreference()" class="btn btn-primary">
+                        Confirmar datos y Pagar
+                    </button>
+
+                    <div id="wallet_container"></div>
+
+                    <div *ngIf="loadingPayment" class="text-center mt-3">
+                        <span>Cargando opciones de pago...</span>
+                    </div>
+                </div> -->
                   <!-- <div class="tp-checkout-payment-item paypal-payment">
                      <input type="radio" id="paypal" name="payment" checked>
                      <label for="paypal">PayPal <img src="assets/img/icon/payment-option.png" alt=""> <a href="https://www.paypal.com/signin/?returnUri=https%3A%2F%2Fdeveloper.paypal.com%2Fdashboard%2Faccounts%2Fedit%2F5335760775553271201%3FaccountName%3Dsb-n3ve329834715%40business.example.com&intent=developer&ctxId=ulcacbbf2dff8f4371adf1e8525c0a894c" target="_blank">¿Qué es PayPal?</a></label>
