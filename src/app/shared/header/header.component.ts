@@ -39,6 +39,7 @@ export class HeaderComponent implements OnInit {
   imagen_previsualizacion: string = '';
   isLoading: boolean = true;
   searchT: string = '';
+  selectedCategory: string = '';
 
   constructor(
     public homeService: HomeService,
@@ -67,6 +68,8 @@ export class HeaderComponent implements OnInit {
     this.cartService.currentDataCart$.subscribe((resp: any) => {
       this.listCarts = resp;
       this.calculateTotals();
+          this.loadCategories();
+
     });
   }
 
@@ -161,9 +164,22 @@ export class HeaderComponent implements OnInit {
     }
   }
 
+loadCategories(): void {
+    this.homeService.menus().subscribe((resp: any) => {
+      this.categories_menus = resp.categories_menus;
+    });
+  }
+
   searchProduct(): void {
+    if (!this.searchT.trim() && !this.selectedCategory) {
+      return;
+    }
+
     this.router.navigate(['/productos-busqueda'], {
-      queryParams: { search: this.searchT }
+      queryParams: {
+        search: this.searchT.trim(),
+        category: this.selectedCategory || null
+      }
     });
   }
 
@@ -187,4 +203,5 @@ export class HeaderComponent implements OnInit {
       queryParams: { search: name }
     });
   }
+
 }

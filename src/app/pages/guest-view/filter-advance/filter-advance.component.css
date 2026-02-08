@@ -13,3 +13,91 @@
   border-color: #0989ff;
   color: #fff
 }
+/* Estilos para las categorías */
+/* .tp-shop-widget-categories ul li a {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  color: #333;
+}
+
+.tp-shop-widget-categories ul li a:hover {
+  background-color: #f5f5f5;
+  padding-left: 16px;
+}
+
+.tp-shop-widget-categories ul li a span {
+  background-color: #e0e0e0;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #666;
+  transition: all 0.3s ease;
+}
+
+.tp-shop-widget-categories ul li a.selected-categories {
+  background-color: #0066c0;
+  color: white;
+  font-weight: 600;
+}
+
+.tp-shop-widget-categories ul li a.selected-categories span {
+  background-color: rgba(255, 255, 255, 0.3);
+  color: white;
+}
+
+.tp-shop-widget-categories ul li {
+  margin-bottom: 5px;
+  list-style: none;
+}
+
+.tp-shop-widget-categories ul {
+  padding-left: 0;
+} */
+.custom-select-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.custom-select-button {
+  padding: 5px 30px 5px 10px;
+  font-size: 14px;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  background: white;
+  cursor: pointer;
+  min-width: 150px;
+  text-align: left;
+}
+
+.custom-select-button:hover {
+  border-color: #0066c0;
+}
+
+.custom-select-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  margin-top: 4px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  z-index: 1000;
+}
+
+.custom-select-option {
+  padding: 10px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.custom-select-option:hover {
+  background-color: #f5f5f5;
+}

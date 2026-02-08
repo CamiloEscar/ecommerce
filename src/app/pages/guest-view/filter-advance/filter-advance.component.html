@@ -6,10 +6,10 @@
         <div class="row">
            <div class="col-xxl-12">
               <div class="breadcrumb__content p-relative z-index-1">
-                 <h3 class="breadcrumb__title">Shop Grid</h3>
+                 <h3 class="breadcrumb__title">Busqueda</h3>
                  <div class="breadcrumb__list">
                     <span><a href="#">Home</a></span>
-                    <span>Shop Grid</span>
+                    <span>Busqueda</span>
                  </div>
               </div>
            </div>
@@ -17,7 +17,67 @@
      </div>
   </section>
   <!-- breadcrumb area end -->
+<!-- Información de búsqueda -->
+@if(search || categories_selected.length > 0) {
+  <section class="pt-20 pb-20" style="background-color: #f8f9fa;">
+    <div class="container">
+      <div class="row">
+        <div class="col-12">
+          <div class="d-flex align-items-center justify-content-between flex-wrap">
+            <div>
+              <h5 class="mb-2">
+                @if(search) {
+                  <span>Resultados para: <strong>"{{ search }}"</strong></span>
+                }
+                @if(categories_selected.length > 0) {
+                  <span class="ms-3" style="font-size: 14px; color: #666;">
+                    en {{ categories_selected.length }} categoría(s)
+                  </span>
+                }
+              </h5>
+              <p class="mb-0" style="color: #666;">
+                Se encontraron {{ PRODUCTS.length }} productos
+              </p>
+            </div>
+            @if(search || categories_selected.length > 0 || colors_selected.length > 0 || brands_selected.length > 0) {
+              <button class="btn btn-outline-danger btn-sm" (click)="reset()">
+                <i class="fa fa-times me-1"></i> Limpiar filtros
+              </button>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+}
 
+<!-- Mensaje cuando no hay resultados -->
+@if(PRODUCTS.length === 0 && (search || categories_selected.length > 0)) {
+  <section class="pt-100 pb-100">
+    <div class="container">
+      <div class="row">
+        <div class="col-12 text-center">
+          <div style="max-width: 500px; margin: 0 auto;">
+            <svg width="120" height="120" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="opacity: 0.3; margin-bottom: 20px;">
+              <path d="M21 21L16.65 16.65M19 11C19 15.4183 15.4183 19 11 19C6.58172 19 3 15.4183 3 11C3 6.58172 6.58172 3 11 3C15.4183 3 19 6.58172 19 11Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <h3>No se encontraron productos</h3>
+            <p class="text-muted">
+              @if(search) {
+                No encontramos productos que coincidan con "<strong>{{ search }}</strong>"
+              } @else {
+                No hay productos con los filtros seleccionados
+              }
+            </p>
+            <button class="btn btn-primary mt-3" (click)="reset()">
+              Ver todos los productos
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+}
   <!-- shop area start -->
   <section class="tp-shop-area pb-120">
      <div class="container">
@@ -26,7 +86,7 @@
               <div class="tp-shop-sidebar mr-10">
                  <!-- filter -->
                  <div class="tp-shop-widget mb-35">
-                    <h3 class="tp-shop-widget-title no-border">Price Filter</h3>
+                    <h3 class="tp-shop-widget-title no-border">Filtro de precios</h3>
 
                     <div class="tp-shop-widget-content">
                        <div class="tp-shop-widget-filter">
@@ -42,7 +102,7 @@
                  </div>
                  <!-- status -->
                  <div class="tp-shop-widget mb-50">
-                    <h3 class="tp-shop-widget-title">Product Status</h3>
+                    <h3 class="tp-shop-widget-title">Estado del producto</h3>
 
                     <div class="tp-shop-widget-content">
                        <div class="tp-shop-widget-checkbox">
@@ -61,18 +121,27 @@
                  </div>
                  <!-- categories -->
                  <div class="tp-shop-widget mb-50">
-                    <h3 class="tp-shop-widget-title">Categorias</h3>
+                  <h3 class="tp-shop-widget-title">Categorías</h3>
 
-                    <div class="tp-shop-widget-content">
-                       <div class="tp-shop-widget-categories">
-                          <ul>
-                            @for(categorie of Categories; track categorie.id){
-                              <li><a href="#" onclick="return false;" (click)="addCategorie(categorie)" [ngClass]="{'selected-categories': categories_selected.includes(categorie.id)}">{{categorie.name}} <span>{{ categorie.products_count}}</span></a></li>
-                            }
-                          </ul>
-                       </div>
+                  <div class="tp-shop-widget-content">
+                    <div class="tp-shop-widget-categories">
+                      <ul>
+                        @for(categorie of Categories; track categorie.id) {
+                          <li>
+                            <a
+                              (click)="addCategorie(categorie)"
+                              [ngClass]="{'selected-categories': categories_selected.includes(categorie.id)}"
+                              style="cursor: pointer;"
+                            >
+                              {{ categorie.name }}
+                              <span>{{ categorie.products_count }}</span>
+                            </a>
+                          </li>
+                        }
+                      </ul>
                     </div>
-                 </div>
+                  </div>
+                </div>
                  <!-- color -->
                  <div class="tp-shop-widget mb-50">
                     <h3 class="tp-shop-widget-title">Filtro por Color</h3>
@@ -215,7 +284,7 @@
                             </div>
                           </div>
                        </div>
-                       <div class="col-xl-6">
+                       <!-- <div class="col-xl-6">
                           <div class="tp-shop-top-right d-sm-flex align-items-center justify-content-xl-end">
                              <div class="tp-shop-top-select">
                                 <select>
@@ -242,7 +311,7 @@
                                 </button>
                              </div>
                           </div>
-                       </div>
+                       </div> -->
                     </div>
                  </div>
                  <div class="tp-shop-items-wrapper tp-shop-item-primary">
@@ -413,42 +482,125 @@
                        </div>
                      </div>
                  </div>
-                 <div class="infinite-pagination d-none">
-                    <a href="shop.html" class="infinite-next-link">Next</a>
-                 </div>
-                 <div class="tp-shop-pagination mt-20">
-                    <div class="tp-pagination">
-                       <nav>
-                          <ul>
-                             <li>
-                                <a href="shop.html" class="tp-pagination-prev prev page-numbers">
-                                   <svg width="15" height="13" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                      <path d="M1.00017 6.77879L14 6.77879" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                      <path d="M6.24316 11.9999L0.999899 6.77922L6.24316 1.55762" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                   </svg>
-                                </a>
-                             </li>
-                             <li>
-                                <a href="shop.html">1</a>
-                             </li>
-                             <li>
-                                <span class="current">2</span>
-                             </li>
-                             <li>
-                                <a href="shop.html">3</a>
-                             </li>
-                             <li>
-                                <a href="shop.html" class="next page-numbers">
-                                   <svg width="15" height="13" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                      <path d="M13.9998 6.77883L1 6.77883" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                      <path d="M8.75684 1.55767L14.0001 6.7784L8.75684 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                   </svg>
-                                </a>
-                             </li>
-                          </ul>
-                        </nav>
-                    </div>
-                 </div>
+                 <!-- Reemplaza todo el bloque de paginación con esto -->
+@if(PRODUCTS.length > 0) {
+  <div class="tp-shop-pagination mt-20">
+    <div class="row align-items-center">
+      <!-- Selector de items por página -->
+      <div class="col-md-6 mb-3 mb-md-0">
+        <div class="d-flex align-items-center">
+          <span class="me-2" style="color: #666; font-size: 14px;">Mostrar:</span>
+          <!-- Reemplaza el select por esto -->
+<div class="custom-select-wrapper" style="position: relative;">
+  <button
+    class="custom-select-button"
+    (click)="toggleItemsDropdown = !toggleItemsDropdown"
+    type="button"
+  >
+    {{ itemsPerPage }} productos
+    <i class="fa fa-chevron-down ms-2"></i>
+  </button>
+
+  @if(toggleItemsDropdown) {
+    <div class="custom-select-dropdown">
+      <div
+        class="custom-select-option"
+        (click)="changeItemsPerPage(12); toggleItemsDropdown = false"
+      >
+        12 productos
+      </div>
+      <div
+        class="custom-select-option"
+        (click)="changeItemsPerPage(24); toggleItemsDropdown = false"
+      >
+        24 productos
+      </div>
+      <div
+        class="custom-select-option"
+        (click)="changeItemsPerPage(36); toggleItemsDropdown = false"
+      >
+        36 productos
+      </div>
+      <div
+        class="custom-select-option"
+        (click)="changeItemsPerPage(48); toggleItemsDropdown = false"
+      >
+        48 productos
+      </div>
+    </div>
+  }
+</div>
+          <span class="ms-3" style="color: #666; font-size: 14px;">
+            Mostrando {{ (currentPage - 1) * itemsPerPage + 1 }} -
+            {{ Math.min(currentPage * itemsPerPage, PRODUCTS.length) }}
+            de {{ PRODUCTS.length }} productos
+          </span>
+        </div>
+      </div>
+
+      <!-- Paginación -->
+      <div class="col-md-6">
+        <div class="tp-pagination">
+          <nav>
+            <ul class="justify-content-md-end">
+              <!-- Botón anterior -->
+              <li>
+                <a
+                  (click)="previousPage()"
+                  class="tp-pagination-prev prev page-numbers"
+                  [class.disabled]="currentPage === 1"
+                  style="cursor: pointer;"
+                >
+                  <svg width="15" height="13" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M1.00017 6.77879L14 6.77879" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M6.24316 11.9999L0.999899 6.77922L6.24316 1.55762" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </a>
+              </li>
+
+              <!-- Números de página -->
+              @for(page of getPageNumbers(); track page) {
+                @if(page === -1) {
+                  <li>
+                    <span class="dots">...</span>
+                  </li>
+                } @else {
+                  <li>
+                    @if(page === currentPage) {
+                      <span class="current">{{ page }}</span>
+                    } @else {
+                      <a
+                        (click)="goToPage(page)"
+                        style="cursor: pointer;"
+                      >
+                        {{ page }}
+                      </a>
+                    }
+                  </li>
+                }
+              }
+
+              <!-- Botón siguiente -->
+              <li>
+                <a
+                  (click)="nextPage()"
+                  class="next page-numbers"
+                  [class.disabled]="currentPage === totalPages"
+                  style="cursor: pointer;"
+                >
+                  <svg width="15" height="13" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M13.9998 6.77883L1 6.77883" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M8.75684 1.55767L14.0001 6.7784L8.75684 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </a>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </div>
+}
               </div>
            </div>
         </div>

@@ -1,4 +1,4 @@
-import { afterNextRender, ChangeDetectorRef, Component } from '@angular/core';
+import { afterNextRender, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { HomeService } from '../../home/service/home.service';
 import { CookieService } from 'ngx-cookie-service';
 import { CommonModule } from '@angular/common';
@@ -7,9 +7,10 @@ import { FormsModule } from '@angular/forms';
 import { ModalProductComponent } from '../component/modal-product/modal-product.component';
 import { CartService } from '../../home/service/cart.service';
 import { ToastrService } from 'ngx-toastr';
+import { take } from 'rxjs';
 
+declare var $: any;
 
-declare var $:any;
 @Component({
   selector: 'app-filter-advance',
   standalone: true,
@@ -17,357 +18,624 @@ declare var $:any;
   templateUrl: './filter-advance.component.html',
   styleUrl: './filter-advance.component.css'
 })
-export class FilterAdvanceComponent {
+export class FilterAdvanceComponent implements OnInit {
+Math = Math;
+  toggleItemsDropdown: boolean = false;
+  Categories: any[] = [];
+  Colors: any[] = [];
+  Brands: any[] = [];
+  Products_relateds: any[] = [];
 
-  Categories:any = [];
-  Colors:any = [];
-  Brands:any = [];
-  Products_relateds: any = [];
-
-
-
-  PRODUCTS: any = [];
+  PRODUCTS: any[] = [];
+  ALL_PRODUCTS: any[] = []; // Todos los productos para búsqueda
   currency: string = 'ARS';
 
   product_selected: any = null;
   variation_selected: any = null;
   DISCOUNT_FLASH: any = null;
 
-  categories_selected:any = [];
-
-  colors_selected:any = [];
-  brands_selected: any = [];
+  categories_selected: any[] = [];
+  colors_selected: any[] = [];
+  brands_selected: any[] = [];
 
   min_price: number = 0;
   max_price: number = 0;
 
-  options_aditional:any = [];
+  options_aditional: any[] = [];
 
   search: string = '';
-
+  selectedCategoryFromUrl: string = '';
+  currentPage: number = 1;
+  itemsPerPage: number = 12;
+  totalPages: number = 0;
+  paginatedProducts: any[] = [];
   constructor(
-    public homeService: HomeService,
-    public cookieService: CookieService,
-    public cartService: CartService,
-    public router: Router,
-    public toastr: ToastrService,
-    public cdr: ChangeDetectorRef,
-    public activatedRoute: ActivatedRoute,
+  public homeService: HomeService,
+  public cookieService: CookieService,
+  public cartService: CartService,
+  public router: Router,
+  public toastr: ToastrService,
+  public cdr: ChangeDetectorRef,
+  public activatedRoute: ActivatedRoute,
+) {
+  // Primero cargamos la configuración de filtros
+  this.homeService.getConfigFilter().subscribe((resp: any) => {
+    this.Categories = resp.categories;
+    this.Colors = resp.colors;
+    this.Brands = resp.brands;
+    this.Products_relateds = resp.product_relateds.data;
 
-  ) {
+    console.log('✓ Categorías cargadas:', this.Categories);
 
-    this.homeService.getConfigFilter().subscribe((resp:any) => {
-      // console.log(resp)
-      this.Categories = resp.categories;
-      this.Colors = resp.colors;
-      this.Brands = resp.brands;
-      this.Products_relateds = resp.product_relateds.data;
-    })
+    // Después de cargar las categorías, procesamos los query params
+    this.processQueryParams();
+  });
 
-    this.activatedRoute.queryParams.subscribe((resp:any) => {
-      this.search = resp.search
-    })
+  // Nos suscribimos a cambios en los query params
+  this.activatedRoute.queryParams.subscribe(() => {
+    if (this.Categories.length > 0) {
+      this.processQueryParams();
+    }
+  });
+}
 
-    this.homeService.filterAdvanceProduct({search: this.search,}).subscribe((resp:any) => {
-      //console.log(resp);
-      this.PRODUCTS = resp.products.data;
-    })
+processQueryParams() {
+  const params = this.activatedRoute.snapshot.queryParams;
+
+  console.log('---------------------------');
+  console.log('PARAMETROS DE BUSQUEDA');
+  console.log('Params completos:', params);
+  console.log('Category:', params['category']);
+  console.log('Search:', params['search']);
+  console.log('Categories disponibles:', this.Categories);
+  console.log('---------------------------');
+
+  this.search = params['search'] || '';
+  const categoryFromUrl = params['category'] || '';
+
+  // Limpiar selección previa
+  this.categories_selected = [];
+
+  if (categoryFromUrl) {
+    const categoryId = Number(categoryFromUrl);
+
+    // Si es un número válido, usarlo directamente
+    if (!isNaN(categoryId) && categoryId > 0) {
+      this.categories_selected.push(categoryId);
+      console.log('✓ Categoría agregada por ID:', categoryId);
+    } else {
+      // Si es un string (nombre), buscar el ID correspondiente
+      const category = this.Categories.find(
+        (cat: any) => cat.name && cat.name.toLowerCase() === categoryFromUrl.toLowerCase()
+      );
+
+      if (category) {
+        this.categories_selected.push(category.id);
+        console.log('✓ Categoría encontrada por nombre:', category.name, '→ ID:', category.id);
+      } else {
+        console.error('✗ No se encontró categoría con nombre:', categoryFromUrl);
+        console.log('Categorías disponibles:', this.Categories.map((c: any) => c.name));
+      }
+    }
   }
 
-    ngOnInit(): void {
-      // Set currency FIRST before loading any data
-      this.currency = this.cookieService.get("currency") || 'ARS';
+  console.log('categories_selected final:', this.categories_selected);
 
-      if(typeof $ !== 'undefined'){
-        $("#slider-range").slider({
-              range: true,
-              min: 0,
-              max: 40000,
-              values: [10, 10000],
-              slide: (event:any, ui:any) => {
-                $("#amount").val(this.currency+ " " + ui.values[0] + " - "+this.currency+ " " + ui.values[1]);
-                this.min_price = ui.values[0];
-                this.max_price = ui.values[1];
-              },stop: () => {
-                this.filterAdvanceProduct();
-              }
-            });
-            $("#amount").val(this.currency+ " " + $("#slider-range").slider("values", 0) +
-              " - "+this.currency+ " " + $("#slider-range").slider("values", 1));
+  // Filtrar productos
+  this.filterAdvanceProduct();
+}
+
+  ngOnInit(): void {
+    this.currency = this.cookieService.get("currency") || 'ARS';
+
+    if (typeof $ !== 'undefined') {
+      $("#slider-range").slider({
+        range: true,
+        min: 0,
+        max: 40000,
+        values: [10, 10000],
+        slide: (event: any, ui: any) => {
+          $("#amount").val(this.currency + " " + ui.values[0] + " - " + this.currency + " " + ui.values[1]);
+          this.min_price = ui.values[0];
+          this.max_price = ui.values[1];
+        },
+        stop: () => {
+          this.filterAdvanceProduct();
         }
-      };
+      });
+      $("#amount").val(this.currency + " " + $("#slider-range").slider("values", 0) +
+        " - " + this.currency + " " + $("#slider-range").slider("values", 1));
+    }
+  }
 
-    reset(){
-      window.location.href = "/productos-busqueda";
+  // Función de búsqueda flexible sin librerías
+  flexibleSearch(products: any[], searchTerm: string): any[] {
+    if (!searchTerm || searchTerm.trim() === '') {
+      return products;
     }
 
-    addOptionAditional(option:string){
-    //chequeamos si la categoria ya fue seleccionada
-    let INDEX = this.options_aditional.findIndex((item:any) => item == option);
-    //SI YA EXISTE
-    if(INDEX != -1){
-      //la eliminamos de la lista de seleccionados
-      this.options_aditional.splice(INDEX, 1)
+    const normalizedSearch = this.normalizeText(searchTerm.toLowerCase());
+    const searchWords = normalizedSearch.split(' ').filter(word => word.length > 0);
+
+    return products.filter(product => {
+      // Crear un texto combinado de todos los campos buscables
+      const searchableText = this.normalizeText([
+        product.title || '',
+        product.resumen || '',
+        product.brand?.name || '',
+        product.tags || '',
+        product.sku || ''
+      ].join(' ').toLowerCase());
+
+      // Calcular score de coincidencia
+      const score = this.calculateMatchScore(searchableText, searchWords);
+
+      // Retornar si tiene al menos alguna coincidencia
+      return score > 0;
+    }).sort((a, b) => {
+      // Ordenar por relevancia
+      const searchableA = this.normalizeText([
+        a.title || '',
+        a.resumen || '',
+        a.brand?.name || '',
+        a.tags || ''
+      ].join(' ').toLowerCase());
+
+      const searchableB = this.normalizeText([
+        b.title || '',
+        b.resumen || '',
+        b.brand?.name || '',
+        b.tags || ''
+      ].join(' ').toLowerCase());
+
+      const scoreA = this.calculateMatchScore(searchableA, searchWords);
+      const scoreB = this.calculateMatchScore(searchableB, searchWords);
+
+      return scoreB - scoreA; // Mayor score primero
+    });
+  }
+
+  // Normalizar texto (quitar acentos, caracteres especiales)
+  normalizeText(text: string): string {
+    return text
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '') // Quitar acentos
+      .replace(/[^a-z0-9\s]/gi, ' ') // Quitar caracteres especiales
+      .replace(/\s+/g, ' ') // Normalizar espacios
+      .trim();
+  }
+
+  // Calcular score de coincidencia
+  calculateMatchScore(text: string, searchWords: string[]): number {
+    let score = 0;
+
+    searchWords.forEach(word => {
+      if (word.length < 2) return;
+
+      // Coincidencia exacta de palabra completa
+      const exactMatch = new RegExp(`\\b${word}\\b`, 'i').test(text);
+      if (exactMatch) {
+        score += 10;
+      }
+
+      // Coincidencia parcial
+      if (text.includes(word)) {
+        score += 5;
+      }
+
+      // Coincidencia con errores de tipeo (similar)
+      if (this.isSimilar(text, word)) {
+        score += 3;
+      }
+    });
+
+    return score;
+  }
+
+  // Verificar similitud (permite algunos errores de tipeo)
+  isSimilar(text: string, word: string): boolean {
+    if (word.length < 3) return false;
+
+    // Buscar si existe una subcadena similar
+    const words = text.split(' ');
+
+    for (let textWord of words) {
+      if (textWord.length < 3) continue;
+
+      // Calcular distancia de Levenshtein simplificada
+      const distance = this.levenshteinDistance(textWord, word);
+      const maxDistance = Math.floor(word.length / 3); // Permitir 1 error cada 3 caracteres
+
+      if (distance <= maxDistance) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  // Distancia de Levenshtein (mide diferencia entre dos strings)
+  levenshteinDistance(str1: string, str2: string): number {
+    const len1 = str1.length;
+    const len2 = str2.length;
+    const matrix: number[][] = [];
+
+    if (len1 === 0) return len2;
+    if (len2 === 0) return len1;
+
+    // Inicializar matriz
+    for (let i = 0; i <= len1; i++) {
+      matrix[i] = [i];
+    }
+    for (let j = 0; j <= len2; j++) {
+      matrix[0][j] = j;
+    }
+
+    // Llenar matriz
+    for (let i = 1; i <= len1; i++) {
+      for (let j = 1; j <= len2; j++) {
+        const cost = str1[i - 1] === str2[j - 1] ? 0 : 1;
+        matrix[i][j] = Math.min(
+          matrix[i - 1][j] + 1,      // Eliminación
+          matrix[i][j - 1] + 1,      // Inserción
+          matrix[i - 1][j - 1] + cost // Sustitución
+        );
+      }
+    }
+
+    return matrix[len1][len2];
+  }
+
+  reset() {
+    this.categories_selected = [];
+    this.colors_selected = [];
+    this.brands_selected = [];
+    this.options_aditional = [];
+    this.search = '';
+    this.min_price = 0;
+    this.max_price = 0;
+
+    this.router.navigate(['/productos-busqueda']);
+  }
+
+  addOptionAditional(option: string) {
+    let INDEX = this.options_aditional.findIndex((item: any) => item == option);
+    if (INDEX != -1) {
+      this.options_aditional.splice(INDEX, 1);
     } else {
-      //si no fue seleccionada la agregamos
       this.options_aditional.push(option);
     }
-    // console.log(this.categories_selected)
-    //cada vez que seleccionamos una categoria llamamos al servicio para filtrar los product
     this.filterAdvanceProduct();
+  }
 
+  addCategorie(categorie: any) {
+    let INDEX = this.categories_selected.findIndex((item: any) => item == categorie.id);
+    if (INDEX != -1) {
+      this.categories_selected.splice(INDEX, 1);
+    } else {
+      this.categories_selected.push(categorie.id);
+    }
+    this.filterAdvanceProduct();
+  }
+
+  addBrand(categorie: any) {
+    let INDEX = this.brands_selected.findIndex((item: any) => item == categorie.id);
+    if (INDEX != -1) {
+      this.brands_selected.splice(INDEX, 1);
+    } else {
+      this.brands_selected.push(categorie.id);
+    }
+    this.filterAdvanceProduct();
+  }
+
+  addColor(color: any) {
+    let INDEX = this.colors_selected.findIndex((item: any) => item == color.id);
+    if (INDEX != -1) {
+      this.colors_selected.splice(INDEX, 1);
+    } else {
+      this.colors_selected.push(color.id);
+    }
+    this.filterAdvanceProduct();
+  }
+
+filterAdvanceProduct() {
+  let data = {
+    categories_selected: this.categories_selected,
+    colors_selected: this.colors_selected,
+    brands_selected: this.brands_selected,
+    min_price: this.min_price,
+    max_price: this.max_price,
+    currency: this.currency,
+    options_aditional: this.options_aditional,
+    search: this.search,
+  };
+
+  console.log('=== ENVIANDO AL BACKEND ===');
+  console.log('Data completa:', data);
+  console.log('categories_selected:', this.categories_selected);
+  console.log('===========================');
+
+  this.homeService.filterAdvanceProduct(data).subscribe((resp: any) => {
+    console.log('=== RESPUESTA DEL BACKEND ===');
+    console.log('Productos recibidos:', resp.products.data.length);
+    console.log('===========================');
+
+    this.ALL_PRODUCTS = resp.products.data;
+
+    // Aplicar búsqueda flexible si hay término de búsqueda
+    if (this.search && this.search.trim() !== '') {
+      this.PRODUCTS = this.flexibleSearch(this.ALL_PRODUCTS, this.search);
+    } else {
+      this.PRODUCTS = this.ALL_PRODUCTS;
     }
 
-    addCategorie(categorie:any){
+    // Actualizar paginación después de recibir productos
+    this.currentPage = 1;
+    this.updatePagination();
+  });
+}
 
-      //chequeamos si la categoria ya fue seleccionada
-      let INDEX = this.categories_selected.findIndex((item:any) => item == categorie.id);
-      //SI YA EXISTE
-      if(INDEX != -1){
-        //la eliminamos de la lista de seleccionados
-        this.categories_selected.splice(INDEX, 1)
-      } else {
-        //si no fue seleccionada la agregamos
-        this.categories_selected.push(categorie.id);
-      }
-      // console.log(this.categories_selected)
-      //cada vez que seleccionamos una categoria llamamos al servicio para filtrar los product
-      this.filterAdvanceProduct();
+  getTotalCurrency(PRODUCTS: any): number {
+    if (!PRODUCTS) {
+      return 0;
     }
 
-    addBrand(categorie:any){
+    let price: number;
 
-      //chequeamos si la categoria ya fue seleccionada
-      let INDEX = this.brands_selected.findIndex((item:any) => item == categorie.id);
-      //SI YA EXISTE
-      if(INDEX != -1){
-        //la eliminamos de la lista de seleccionados
-        this.brands_selected.splice(INDEX, 1)
-      } else {
-        //si no fue seleccionada la agregamos
-        this.brands_selected.push(categorie.id);
-      }
-      // console.log(this.categories_selected)
-      //cada vez que seleccionamos una categoria llamamos al servicio para filtrar los product
-      this.filterAdvanceProduct();
-    }
-
-    addColor(color:any){
-
-      //chequeamos si la categoria ya fue seleccionada
-      let INDEX = this.colors_selected.findIndex((item:any) => item == color.id);
-      //SI YA EXISTE
-      if(INDEX != -1){
-        //la eliminamos de la lista de seleccionados
-        this.colors_selected.splice(INDEX, 1)
-      } else {
-        //si no fue seleccionada la agregamos
-        this.colors_selected.push(color.id);
-      }
-      // console.log(this.categories_selected)
-      //cada vez que seleccionamos una categoria llamamos al servicio para filtrar los product
-      this.filterAdvanceProduct();
-    }
-
-    filterAdvanceProduct(){
-
-      let data = {
-        categories_selected: this.categories_selected,
-        colors_selected: this.colors_selected,
-        brands_selected: this.brands_selected,
-        min_price: this.min_price,
-        max_price: this.max_price,
-        currency: this.currency,
-        options_aditional: this.options_aditional,
-        search: this.search,
-      }
-      this.homeService.filterAdvanceProduct(data).subscribe((resp:any) => {
-        //console.log(resp);
-        this.PRODUCTS = resp.products.data;
-      })
-    }
-
-    getTotalCurrency(PRODUCTS: any): number {
-      // Add null checks
-      if (!PRODUCTS) {
+    if (this.currency == 'ARS') {
+      if (!PRODUCTS.price_ars) {
         return 0;
       }
-
-
-      let price: number;
-
-      if (this.currency == 'ARS') {
-        if (!PRODUCTS.price_ars) {
-          return 0;
-        }
-        price = PRODUCTS.price_ars;
-      } else {
-        if (!PRODUCTS.price_usd) {
-          return 0;
-        }
-        price = PRODUCTS.price_usd;
-      }
-
-      // Always return a number with 2 decimal places
-      return parseFloat(price.toFixed(2));
-    }
-
-    addCart(PRODUCT: any): void {
-      if (!this.cartService.authService.user) {
-        this.toastr.error('Error', 'Ingrese a la tienda');
-        this.router.navigateByUrl("/login");
-        return;
-      }
-
-      if (PRODUCT.variations && PRODUCT.variations.length > 0) {
-        $("#producQuickViewModal").modal("show");
-        this.openDetailProduct(PRODUCT);
-        return;
-      }
-
-      let discount_g = null;
-
-      if (PRODUCT.discount_g) {
-        discount_g = PRODUCT.discount_g;
-      }
-
-      let data = {
-        product_id: PRODUCT.id,
-        type_discount: discount_g ? discount_g.type_discount : null,
-        discount: discount_g ? discount_g.discount : null,
-        type_campaing: discount_g ? discount_g.type_campaing : null,
-        code_cupon: null,
-        code_discount: discount_g ? discount_g.code : null,
-        product_variation_id: null,
-        quantity: 1,
-        price_unit: this.currency == 'ARS' ? PRODUCT.price_ars : PRODUCT.price_usd,
-        subtotal: this.getTotalPriceProduct(PRODUCT),
-        total: this.getTotalPriceProduct(PRODUCT) * 1,
-        currency: this.currency,
-      };
-
-      this.cartService.registerCart(data).subscribe(
-        (resp: any) => {
-          if (resp.message == 403) {
-            this.toastr.error('Error', resp.message_text);
-          } else {
-            this.cartService.changeCart(resp.cart);
-            this.toastr.success('Exito', 'El producto se agrego al carrito de compra');
-          }
-        },
-        (err) => {
-          console.error(err);
-        }
-      );
-    }
-
-    openDetailProduct(PRODUCT: any, DISCOUNT_FLASH: any = null): void {
-      // First reset the variation_selected
-      this.product_selected = null;
-      this.variation_selected = null;
-
-      // Then set the new product
-      setTimeout(() => {
-        this.product_selected = PRODUCT;
-
-        setTimeout(() => {
-          if (DISCOUNT_FLASH) {
-            this.product_selected.discount_g = DISCOUNT_FLASH;
-          }
-          this.cdr.detectChanges(); // Force change detection after updating product
-        }, 25);
-      }, 100);
-    }
-
-    getNewTotal(PRODUCTS: any, DISCOUNT_FLASH_P: any): number {
-      // Add null checks
-      if (!PRODUCTS || !DISCOUNT_FLASH_P) {
+      price = PRODUCTS.price_ars;
+    } else {
+      if (!PRODUCTS.price_usd) {
         return 0;
       }
-
-      let result: number;
-
-      if (this.currency == 'ARS') {
-        if (!PRODUCTS.price_ars) {
-          return 0;
-        }
-
-        if (DISCOUNT_FLASH_P.type_discount == 1) { //% de descuento
-          result = PRODUCTS.price_ars - (PRODUCTS.price_ars * (DISCOUNT_FLASH_P.discount * 0.01));
-        } else { //monto fijo /-pesos -dolares
-          result = PRODUCTS.price_ars - DISCOUNT_FLASH_P.discount;
-        }
-      } else {
-        if (!PRODUCTS.price_usd) {
-          return 0;
-        }
-
-        if (DISCOUNT_FLASH_P.type_discount == 1) { //% de descuento
-          result = PRODUCTS.price_usd - (PRODUCTS.price_usd * (DISCOUNT_FLASH_P.discount * 0.01));
-        } else { //monto fijo /-pesos -dolares
-          result = PRODUCTS.price_usd - DISCOUNT_FLASH_P.discount;
-        }
-      }
-
-      // Always return a number with 2 decimal places
-      return parseFloat(result.toFixed(2));
+      price = PRODUCTS.price_usd;
     }
 
-    getTotalPriceProduct(PRODUCTS: any): number {
-      // Add null checks
-      if (!PRODUCTS) {
-        return 0;
-      }
+    return parseFloat(price.toFixed(2));
+  }
 
-      let result: number;
+  addCart(PRODUCT: any): void {
+    if (!this.cartService.authService.user) {
+      this.toastr.error('Error', 'Ingrese a la tienda');
+      this.router.navigateByUrl("/login");
+      return;
+    }
 
-      // primero chequeamos que hay un descuento en el producto
-      if (PRODUCTS.discount_g) {
-        result = this.getNewTotal(PRODUCTS, PRODUCTS.discount_g);
-      }
-      // luego chequeamos si tiene el descuento flash
-      else if (this.DISCOUNT_FLASH && this.PRODUCTS &&
-              this.PRODUCTS.includes &&
-              this.PRODUCTS.includes(PRODUCTS)) {
-        result = this.getNewTotal(PRODUCTS, this.DISCOUNT_FLASH);
-      }
-      // precio comun
-      else {
-        if (this.currency == "ARS") {
-          if (!PRODUCTS.price_ars) {
-            return 0;
-          }
-          result = parseFloat(PRODUCTS.price_ars.toFixed(2));
+    if (PRODUCT.variations && PRODUCT.variations.length > 0) {
+      $("#producQuickViewModal").modal("show");
+      this.openDetailProduct(PRODUCT);
+      return;
+    }
+
+    let discount_g = null;
+
+    if (PRODUCT.discount_g) {
+      discount_g = PRODUCT.discount_g;
+    }
+
+    let data = {
+      product_id: PRODUCT.id,
+      type_discount: discount_g ? discount_g.type_discount : null,
+      discount: discount_g ? discount_g.discount : null,
+      type_campaing: discount_g ? discount_g.type_campaing : null,
+      code_cupon: null,
+      code_discount: discount_g ? discount_g.code : null,
+      product_variation_id: null,
+      quantity: 1,
+      price_unit: this.currency == 'ARS' ? PRODUCT.price_ars : PRODUCT.price_usd,
+      subtotal: this.getTotalPriceProduct(PRODUCT),
+      total: this.getTotalPriceProduct(PRODUCT) * 1,
+      currency: this.currency,
+    };
+
+    this.cartService.registerCart(data).subscribe(
+      (resp: any) => {
+        if (resp.message == 403) {
+          this.toastr.error('Error', resp.message_text);
         } else {
-          if (!PRODUCTS.price_usd) {
-            return 0;
-          }
-          result = parseFloat(PRODUCTS.price_usd.toFixed(2));
+          this.cartService.changeCart(resp.cart);
+          this.toastr.success('Exito', 'El producto se agrego al carrito de compra');
         }
+      },
+      (err) => {
+        console.error(err);
       }
+    );
+  }
 
-      return result;
+  openDetailProduct(PRODUCT: any, DISCOUNT_FLASH: any = null): void {
+    this.product_selected = null;
+    this.variation_selected = null;
+
+    setTimeout(() => {
+      this.product_selected = PRODUCT;
+
+      setTimeout(() => {
+        if (DISCOUNT_FLASH) {
+          this.product_selected.discount_g = DISCOUNT_FLASH;
+        }
+        this.cdr.detectChanges();
+      }, 25);
+    }, 100);
+  }
+
+  getNewTotal(PRODUCTS: any, DISCOUNT_FLASH_P: any): number {
+    if (!PRODUCTS || !DISCOUNT_FLASH_P) {
+      return 0;
     }
 
-    addCompareProduct(PRODUCT:any){
-      let COMPARES = localStorage.getItem('compares') ? JSON.parse(localStorage.getItem('compares') || '') : [];
+    let result: number;
 
-      let INDEX = COMPARES.findIndex((item:any) => item.id == PRODUCT.id);
-
-      if(INDEX != -1) {
-
-        this.toastr.error('Validacion', 'El producto ya fue agregado a la comparacion')
-
-        return;
+    if (this.currency == 'ARS') {
+      if (!PRODUCTS.price_ars) {
+        return 0;
       }
 
-      COMPARES.push(PRODUCT);
-      this.toastr.success('Exito', 'Producto agregado a la comparacion')
+      if (DISCOUNT_FLASH_P.type_discount == 1) {
+        result = PRODUCTS.price_ars - (PRODUCTS.price_ars * (DISCOUNT_FLASH_P.discount * 0.01));
+      } else {
+        result = PRODUCTS.price_ars - DISCOUNT_FLASH_P.discount;
+      }
+    } else {
+      if (!PRODUCTS.price_usd) {
+        return 0;
+      }
 
-      localStorage.setItem('compares', JSON.stringify(COMPARES));
-
-      if(COMPARES.length > 1) {
-        this.router.navigateByUrl('/compare-product')
+      if (DISCOUNT_FLASH_P.type_discount == 1) {
+        result = PRODUCTS.price_usd - (PRODUCTS.price_usd * (DISCOUNT_FLASH_P.discount * 0.01));
+      } else {
+        result = PRODUCTS.price_usd - DISCOUNT_FLASH_P.discount;
       }
     }
+
+    return parseFloat(result.toFixed(2));
+  }
+
+  getTotalPriceProduct(PRODUCTS: any): number {
+    if (!PRODUCTS) {
+      return 0;
+    }
+
+    let result: number;
+
+    if (PRODUCTS.discount_g) {
+      result = this.getNewTotal(PRODUCTS, PRODUCTS.discount_g);
+    } else if (this.DISCOUNT_FLASH && this.PRODUCTS &&
+      this.PRODUCTS.includes &&
+      this.PRODUCTS.includes(PRODUCTS)) {
+      result = this.getNewTotal(PRODUCTS, this.DISCOUNT_FLASH);
+    } else {
+      if (this.currency == "ARS") {
+        if (!PRODUCTS.price_ars) {
+          return 0;
+        }
+        result = parseFloat(PRODUCTS.price_ars.toFixed(2));
+      } else {
+        if (!PRODUCTS.price_usd) {
+          return 0;
+        }
+        result = parseFloat(PRODUCTS.price_usd.toFixed(2));
+      }
+    }
+
+    return result;
+  }
+
+  addCompareProduct(PRODUCT: any) {
+    let COMPARES = localStorage.getItem('compares') ? JSON.parse(localStorage.getItem('compares') || '') : [];
+
+    let INDEX = COMPARES.findIndex((item: any) => item.id == PRODUCT.id);
+
+    if (INDEX != -1) {
+      this.toastr.error('Validacion', 'El producto ya fue agregado a la comparacion');
+      return;
+    }
+
+    COMPARES.push(PRODUCT);
+    this.toastr.success('Exito', 'Producto agregado a la comparacion');
+
+    localStorage.setItem('compares', JSON.stringify(COMPARES));
+
+    if (COMPARES.length > 1) {
+      this.router.navigateByUrl('/compare-product');
+    }
+  }
+
+
+  // Actualizar paginación
+  updatePagination() {
+    this.totalPages = Math.ceil(this.PRODUCTS.length / this.itemsPerPage);
+    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+    const endIndex = startIndex + this.itemsPerPage;
+    this.paginatedProducts = this.PRODUCTS.slice(startIndex, endIndex);
+
+    // Scroll al inicio de los productos
+    this.scrollToProducts();
+  }
+
+  // Cambiar página
+  goToPage(page: number) {
+    if (page < 1 || page > this.totalPages) {
+      return;
+    }
+    this.currentPage = page;
+    this.updatePagination();
+  }
+
+  // Ir a página anterior
+  previousPage() {
+    if (this.currentPage > 1) {
+      this.currentPage--;
+      this.updatePagination();
+    }
+  }
+
+  // Ir a página siguiente
+  nextPage() {
+    if (this.currentPage < this.totalPages) {
+      this.currentPage++;
+      this.updatePagination();
+    }
+  }
+
+  // Obtener números de páginas a mostrar
+  getPageNumbers(): number[] {
+    const pages: number[] = [];
+    const maxPagesToShow = 5;
+
+    if (this.totalPages <= maxPagesToShow) {
+      // Mostrar todas las páginas si son pocas
+      for (let i = 1; i <= this.totalPages; i++) {
+        pages.push(i);
+      }
+    } else {
+      // Mostrar páginas con elipsis
+      if (this.currentPage <= 3) {
+        // Al inicio
+        for (let i = 1; i <= 4; i++) {
+          pages.push(i);
+        }
+        pages.push(-1); // -1 representa "..."
+        pages.push(this.totalPages);
+      } else if (this.currentPage >= this.totalPages - 2) {
+        // Al final
+        pages.push(1);
+        pages.push(-1);
+        for (let i = this.totalPages - 3; i <= this.totalPages; i++) {
+          pages.push(i);
+        }
+      } else {
+        // En el medio
+        pages.push(1);
+        pages.push(-1);
+        for (let i = this.currentPage - 1; i <= this.currentPage + 1; i++) {
+          pages.push(i);
+        }
+        pages.push(-1);
+        pages.push(this.totalPages);
+      }
+    }
+
+    return pages;
+  }
+
+  // Scroll suave al inicio de productos
+  scrollToProducts() {
+    setTimeout(() => {
+      const element = document.querySelector('.tp-shop-top');
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }, 100);
+  }
+
+  // Cambiar items por página
+  changeItemsPerPage(items: number) {
+    this.itemsPerPage = items;
+    this.currentPage = 1;
+    this.updatePagination();
+  }
 }

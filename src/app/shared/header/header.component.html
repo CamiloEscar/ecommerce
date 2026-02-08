@@ -82,33 +82,47 @@
                  </div>
               </div>
               <div class="col-xl-6 col-lg-7 d-none d-lg-block">
-                 <div class="tp-header-search pl-70">
-                    <form action="#">
-                       <div class="tp-header-search-wrapper d-flex align-items-center">
-                          <div class="tp-header-search-box">
-                            <input type="text" (keyup.enter)= "searchProduct()" [(ngModel)]="searchT" name="searchT" placeholder="Busca tus productos">
-                          </div>
-                          <div class="tp-header-search-category">
-                             <select>
-                              <!-- TODO: hacer las categorias -->
-                                <option>añadir seleccionar categoria</option>
-                                <option>funko tipo</option>
-                                <option>funko nene</option>
-                                <option>funkos otra opcion</option>
-                                <option>funkos pequeños</option>
-                             </select>
-                          </div>
-                          <div class="tp-header-search-btn">
-                             <button type="button" (click)="searchProduct()">
-                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                   <path d="M9 17C13.4183 17 17 13.4183 17 9C17 4.58172 13.4183 1 9 1C4.58172 1 1 4.58172 1 9C1 13.4183 4.58172 17 9 17Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                   <path d="M19 19L14.65 14.65" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg>
-                             </button>
-                          </div>
-                       </div>
-                    </form>
-                 </div>
+<div class="tp-header-search pl-70">
+  <form (submit)="searchProduct(); $event.preventDefault()">
+    <div class="tp-header-search-wrapper d-flex align-items-center">
+      <div class="tp-header-search-box">
+        <input
+          type="text"
+          (keyup.enter)="searchProduct()"
+          [(ngModel)]="searchT"
+          name="searchT"
+          placeholder="Busca tus productos (ej: funko, dragon ball, star wars...)"
+          autocomplete="off"
+        >
+      </div>
+      <div class="tp-header-search-category">
+        <select [(ngModel)]="selectedCategory" name="category">
+          <option value="">Todas las categorías</option>
+          @for(menu of categories_menus; track menu.id) {
+            @if(menu.categories && menu.categories.length > 0) {
+              <optgroup [label]="menu.name">
+                @for(cat of menu.categories; track cat.id) {
+                  <option [value]="cat.id">{{ cat.name }}</option>
+                  @for(subcat of cat.subcategories; track subcat.id) {
+                    <option [value]="subcat.id">-- {{ subcat.name }}</option>
+                  }
+                }
+              </optgroup>
+            }
+          }
+        </select>
+      </div>
+      <div class="tp-header-search-btn">
+        <button type="submit">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M9 17C13.4183 17 17 13.4183 17 9C17 4.58172 13.4183 1 9 1C4.58172 1 1 4.58172 1 9C1 13.4183 4.58172 17 9 17Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M19 19L14.65 14.65" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </form>
+</div>
               </div>
               <div class="col-xl-4 col-lg-3 col-md-8 col-6">
                  <div class="tp-header-main-right d-flex align-items-center justify-content-end">
@@ -213,164 +227,173 @@
      </div>
 
      <!-- header bottom start -->
-     <div class="tp-header-bottom tp-header-bottom-border d-none d-lg-block">
-        <div class="container">
-           <div class="tp-mega-menu-wrapper p-relative">
-              <div class="row align-items-center">
-                 <div class="col-xl-3 col-lg-3">
-                    <div class="tp-header-category tp-category-menu tp-header-category-toggle">
-                       <button class="tp-category-menu-btn tp-category-menu-toggle">
-                          <span>
-                             <svg width="18" height="14" viewBox="0 0 18 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path fill-rule="evenodd" clip-rule="evenodd" d="M0 1C0 0.447715 0.447715 0 1 0H15C15.5523 0 16 0.447715 16 1C16 1.55228 15.5523 2 15 2H1C0.447715 2 0 1.55228 0 1ZM0 7C0 6.44772 0.447715 6 1 6H17C17.5523 6 18 6.44772 18 7C18 7.55228 17.5523 8 17 8H1C0.447715 8 0 7.55228 0 7ZM1 12C0.447715 12 0 12.4477 0 13C0 13.5523 0.447715 14 1 14H11C11.5523 14 12 13.5523 12 13C12 12.4477 11.5523 12 11 12H1Z" fill="currentColor"/>
-                             </svg>
-                          </span>
-                          Categorias
-                       </button>
-                       <nav class="tp-category-menu-content">
-  <ul>
-    @for (MENU_CAT of categories_menus; track MENU_CAT.id) {
+<div class="tp-header-bottom tp-header-bottom-border d-none d-lg-block">
+  <div class="container">
+    <div class="tp-mega-menu-wrapper p-relative">
+      <div class="row align-items-center">
+        <div class="col-xl-3 col-lg-3">
+          <div class="tp-header-category tp-category-menu tp-header-category-toggle">
+            <button class="tp-category-menu-btn tp-category-menu-toggle">
+              <span>
+                <svg width="18" height="14" viewBox="0 0 18 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path fill-rule="evenodd" clip-rule="evenodd" d="M0 1C0 0.447715 0.447715 0 1 0H15C15.5523 0 16 0.447715 16 1C16 1.55228 15.5523 2 15 2H1C0.447715 2 0 1.55228 0 1ZM0 7C0 6.44772 0.447715 6 1 6H17C17.5523 6 18 6.44772 18 7C18 7.55228 17.5523 8 17 8H1C0.447715 8 0 7.55228 0 7ZM1 12C0.447715 12 0 12.4477 0 13C0 13.5523 0.447715 14 1 14H11C11.5523 14 12 13.5523 12 13C12 12.4477 11.5523 12 11 12H1Z" fill="currentColor"/>
+                </svg>
+              </span>
+              Categorías
+            </button>
 
-      <!-- CATEGORIA SIN SUBCATEGORIAS -->
-      @if (!MENU_CAT.categories || MENU_CAT.categories.length === 0) {
-        <li>
-          <a (click)="buscarPorCategoria(MENU_CAT.name)">
-            <span class="menu-icon" [innerHTML]="MENU_CAT.icon"></span>
-            {{ MENU_CAT.name }}
-          </a>
-        </li>
-      }
+            <nav class="tp-category-menu-content">
+              <ul>
+                @for (MENU_CAT of categories_menus; track MENU_CAT.id) {
 
-      <!-- CATEGORIA CON SUBCATEGORIAS -->
-      @if (MENU_CAT.categories && MENU_CAT.categories.length > 0) {
-        <li class="has-dropdown">
-          <a class="has-mega-menu">
-            <span class="menu-icon" [innerHTML]="MENU_CAT.icon"></span>
-            {{ MENU_CAT.name }}
-          </a>
-
-          <ul class="mega-menu tp-submenu">
-            @for (categorie of MENU_CAT.categories; track categorie.id) {
-              <li>
-                <!-- TITULO DE SUBCATEGORIA -->
-                <a
-                  class="mega-menu-title"
-                  (click)="buscarPorCategorias(categorie.name)"
-                >
-                  {{ categorie.name }}
-                </a>
-
-                <ul>
-                  <!-- Imagen de la categoría -->
-                  @if (categorie.imagen) {
+                  <!-- CATEGORÍA SIN SUBCATEGORÍAS -->
+                  @if (!MENU_CAT.categories || MENU_CAT.categories.length === 0) {
                     <li>
-                      <img
-                        [src]="categorie.imagen"
-                        alt="{{ categorie.name }}"
-                        style="width:247px;height:149px;object-fit:cover"
-                      />
-                    </li>
-                  }
-
-                  <!-- Subcategorías -->
-                  @for (subcategorie of categorie.subcategories; track subcategorie.id) {
-                    <li>
-                      <a (click)="buscarPorCategorias(subcategorie.name)">
-                        {{ subcategorie.name }}
+                      <a (click)="buscarPorCategoria(MENU_CAT.name)" style="cursor: pointer;">
+                        <span class="menu-icon" [innerHTML]="MENU_CAT.icon"></span>
+                        {{ MENU_CAT.name }}
                       </a>
                     </li>
                   }
-                </ul>
-              </li>
-            }
-          </ul>
-        </li>
-      }
-    }
-  </ul>
-</nav>
 
+                  <!-- CATEGORÍA CON SUBCATEGORÍAS -->
+                  @if (MENU_CAT.categories && MENU_CAT.categories.length > 0) {
+                    <li class="has-dropdown">
+                      <a class="has-mega-menu" style="cursor: pointer;">
+                        <span class="menu-icon" [innerHTML]="MENU_CAT.icon"></span>
+                        {{ MENU_CAT.name }}
+                        <span style="float: right;">
+                          <i class="fa-solid fa-angle-right"></i>
+                        </span>
+                      </a>
 
-                    </div>
-                 </div>
-                 <div class="col-xl-6 col-lg-6">
-                    <div class="main-menu menu-style-1">
-                       <nav class="tp-main-menu-content">
-                          <ul>
-                             <li class="has-dropdown has-mega-menu">
-                                <a href="/">Home</a>
-                                <div class="home-menu tp-submenu tp-mega-menu">
-                                   <div class="row row-cols-1 row-cols-lg-4 row-cols-xl-5">
-                                      <div class="col">
-                                         <div class="home-menu-item ">
-                                            <a href="index.html">
-                                               <div class="home-menu-thumb p-relative fix">
-                                                  <img src="\assets\img\logo\logo.jpeg" alt="">
-                                               </div>
-                                               <div class="home-menu-content">
-                                                  <h5 class="home-menu-title">Funkos </h5>
-                                               </div>
-                                            </a>
-                                         </div>
-                                      </div>
-                                   </div>
-                                </div>
-                             </li>
-                             <li  class="has-dropdown has-mega-menu">
-                                <a href="/">Paginas de interes</a>
-                                <div class="shop-mega-menu tp-submenu tp-mega-menu">
-                                   <div class="row">
-                                      <div class="col-lg-2">
-                                         <div class="shop-mega-menu-list">
-                                               <a href="shop.html" class="shop-mega-menu-title">Paginas</a>
-                                               <ul>
-                                                   <li><a href="#">Lista de paginas</a></li>
-                                               </ul>
-                                         </div>
-                                      </div>
-                                   </div>
-                                </div>
-                            </li>
-                             <li class="has-dropdown has-mega-menu ">
+                      <!-- MEGA MENU -->
+                      <ul class="mega-menu tp-submenu">
+                        @for (categorie of MENU_CAT.categories; track categorie.id) {
+                          <li>
+                            <!-- Imagen pequeña de la categoría -->
+                            @if (categorie.imagen) {
+                              <a (click)="buscarPorCategorias(categorie.name)" style="cursor: pointer;">
+                                <img
+                                  [src]="categorie.imagen"
+                                  alt="{{ categorie.name }}"
+                                  style="width: 100%; max-width: 120px; height: 70px; object-fit: cover; border-radius: 6px; margin-bottom: 10px;"
+                                />
+                              </a>
+                            }
 
-                                <a href="/">Productos</a>
-                                <ul class="tp-submenu tp-mega-menu mega-menu-style-2">
-                                   <li class="has-dropdown">
-                                      <a href="shop.html" class="mega-menu-title">Productos</a>
-                                      <ul class="tp-submenu">
-                                         <li><a href="shop-category.html">Lista Categories etc</a></li>
-                                      </ul>
-                                   </li>
-                                </ul>
-                             </li>
-                             <li><a href="/">Cupones</a></li>
+                            <!-- TÍTULO DE CATEGORÍA -->
+                            <a
+                              class="mega-menu-title"
+                              (click)="buscarPorCategorias(categorie.name)"
+                              style="cursor: pointer;"
+                            >
+                              {{ categorie.name }}
+                            </a>
 
-                             <li><a href="/">Contacto</a></li>
-                          </ul>
-                       </nav>
-                    </div>
-                 </div>
-                 <div class="col-xl-3 col-lg-3">
-                    <div class="tp-header-contact d-flex align-items-center justify-content-end">
-                       <div class="tp-header-contact-icon">
-                          <span>
-                             <svg width="21" height="20" viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path fill-rule="evenodd" clip-rule="evenodd" d="M1.96977 3.24859C2.26945 2.75144 3.92158 0.946726 5.09889 1.00121C5.45111 1.03137 5.76246 1.24346 6.01544 1.49057H6.01641C6.59631 2.05874 8.26011 4.203 8.35352 4.65442C8.58411 5.76158 7.26378 6.39979 7.66756 7.5157C8.69698 10.0345 10.4707 11.8081 12.9908 12.8365C14.1058 13.2412 14.7441 11.9219 15.8513 12.1515C16.3028 12.2459 18.4482 13.9086 19.0155 14.4894V14.4894C19.2616 14.7414 19.4757 15.0537 19.5049 15.4059C19.5487 16.6463 17.6319 18.3207 17.2583 18.5347C16.3767 19.1661 15.2267 19.1544 13.8246 18.5026C9.91224 16.8749 3.65985 10.7408 2.00188 6.68096C1.3675 5.2868 1.32469 4.12906 1.96977 3.24859Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                <path d="M12.936 1.23685C16.4432 1.62622 19.2124 4.39253 19.6065 7.89874" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                <path d="M12.936 4.59337C14.6129 4.92021 15.9231 6.23042 16.2499 7.90726" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                             </svg>
-                          </span>
-                       </div>
-                       <div class="tp-header-contact-content">
-                          <h5>Whatsapp:</h5>
-                          <p><a href="https://wa.me/3442475466" target="_blank">+(54) 3442475466</a></p>
-                       </div>
-                    </div>
-                 </div>
-              </div>
-           </div>
+                            <!-- SUBCATEGORÍAS -->
+                            <ul>
+                              @for (subcategorie of categorie.subcategories; track subcategorie.id) {
+                                <li>
+                                  <a
+                                    (click)="buscarPorCategorias(subcategorie.name)"
+                                    style="cursor: pointer;"
+                                  >
+                                    {{ subcategorie.name }}
+                                  </a>
+                                </li>
+                              }
+                            </ul>
+                          </li>
+                        }
+                      </ul>
+
+                    </li>
+                  }
+                }
+              </ul>
+            </nav>
+
+          </div>
         </div>
-     </div>
+
+        <div class="col-xl-6 col-lg-6">
+          <div class="main-menu menu-style-1">
+            <nav class="tp-main-menu-content">
+              <ul>
+                <li class="has-dropdown has-mega-menu">
+                  <a href="/">Home</a>
+                  <div class="home-menu tp-submenu tp-mega-menu">
+                    <div class="row row-cols-1 row-cols-lg-4 row-cols-xl-5">
+                      <div class="col">
+                        <div class="home-menu-item">
+                          <a href="index.html">
+                            <div class="home-menu-thumb p-relative fix">
+                              <img src="\assets\img\logo\logo.jpeg" alt="">
+                            </div>
+                            <div class="home-menu-content">
+                              <h5 class="home-menu-title">Funkos</h5>
+                            </div>
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <li class="has-dropdown has-mega-menu">
+                  <a href="/">Páginas de interés</a>
+                  <div class="shop-mega-menu tp-submenu tp-mega-menu">
+                    <div class="row">
+                      <div class="col-lg-2">
+                        <div class="shop-mega-menu-list">
+                          <a href="shop.html" class="shop-mega-menu-title">Páginas</a>
+                          <ul>
+                            <li><a href="#">Lista de páginas</a></li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <li class="has-dropdown has-mega-menu">
+                  <a href="/">Productos</a>
+                  <ul class="tp-submenu tp-mega-menu mega-menu-style-2">
+                    <li class="has-dropdown">
+                      <a href="shop.html" class="mega-menu-title">Productos</a>
+                      <ul class="tp-submenu">
+                        <li><a href="shop-category.html">Lista Categories etc</a></li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+                <li><a href="/">Cupones</a></li>
+                <li><a href="/">Contacto</a></li>
+              </ul>
+            </nav>
+          </div>
+        </div>
+
+        <div class="col-xl-3 col-lg-3">
+          <div class="tp-header-contact d-flex align-items-center justify-content-end">
+            <div class="tp-header-contact-icon">
+              <span>
+                <svg width="21" height="20" viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path fill-rule="evenodd" clip-rule="evenodd" d="M1.96977 3.24859C2.26945 2.75144 3.92158 0.946726 5.09889 1.00121C5.45111 1.03137 5.76246 1.24346 6.01544 1.49057H6.01641C6.59631 2.05874 8.26011 4.203 8.35352 4.65442C8.58411 5.76158 7.26378 6.39979 7.66756 7.5157C8.69698 10.0345 10.4707 11.8081 12.9908 12.8365C14.1058 13.2412 14.7441 11.9219 15.8513 12.1515C16.3028 12.2459 18.4482 13.9086 19.0155 14.4894V14.4894C19.2616 14.7414 19.4757 15.0537 19.5049 15.4059C19.5487 16.6463 17.6319 18.3207 17.2583 18.5347C16.3767 19.1661 15.2267 19.1544 13.8246 18.5026C9.91224 16.8749 3.65985 10.7408 2.00188 6.68096C1.3675 5.2868 1.32469 4.12906 1.96977 3.24859Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M12.936 1.23685C16.4432 1.62622 19.2124 4.39253 19.6065 7.89874" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M12.936 4.59337C14.6129 4.92021 15.9231 6.23042 16.2499 7.90726" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </span>
+            </div>
+            <div class="tp-header-contact-content">
+              <h5>Whatsapp:</h5>
+              <p><a href="https://wa.me/5493442475466" target="_blank">+(54) 3442475466</a></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
   </div>
 </header>
 <!-- header area end -->

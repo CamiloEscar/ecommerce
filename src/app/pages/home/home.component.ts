@@ -7,6 +7,8 @@ import { ModalProductComponent } from '../guest-view/component/modal-product/mod
 import { CookieService } from 'ngx-cookie-service';
 import { CartService } from './service/cart.service';
 import { ToastrService } from 'ngx-toastr';
+import { ProfileClientService } from '../view-auth/profile-client/service/profile-client.service';
+
 
 declare var Swiper: any;
 declare var $: any;
@@ -49,6 +51,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   variation_selected: any = null;
 
   currency: string = 'ARS';
+  PRODUCTS_RECOMMENDED: any[] = [];
 
   constructor(
     public homeService: HomeService,
@@ -57,6 +60,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
     public cartService: CartService,
     private toastr: ToastrService,
     private router: Router,
+    public profileClient: ProfileClientService
   ) {}
 
   ngOnInit(): void {
@@ -69,7 +73,15 @@ export class HomeComponent implements OnInit, AfterViewInit {
     // Subscribe to cart changes
     this.cartService.currentDataCart$.subscribe((resp: any) => {
       // Handle cart updates if needed
-      this.cdr.markForCheck(); // Mark for check instead of detectChanges
+    this.cdr.markForCheck(); // Mark for check instead of detectChanges
+      if (this.profileClient.authService.user) {
+        this.loadRecommendedProducts();
+      }
+    this.cartService.currentDataCart$.subscribe((resp: any) => {
+      this.cdr.markForCheck();
+    });
+
+
     });
   }
 
@@ -249,6 +261,27 @@ export class HomeComponent implements OnInit, AfterViewInit {
         '0': { slidesPerView: 1 },
       },
     });
+    new Swiper('.tp-product-recommended-active', {
+      slidesPerView: 4,
+      spaceBetween: 30,
+      loop: false,
+      rtl: rtl_setting,
+      pagination: {
+        el: ".tp-deals-slider-dot",
+        clickable: true,
+        renderBullet: function(index: any, className: any) {
+          return '<span class="' + className + '">' + '<button>' + (index + 1) + '</button>' + "</span>";
+        },
+      },
+      breakpoints: {
+        '1200': { slidesPerView: 3 },
+        '992': { slidesPerView: 2 },
+        '768': { slidesPerView: 2 },
+        '576': { slidesPerView: 1 },
+        '0': { slidesPerView: 1 },
+      },
+    });
+
   }
 
   addCompareProduct(TRENDING_PRODUCT:any){
@@ -494,4 +527,32 @@ hasFreeShipping(product: any): boolean {
   // cost = 1 → envío gratis
   return product.cost === 1;
 }
+loadRecommendedProducts() {
+  this.profileClient.showOrders().subscribe((resp: any) => {
+
+    // console.log('RESP ORDENES', resp);
+
+    const sales = resp?.sales?.data || [];
+    const productsMap: any = {};
+
+    sales.forEach((sale: any) => {
+      if (!sale.sale_details) return;
+
+      sale.sale_details.forEach((detail: any) => {
+        const product = detail.product;
+
+        if (product && !productsMap[product.id]) {
+          productsMap[product.id] = product;
+        }
+      });
+    });
+
+    this.PRODUCTS_RECOMMENDED = Object.values(productsMap);
+
+    // console.log('PRODUCTS_RECOMMENDED', this.PRODUCTS_RECOMMENDED);
+
+    this.cdr.markForCheck();
+  });
+}
+
 }
