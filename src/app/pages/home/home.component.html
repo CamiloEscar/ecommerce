@@ -175,7 +175,7 @@
       </div>
     </div>
 
-    <div class="row row-cols-xl-6 row-cols-lg-5 row-cols-md-4 row-cols-sm-3 row-cols-2 g-3">
+    <div class="row row-cols-xl-6 row-cols-lg-6 row-cols-md-4 row-cols-sm-3 row-cols-2 g-3">
       @for(CATEGORY of CATEGORIES_RANDOMS; track CATEGORY.id) {
         <div class="col">
           <div
@@ -194,9 +194,9 @@
               <h3 class="tp-product-category-title">
                 {{ CATEGORY.name }}
               </h3>
-              <p class="tp-category-count">
+              <!-- <p class="tp-category-count">
                 {{ CATEGORY.products_count }} disponibles
-              </p>
+              </p> -->
             </div>
           </div>
         </div>

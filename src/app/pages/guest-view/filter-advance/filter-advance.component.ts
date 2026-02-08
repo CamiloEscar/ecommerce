@@ -49,6 +49,9 @@ Math = Math;
   itemsPerPage: number = 12;
   totalPages: number = 0;
   paginatedProducts: any[] = [];
+  sortOrder: string = 'default'; // Orden seleccionado
+  PRODUCTS_ORIGINAL: any = []; // Guardar copia original
+
   constructor(
   public homeService: HomeService,
   public cookieService: CookieService,
@@ -69,6 +72,7 @@ Math = Math;
 
     // Después de cargar las categorías, procesamos los query params
     this.processQueryParams();
+    this.PRODUCTS_ORIGINAL = [...resp.products]; // Guardar copia
   });
 
   // Nos suscribimos a cambios en los query params
@@ -82,13 +86,13 @@ Math = Math;
 processQueryParams() {
   const params = this.activatedRoute.snapshot.queryParams;
 
-  console.log('---------------------------');
-  console.log('PARAMETROS DE BUSQUEDA');
-  console.log('Params completos:', params);
-  console.log('Category:', params['category']);
-  console.log('Search:', params['search']);
-  console.log('Categories disponibles:', this.Categories);
-  console.log('---------------------------');
+  // console.log('---------------------------');
+  // console.log('PARAMETROS DE BUSQUEDA');
+  // console.log('Params completos:', params);
+  // console.log('Category:', params['category']);
+  // console.log('Search:', params['search']);
+  // console.log('Categories disponibles:', this.Categories);
+  // console.log('---------------------------');
 
   this.search = params['search'] || '';
   const categoryFromUrl = params['category'] || '';
@@ -350,15 +354,15 @@ filterAdvanceProduct() {
     search: this.search,
   };
 
-  console.log('=== ENVIANDO AL BACKEND ===');
-  console.log('Data completa:', data);
-  console.log('categories_selected:', this.categories_selected);
-  console.log('===========================');
+  // console.log('=== ENVIANDO AL BACKEND ===');
+  // console.log('Data completa:', data);
+  // console.log('categories_selected:', this.categories_selected);
+  // console.log('===========================');
 
   this.homeService.filterAdvanceProduct(data).subscribe((resp: any) => {
-    console.log('=== RESPUESTA DEL BACKEND ===');
-    console.log('Productos recibidos:', resp.products.data.length);
-    console.log('===========================');
+    // console.log('=== RESPUESTA DEL BACKEND ===');
+    // console.log('Productos recibidos:', resp.products.data.length);
+    // console.log('===========================');
 
     this.ALL_PRODUCTS = resp.products.data;
 
@@ -544,16 +548,102 @@ filterAdvanceProduct() {
     }
   }
 
+  // Método para ordenar productos
+    sortProducts(value: string) {
+      console.log('MÉTODO LLAMADO - valor recibido:', value);
 
-  // Actualizar paginación
+      this.sortOrder = value;
+
+      console.log('=== INICIANDO ORDENAMIENTO ===');
+      console.log('Orden seleccionado:', value);
+      console.log('Productos antes:', this.PRODUCTS.length);
+      console.log('Productos originales disponibles:', this.PRODUCTS_ORIGINAL.length);
+
+      switch(value) {
+        case 'price_low_high':
+          console.log('Caso: Menor a mayor precio');
+          this.PRODUCTS = this.PRODUCTS.slice().sort((a: any, b: any) => {
+            const priceA = this.getTotalPriceProduct(a);
+            const priceB = this.getTotalPriceProduct(b);
+            return priceA - priceB;
+          });
+          break;
+
+        case 'price_high_low':
+          console.log('Caso: Mayor a menor precio');
+          this.PRODUCTS = this.PRODUCTS.slice().sort((a: any, b: any) => {
+            const priceA = this.getTotalPriceProduct(a);
+            const priceB = this.getTotalPriceProduct(b);
+            return priceB - priceA;
+          });
+          break;
+
+        case 'newest':
+          console.log('Caso: Más nuevos primero');
+          this.PRODUCTS = this.PRODUCTS.slice().sort((a: any, b: any) => {
+            const dateA = new Date(a.created_at).getTime();
+            const dateB = new Date(b.created_at).getTime();
+            return dateB - dateA;
+          });
+          break;
+
+        case 'default':
+        default:
+          console.log('Caso: Orden original');
+          this.PRODUCTS = [...this.PRODUCTS_ORIGINAL];
+          break;
+      }
+
+      console.log('Productos después del sort:', this.PRODUCTS.length);
+      console.log('Primer producto:', this.PRODUCTS[0]?.title, this.getTotalPriceProduct(this.PRODUCTS[0]));
+      console.log('Último producto:', this.PRODUCTS[this.PRODUCTS.length-1]?.title, this.getTotalPriceProduct(this.PRODUCTS[this.PRODUCTS.length-1]));
+
+      // Resetear a página 1
+      this.currentPage = 1;
+
+      // Actualizar paginación
+      this.updatePagination();
+
+      console.log('Productos paginados:', this.paginatedProducts.length);
+      console.log('=== FIN ORDENAMIENTO ===');
+    }
+
+    // Actualizar paginación
   updatePagination() {
+    if (!this.PRODUCTS || this.PRODUCTS.length === 0) {
+      console.log('No hay productos para paginar');
+      this.totalPages = 0;
+      this.paginatedProducts = [];
+      return;
+    }
+
     this.totalPages = Math.ceil(this.PRODUCTS.length / this.itemsPerPage);
+
+    // Asegurar que currentPage esté dentro del rango válido
+    if (this.currentPage > this.totalPages) {
+      this.currentPage = this.totalPages;
+    }
+    if (this.currentPage < 1) {
+      this.currentPage = 1;
+    }
+
     const startIndex = (this.currentPage - 1) * this.itemsPerPage;
     const endIndex = startIndex + this.itemsPerPage;
     this.paginatedProducts = this.PRODUCTS.slice(startIndex, endIndex);
 
-    // Scroll al inicio de los productos
-    this.scrollToProducts();
+    console.log('Paginación actualizada:', {
+      totalProducts: this.PRODUCTS.length,
+      totalPages: this.totalPages,
+      currentPage: this.currentPage,
+      paginatedProductsCount: this.paginatedProducts.length,
+      startIndex,
+      endIndex
+    });
+
+    // Scroll al inicio de los productos solo si no es la primera carga
+    if (this.currentPage > 1 || this.sortOrder !== 'default') {
+      this.scrollToProducts();
+    }
   }
 
   // Cambiar página

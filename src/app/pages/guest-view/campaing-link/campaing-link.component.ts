@@ -26,6 +26,7 @@ Categories:any = [];
 
 
   PRODUCTS: any = [];
+  PRODUCTS_ORIGINAL: any = []; // Guardar copia original
   currency: string = 'ARS';
 
   product_selected: any = null;
@@ -45,6 +46,13 @@ Categories:any = [];
   CODE_DISCOUNT:any = null;
 
   DISCOUNT_LINK:any = null;
+  currentPage: number = 1;
+  itemsPerPage: number = 12;
+  totalPages: number = 0;
+  paginatedProducts: any[] = [];
+  sortOrder: string = 'default'; // Orden seleccionado
+  Math = Math; // Para usar Math.min en el template
+
   constructor(
     public homeService: HomeService,
     public cookieService: CookieService,
@@ -69,13 +77,23 @@ Categories:any = [];
     })
 
     this.homeService.campaingDiscountLink({code_discount: this.CODE_DISCOUNT}).subscribe((resp:any) => {
-      //console.log(resp);
+      console.log('Respuesta del servidor:', resp);
       if(resp.message == 403) {
         this.toastr.info('Validacion', resp.message_text);
         return;
       }
       this.PRODUCTS = resp.products;
+      this.PRODUCTS_ORIGINAL = [...resp.products]; // Guardar copia
       this.DISCOUNT_LINK = resp.discount;
+
+      console.log('Productos cargados:', this.PRODUCTS.length);
+      console.log('Productos originales guardados:', this.PRODUCTS_ORIGINAL.length);
+
+      // Asegurar que la paginación se actualice después de cargar los productos
+      setTimeout(() => {
+        this.updatePagination();
+        console.log('Paginación inicializada');
+      }, 100);
     })
   }
 
@@ -101,6 +119,37 @@ Categories:any = [];
               " - "+this.currency+ " " + $("#slider-range").slider("values", 1));
         }
       };
+
+    ngAfterViewInit(): void {
+      // Usar jQuery y nice-select para capturar el cambio
+      setTimeout(() => {
+        if (typeof $ !== 'undefined') {
+          // Esperar a que nice-select se inicialice
+          const checkNiceSelect = setInterval(() => {
+            const $select = $('#sortSelectElement');
+            if ($select.length && $select.next('.nice-select').length) {
+              console.log('Nice-select encontrado, agregando listener');
+
+              // Capturar el cambio en el nice-select
+              $select.on('change', (event: any) => {
+                const value = $(event.target).val();
+                console.log('Nice-select cambió, valor:', value);
+                this.sortProducts(value as string);
+              });
+
+              clearInterval(checkNiceSelect);
+            }
+          }, 100);
+
+          // Timeout de seguridad de 3 segundos
+          setTimeout(() => {
+            clearInterval(checkNiceSelect);
+          }, 3000);
+        } else {
+          console.error('jQuery no disponible');
+        }
+      }, 500);
+    }
 
     reset(){
       window.location.href = "/productos-busqueda";
@@ -374,4 +423,194 @@ Categories:any = [];
         this.router.navigateByUrl('/compare-product')
       }
     }
+
+    // Método para ordenar productos
+    sortProducts(value: string) {
+      console.log('MÉTODO LLAMADO - valor recibido:', value);
+
+      this.sortOrder = value;
+
+      console.log('=== INICIANDO ORDENAMIENTO ===');
+      console.log('Orden seleccionado:', value);
+      console.log('Productos antes:', this.PRODUCTS.length);
+      console.log('Productos originales disponibles:', this.PRODUCTS_ORIGINAL.length);
+
+      switch(value) {
+        case 'price_low_high':
+          console.log('Caso: Menor a mayor precio');
+          this.PRODUCTS = this.PRODUCTS.slice().sort((a: any, b: any) => {
+            const priceA = this.getTotalPriceProduct(a);
+            const priceB = this.getTotalPriceProduct(b);
+            return priceA - priceB;
+          });
+          break;
+
+        case 'price_high_low':
+          console.log('Caso: Mayor a menor precio');
+          this.PRODUCTS = this.PRODUCTS.slice().sort((a: any, b: any) => {
+            const priceA = this.getTotalPriceProduct(a);
+            const priceB = this.getTotalPriceProduct(b);
+            return priceB - priceA;
+          });
+          break;
+
+        case 'newest':
+          console.log('Caso: Más nuevos primero');
+          this.PRODUCTS = this.PRODUCTS.slice().sort((a: any, b: any) => {
+            const dateA = new Date(a.created_at).getTime();
+            const dateB = new Date(b.created_at).getTime();
+            return dateB - dateA;
+          });
+          break;
+
+        case 'on_sale':
+          console.log('Caso: En oferta');
+          this.PRODUCTS = this.PRODUCTS.slice().sort((a: any, b: any) => {
+            const hasDiscountA = (a.discount_g || this.DISCOUNT_LINK) ? 1 : 0;
+            const hasDiscountB = (b.discount_g || this.DISCOUNT_LINK) ? 1 : 0;
+            return hasDiscountB - hasDiscountA;
+          });
+          break;
+
+        case 'default':
+        default:
+          console.log('Caso: Orden original');
+          this.PRODUCTS = [...this.PRODUCTS_ORIGINAL];
+          break;
+      }
+
+      console.log('Productos después del sort:', this.PRODUCTS.length);
+      console.log('Primer producto:', this.PRODUCTS[0]?.title, this.getTotalPriceProduct(this.PRODUCTS[0]));
+      console.log('Último producto:', this.PRODUCTS[this.PRODUCTS.length-1]?.title, this.getTotalPriceProduct(this.PRODUCTS[this.PRODUCTS.length-1]));
+
+      // Resetear a página 1
+      this.currentPage = 1;
+
+      // Actualizar paginación
+      this.updatePagination();
+
+      console.log('Productos paginados:', this.paginatedProducts.length);
+      console.log('=== FIN ORDENAMIENTO ===');
+    }
+
+    // Actualizar paginación
+  updatePagination() {
+    if (!this.PRODUCTS || this.PRODUCTS.length === 0) {
+      console.log('No hay productos para paginar');
+      this.totalPages = 0;
+      this.paginatedProducts = [];
+      return;
+    }
+
+    this.totalPages = Math.ceil(this.PRODUCTS.length / this.itemsPerPage);
+
+    // Asegurar que currentPage esté dentro del rango válido
+    if (this.currentPage > this.totalPages) {
+      this.currentPage = this.totalPages;
+    }
+    if (this.currentPage < 1) {
+      this.currentPage = 1;
+    }
+
+    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+    const endIndex = startIndex + this.itemsPerPage;
+    this.paginatedProducts = this.PRODUCTS.slice(startIndex, endIndex);
+
+    console.log('Paginación actualizada:', {
+      totalProducts: this.PRODUCTS.length,
+      totalPages: this.totalPages,
+      currentPage: this.currentPage,
+      paginatedProductsCount: this.paginatedProducts.length,
+      startIndex,
+      endIndex
+    });
+
+    // Scroll al inicio de los productos solo si no es la primera carga
+    if (this.currentPage > 1 || this.sortOrder !== 'default') {
+      this.scrollToProducts();
+    }
+  }
+
+  // Cambiar página
+  goToPage(page: number) {
+    if (page < 1 || page > this.totalPages) {
+      return;
+    }
+    this.currentPage = page;
+    this.updatePagination();
+  }
+
+  // Ir a página anterior
+  previousPage() {
+    if (this.currentPage > 1) {
+      this.currentPage--;
+      this.updatePagination();
+    }
+  }
+
+  // Ir a página siguiente
+  nextPage() {
+    if (this.currentPage < this.totalPages) {
+      this.currentPage++;
+      this.updatePagination();
+    }
+  }
+
+  // Obtener números de páginas a mostrar
+  getPageNumbers(): number[] {
+    const pages: number[] = [];
+    const maxPagesToShow = 5;
+
+    if (this.totalPages <= maxPagesToShow) {
+      // Mostrar todas las páginas si son pocas
+      for (let i = 1; i <= this.totalPages; i++) {
+        pages.push(i);
+      }
+    } else {
+      // Mostrar páginas con elipsis
+      if (this.currentPage <= 3) {
+        // Al inicio
+        for (let i = 1; i <= 4; i++) {
+          pages.push(i);
+        }
+        pages.push(-1); // -1 representa "..."
+        pages.push(this.totalPages);
+      } else if (this.currentPage >= this.totalPages - 2) {
+        // Al final
+        pages.push(1);
+        pages.push(-1);
+        for (let i = this.totalPages - 3; i <= this.totalPages; i++) {
+          pages.push(i);
+        }
+      } else {
+        // En el medio
+        pages.push(1);
+        pages.push(-1);
+        for (let i = this.currentPage - 1; i <= this.currentPage + 1; i++) {
+          pages.push(i);
+        }
+        pages.push(-1);
+        pages.push(this.totalPages);
+      }
+    }
+
+    return pages;
+  }
+
+  // Scroll suave al inicio de productos
+  scrollToProducts() {
+    setTimeout(() => {
+      const element = document.querySelector('.tp-shop-top');
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }, 100);
+  }
+
+  // Cambiar items por página
+  changeItemsPerPage(items: number) {
+    this.itemsPerPage = items;
+    this.currentPage = 1;
+    this.updatePagination();
+  }
 }

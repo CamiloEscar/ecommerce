@@ -3,25 +3,25 @@
   <!-- breadcrumb area start -->
   <section class="breadcrumb__area include-bg pt-95 pb-50">
      <div class="container">
-        <div class="row">
-           <div class="col-xxl-12">
+       <div class="row">
+         <div class="col-xxl-12">
               <div class="breadcrumb__content p-relative z-index-1">
                  <h3 class="breadcrumb__title">Comparacion</h3>
                  <div class="breadcrumb__list">
-                    <span><a href="#">Home</a></span>
-                    <span>Comparacion</span>
-                 </div>
+                   <span><a href="#">Home</a></span>
+                   <span>Comparacion</span>
+                  </div>
               </div>
-           </div>
+            </div>
+          </div>
         </div>
-     </div>
-  </section>
-  <!-- breadcrumb area end -->
+      </section>
+      <!-- breadcrumb area end -->
 
-
- <!-- compare area start -->
- <section class="tp-compare-area pb-120">
-  <div class="container">
+      <!-- compare area start -->
+      <section class="tp-compare-area pb-120">
+        <div class="container">
+          @if (PRODUCTS.length > 0) {
       <div class="row">
           <div class="col-xl-12">
               <div class="tp-compare-table table-responsive text-center">
@@ -166,6 +166,21 @@
               </div>
           </div>
       </div>
+          } @else {
+             <!-- ESTADO VACÍO (IGUAL QUE WISHLIST) -->
+      <div class="row">
+        <div class="col-xl-12 text-center">
+          <div class="tp-cart-empty">
+            <h3>No hay productos para comparar</h3>
+            <p>Agrega productos para poder compararlos.</p>
+            <a routerLink="/" class="tp-btn">
+              Ir a la tienda
+            </a>
+          </div>
+        </div>
+      </div>
+
+    }
   </div>
 </section>
 <!-- compare area end -->
