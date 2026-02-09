@@ -16,6 +16,8 @@ import { FilterAdvanceComponent } from './pages/guest-view/filter-advance/filter
 import { CampaingLinkComponent } from './pages/guest-view/campaing-link/campaing-link.component';
 import { CompareProductComponent } from './pages/guest-view/compare-product/compare-product.component';
 import { FavoriteProductComponent } from './pages/guest-view/wishlists/wishlists.component';
+import { AboutComponent } from './pages/guest-view/about/about.component';
+import { ContactComponent } from './pages/guest-view/contact/contact.component';
 
 export const routes: Routes = [
     {
@@ -91,5 +93,13 @@ export const routes: Routes = [
     {
         path: 'favoritos',
         component: FavoriteProductComponent
+    },
+    {
+        path: 'about',
+        component: AboutComponent
+    },
+    {
+        path: 'contact',
+        component: ContactComponent
     },
 ];
