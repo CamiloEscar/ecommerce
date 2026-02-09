@@ -90,6 +90,11 @@ clearCart(){
     let URL = URL_SERVICIOS+"/ecommerce/carts/apply_cupon";
     return this.http.post(URL, data, {headers: headers});
   }
+  listCupones(){
+  let headers = new HttpHeaders({'Authorization': 'Bearer ' + this.authService.token});
+  let URL = URL_SERVICIOS + "/ecommerce/cupones";
+  return this.http.get(URL, { headers: headers });
+}
   applyCosto(data:any){
     let headers = new HttpHeaders({'Authorization': 'Bearer '+this.authService.token});
     let URL = URL_SERVICIOS+"/ecommerce/carts/apply_costo";

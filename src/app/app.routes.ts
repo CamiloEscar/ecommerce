@@ -18,6 +18,9 @@ import { CompareProductComponent } from './pages/guest-view/compare-product/comp
 import { FavoriteProductComponent } from './pages/guest-view/wishlists/wishlists.component';
 import { AboutComponent } from './pages/guest-view/about/about.component';
 import { ContactComponent } from './pages/guest-view/contact/contact.component';
+import { CuponesComponent } from './pages/guest-view/cupones/cupones.component';
+import { CategoriesComponent } from './pages/guest-view/categories/categories.component';
+import { NotFoundComponent } from './pages/not-found/not-found.component';
 
 export const routes: Routes = [
     {
@@ -102,4 +105,17 @@ export const routes: Routes = [
         path: 'contact',
         component: ContactComponent
     },
+    {
+        path: 'cupones',
+        component: CuponesComponent
+    },
+    {
+        path: 'categories',
+        component: CategoriesComponent
+    },
+    {
+        path: '**',
+        component: NotFoundComponent
+    },
+
 ];
