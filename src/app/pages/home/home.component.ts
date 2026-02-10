@@ -101,11 +101,40 @@ export class HomeComponent implements OnInit, AfterViewInit {
       this.BANNER_PRODUCTOS = resp.sliders_productos;
 
       this.PRODUCTS_COMICS = resp.products_comics.data;
-      this.PRODUCTS_CAROUSEL = resp.products_carousel.data;
+
+      // Ordenados por fecha de creacion
+      let products = resp.products_carousel.data;
+
+      products.sort((a: any, b: any) => {
+        return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+      });
+
+      this.PRODUCTS_CAROUSEL = products;
 
       this.LASTS_PRODUCTS_DISCOUNTS = resp.products_last_discounts.data;
       this.LASTS_PRODUCTS_FEATURED = resp.products_last_featured.data;
       this.LASTS_PRODUCTS_SELLING = resp.products_last_selling.data;
+
+      // 1. Descuentos → mayor descuento primero
+      this.LASTS_PRODUCTS_DISCOUNTS.sort((a: any, b: any) => {
+        const da = a.discount_g?.discount || 0;
+        const db = b.discount_g?.discount || 0;
+        return db - da;
+      });
+
+      // 2. Destacados → mayor stock primero
+      this.LASTS_PRODUCTS_FEATURED.sort((a: any, b: any) => {
+        return (b.stock || 0) - (a.stock || 0);
+      });
+
+      // 3. Más vendidos → más reviews y mejor promedio
+      this.LASTS_PRODUCTS_SELLING.sort((a: any, b: any) => {
+        const countDiff = (b.count_reviews || 0) - (a.count_reviews || 0);
+        if (countDiff !== 0) return countDiff;
+
+        return (b.avg_reviews || 0) - (a.avg_reviews || 0);
+      });
+
 
       this.DISCOUNT_FLASH = resp.discount_flash;
       this.DISCOUNT_FLASH_PRODUCT = resp.discount_flash_product;

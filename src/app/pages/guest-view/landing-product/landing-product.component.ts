@@ -401,4 +401,19 @@ get reviewsStats() {
 
   return stats;
 }
+getCurrentStock(): number {
+  return (
+    this.sub_variation_selected?.stock ||
+    this.variation_selected?.stock ||
+    this.PRODUCT_SELECTED?.stock ||
+    0
+  );
+}
+
+getStockPercentage(): number {
+  const stock = this.getCurrentStock();
+  const maxStock = 100; // umbral de alerta
+  return Math.min((stock / maxStock) * 100, 100);
+}
+
 }

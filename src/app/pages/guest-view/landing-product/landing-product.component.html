@@ -188,6 +188,28 @@
                           </div>
                       </div>
                       </div>
+                      <div
+                          class="tp-product-details-stock-bar mb-25"
+                          *ngIf="getCurrentStock() > 0 && getCurrentStock() <= 10"
+                        >
+                          <p>
+                            Apurate! Quedan
+                            <span>{{ getCurrentStock() }}</span>
+                            unidades!
+                          </p>
+
+                          <div
+                            class="tp-product-details-stock-bar-line"
+                            data-bg-color="#D3DAE1"
+                          >
+                            <span
+                              class="tp-product-details-stock-bar-line-inner"
+                              [style.width.%]="getStockPercentage()"
+                              data-bg-color="#ff3d3d"
+                            ></span>
+                          </div>
+                        </div>
+
 
                       <!-- actions -->
                       <div class="tp-product-details-action-wrapper">
