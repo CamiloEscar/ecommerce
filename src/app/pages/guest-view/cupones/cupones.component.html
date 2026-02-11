@@ -37,7 +37,9 @@
             </div>
 
             <div class="tp-coupon-date">
-              <button>
+              <button type="button"
+                style="padding:4px 10px; font-size:12px;"
+                (click)="applyCupon(cupon.code)">
                 <span>{{ cupon.code }}</span>
               </button>
             </div>

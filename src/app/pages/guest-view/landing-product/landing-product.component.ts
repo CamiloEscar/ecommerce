@@ -379,7 +379,20 @@ export class LandingProductComponent {
     }
   }
 
+  addFavoriteProduct(PRODUCT: any) {
+  let FAVORITES = localStorage.getItem('favorites') ? JSON.parse(localStorage.getItem('favorites') || '') : [];
 
+  let INDEX = FAVORITES.findIndex((item: any) => item.id == PRODUCT.id);
+
+  if (INDEX != -1) {
+    this.toastr.error('Validación', 'El producto ya está en favoritos');
+    return;
+  }
+
+  FAVORITES.push(PRODUCT);
+  this.toastr.success('Éxito', 'Producto agregado a favoritos');
+  localStorage.setItem('favorites', JSON.stringify(FAVORITES));
+}
 
 get totalReviews(): number {
   return this.reviews.length;

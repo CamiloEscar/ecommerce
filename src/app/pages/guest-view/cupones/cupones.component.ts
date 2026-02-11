@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CartService } from '../../home/service/cart.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-cupones',
@@ -13,8 +14,11 @@ export class CuponesComponent implements OnInit {
 
   cupones: any[] = [];
   loading: boolean = true;
+  code_cupon: any;
 
-  constructor(private cartService: CartService) {}
+  constructor(private cartService: CartService,
+              private toastr: ToastrService,
+  ) {}
 
   ngOnInit(): void {
     this.listarCupones();
@@ -53,4 +57,31 @@ export class CuponesComponent implements OnInit {
         return 'Cupón especial';
     }
   }
+
+    applyCupon(code: string) {
+  if (!code) {
+    this.toastr.error('Validacion', 'Se necesita ingresar un codigo de cupon');
+    return;
+  }
+
+  let data = {
+    code_cupon: code
+  };
+
+  this.cartService.applyCupon(data).subscribe((resp: any) => {
+    console.log(resp);
+    if (resp.message == 403) {
+      this.toastr.error("Validacion", resp.message_text);
+      return;
+    } else {
+      // Recargar el carrito completo
+      this.cartService.resetCart();
+      this.cartService.listCart().subscribe((resp: any) => {
+        this.cartService.setCart(resp.carts.data);
+        this.toastr.success("Éxito", "Se aplicó el cupón correctamente");
+      });
+    }
+  });
+}
+
 }
